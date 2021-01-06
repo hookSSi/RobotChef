@@ -5,13 +5,15 @@
 *.docx
 *.png
 *.jpg
+*.jpeg
 *.json
+*.webp
 *.weights
 
 # not yet
-/ingredient_detector/*
+ingredient_detector/
 /논문
 Dockerfile
 
-# python files
-!/recipe_data_generator/*.py
+# 데이터 json 파일만 포함
+!/recipe_data_generator/dataset/*.json
