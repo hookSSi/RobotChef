@@ -12,8 +12,9 @@
 
 # not yet
 ingredient_detector/
-/논문
+논문/
 Dockerfile
+yolo_makr/
 
 # 데이터 json 파일만 포함
-!/recipe_data_generator/dataset/*.json
+!/recipe_db_generator/dataset/*.json

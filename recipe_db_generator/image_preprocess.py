@@ -11,7 +11,7 @@ def rename_multiple_files(path,obj):
             dst=path+obj+str(i)+extension
             os.rename(src,dst)
             i+=1
-            print('Rename successful.')
+            #print('Rename successful.')
         except:
             i+=1
 
@@ -21,16 +21,16 @@ def rename_multiple_files(path,obj):
 
 from PIL import Image
 import os
-def resize_multiple_images(src_path, dst_path):
-    Here src_path is the location where images are saved.
+def resize_multiple_images(src_path, dst_path, size = 512):
+    # Here src_path is the location where images are saved.
     for filename in os.listdir(src_path):
         try:
             img=Image.open(src_path+filename)
-            new_img = img.resize((512, 512))
+            new_img = img.resize((size, size))
             if not os.path.exists(dst_path):
                 os.makedirs(dst_path)
             new_img.save(dst_path+filename)
-            print('Resized and saved {} successfully.'.format(filename))
+            #print('Resized and saved {} successfully.'.format(filename))
         except:
             continue
 
@@ -59,7 +59,7 @@ def split_images(src_path, dst_path):
             if not os.path.exists(new_dst_path):
                 os.makedirs(new_dst_path)
             img.save(new_dst_path + filename)
-            print('{} has moved in {}'.format(filename, 'train'))
+            #print('{} has moved in {}'.format(filename, 'train'))
         except Exception as e:
             print(e)
             continue
@@ -72,7 +72,7 @@ def split_images(src_path, dst_path):
             if not os.path.exists(new_dst_path):
                 os.makedirs(new_dst_path)
             img.save(new_dst_path + filename)
-            print('{} has moved in {}'.format(filename, 'test'))
+            #print('{} has moved in {}'.format(filename, 'test'))
         except Exception as e:
             print(e)
             continue
@@ -85,7 +85,7 @@ def split_images(src_path, dst_path):
             if not os.path.exists(new_dst_path):
                 os.makedirs(new_dst_path)
             img.save(new_dst_path + filename)
-            print('{} has moved in {}'.format(filename, 'valid'))
+            #print('{} has moved in {}'.format(filename, 'valid'))
         except Exception as e:
             print(e)
             continue
