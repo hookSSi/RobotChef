@@ -2,6 +2,39 @@ import requests
 import urllib
 import json
 from bs4 import BeautifulSoup
+from elasticsearch import Elasticsearch
+
+es = Elasticsearch('localhost:9200')
+
+# 가장 많이 쓰인 재료 리스트 반환
+def get_top_ingredients(range=300):
+    index = "recipe"
+    body ="""
+    {
+      "size": 0,
+      "aggs": 
+      {
+        "total_invoices": 
+        {
+          "terms": 
+            {
+            "field": "ingredients.name.keyword",
+            "size": %d
+            }
+        }
+      }
+    }
+    """ % range
+
+    res = es.search(index=index, body=body)
+    res = res['aggregations']['total_invoices']['buckets']
+    return [bucket['key'] for bucket in res]
+
+def save_keyword_list():
+    keyword_list = get_top_ingredients()
+    with open('class_list', "w", encoding='UTF-8-sig') as f:
+        for keyword in keyword_list:
+            f.write(keyword + '\n')
 
 def read_json(json_file_name):
     json_data = None
@@ -39,4 +72,5 @@ def generate_syn_dic(src, dst):
     syn_dic_file.close()
 
 if __name__ == '__main__':
-    generate_syn_dic("ingredients(kr).json", "syn_dict.dic")
+    #generate_syn_dic("ingredients(kr).json", "syn_dict.dic")
+    save_keyword_list()

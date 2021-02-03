@@ -42,11 +42,26 @@ def read_json_data(json_file_name):
     with open(json_file_name, 'r', encoding='UTF-8-sig') as json_file:
         json_data = json.load(json_file)
 
-    keyword_list = [data['name'] for data in json_data]
-    return keyword_list
+    return json_data
+
+# json 파일 읽기
+def read_json_data(json_file_name):
+    json_data = None
+    with open(json_file_name, 'r', encoding='UTF-8-sig') as json_file:
+        json_data = json.load(json_file)
+
+    return json_data
+
+# json 파일 읽기
+def read_class_list(file_name):
+    data_list = None
+    with open(file_name, 'r', encoding='UTF-8-sig') as f:
+        data_list = f.readlines()
+    return [data.strip('\n') for data in data_list]
 
 def crawl_images():
-    keyword_list = get_top_ingredients()
+    #keyword_list = get_top_ingredients()
+    keyword_list = read_class_list('class_list')
 
     saved_idx = 0
     for idx in range(0, len(keyword_list), 8):
@@ -64,29 +79,26 @@ def download_images(keyword_list):
     pool.join()
 
 def download_image(keyword):
-    dir_path = "..\\ingredient_detector\\darknet\\data\\img\\original\\"
+    dir_path = "..\\OpenLabeling\\img\\"
     response = google_images_download.googleimagesdownload()
+    
+    key = keyword.split(',')[0]
+    dir_name = keyword.split(',')[1].strip()
 
-    arguments = {"keywords" : keyword,
-                 "limit" : 400,
+    arguments = {"keywords" : key,
+                 "limit" : 60,
                  "silent_mode" : True,
-                 "type" : "photo",
-                 "thumbnail_only" : True,
-                 "output_directory" : dir_path,
+                 "output_directory" : dir_path + dir_name,
+                 "no_directory" : True,
                  "chromedriver" : "./chromedriver"}
     response.download(arguments)
 
-    # 이름 바꾸기
-    rename_multiple_files(dir_path + keyword + '\\', keyword + '_')
-
-    # 이미지 리사이즈
-    # 사이즈는 32의 배수로 해야할 거임
-    resized_img_dir_path = "..\\ingredient_detector\\darknet\\data\\img\\resized\\" + keyword + '\\'
-    resize_multiple_images(dir_path + keyword + '\\', resized_img_dir_path, 512)
-    
-    # 세트 나누기
-    split_img_dir_path = "..\\ingredient_detector\\darknet\\data\\img\\"
-    split_images(resized_img_dir_path, split_img_dir_path)
-
 if __name__ == '__main__':
     crawl_images()
+
+    dir_path = "..\\OpenLabeling\\img\\"
+
+    for filename in os.listdir(dir_path):
+        if os.path.isdir(dir_path + filename):
+            rename_multiple_files(dir_path + filename + '\\', filename + '_')
+

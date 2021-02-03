@@ -6,9 +6,8 @@ def rename_multiple_files(path,obj):
     i=0
     for filename in os.listdir(path):
         try:
-            f,extension = os.path.splitext(path+filename)
             src=path+filename
-            dst=path+obj+str(i)+extension
+            dst=path+obj+str(i)+'.jpg'
             os.rename(src,dst)
             i+=1
             #print('Rename successful.')
