@@ -1,6 +1,17 @@
 # RobotChef
 Recipe extractor using machine learning
 
+# Client
+1. Flutter로 구현한 어플 Http 통신으로는 Dio 플러그인 사용
+
+# Servers
+
+로그인서버: Appwrite(Docker) - Flask로 옮길지 고민중
+
+검색서버: ElasticSearch(Docker)
+
+YOLOv4 object detecte server: Flask + Opencv 4.4.0(Cuda)로 구성한 서버
+
 # TODO-list
 1. 데이터 훈련 자동화
 현재 모여진 데이터로는 객체 인식이 되지만 아직 부족한 듯 하다 이것을 해결하기 위하여
