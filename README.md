@@ -1,6 +1,15 @@
 # RobotChef
 Recipe extractor using machine learning
 
+# train with darknet
+
+darknet.exe detector train data/obj.data cfg/yolov4-custom.cfg yolov4.conv.137 -clear -map
+
+1. obj.data : 학습할 데이터셋에 대한 세팅 파일
+2. yolov4-custom.cfg : yolov4 신경망 구성 세팅 파일
+3. yolov4.conv.137 : coco 데이터셋으로 pre-trained된 yolov4
+
+
 # Client
 1. Flutter로 구현한 어플 Http 통신으로는 Dio 플러그인 사용
 
@@ -10,7 +19,7 @@ Recipe extractor using machine learning
 
 검색서버: ElasticSearch(Docker)
 
-YOLOv4 object detecte server: Flask + Opencv 4.4.0(Cuda)로 구성한 서버
+YOLOv4 object detect server: Flask + Opencv 4.4.0(Cuda)로 구성한 서버
 
 # TODO-list
 1. 데이터 훈련 자동화
