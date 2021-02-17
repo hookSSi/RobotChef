@@ -2,6 +2,13 @@
 Recipe extractor using machine learning
 
 # train with darknet
+anchor 계산
+
+darknet.exe detector calc_anchors data/obj.data -num_of_clusters 9 -width 608 -height 608
+
+1. obj.data : 학습할 데이터셋에 대한 세팅 파일
+
+학습
 
 darknet.exe detector train data/obj.data cfg/yolov4-custom.cfg yolov4.conv.137 -clear -map
 
@@ -9,6 +16,13 @@ darknet.exe detector train data/obj.data cfg/yolov4-custom.cfg yolov4.conv.137 -
 2. yolov4-custom.cfg : yolov4 신경망 구성 세팅 파일
 3. yolov4.conv.137 : coco 데이터셋으로 pre-trained된 yolov4
 
+map 측정
+
+darknet.exe detector map data/obj.data cfg/yolov4-custom.cfg backup/yolov4-custom_best.weights
+
+1. obj.data : 학습할 데이터셋에 대한 세팅 파일
+2. yolov4-custom.cfg : yolov4 신경망 구성 세팅 파일
+3. yolov4-custom_best.weights : 학습된 결과 weight 파일
 
 # Client
 1. Flutter로 구현한 어플 Http 통신으로는 Dio 플러그인 사용
