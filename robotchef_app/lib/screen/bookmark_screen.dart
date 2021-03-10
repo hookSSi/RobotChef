@@ -110,7 +110,7 @@ class _BookmarkScreen extends State<BookmarkScreen> {
     return StreamBuilder<SearchResult>(
       stream: Stream.fromFuture(stream),
       builder: (context, snapshot) {
-        if (snapshot.hasError) return Icon(Icons.error);
+        if (snapshot.hasError) return Center(child: Icon(Icons.error),);
         if (!snapshot.hasData) return LinearProgressIndicator();
         return _buildList(context, snapshot.data.hits);
       },
@@ -162,23 +162,14 @@ class _BookmarkScreen extends State<BookmarkScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: '즐겨찾기',
-      theme: ThemeData(
-        brightness: Brightness.dark,
-        primaryColor: Colors.black,
-        accentColor: Colors.white,
-      ),
-      onGenerateRoute: AppRoutes.onGenerateRoute,
-      home: Scaffold(
-          appBar:
-              AppBar(title: Row(children: [Text('즐겨찾기  '), Icon(Icons.star)])),
-          body: Container(
-              child: Column(
-            children: <Widget>[
-              Expanded(child: _buildBody(context)),
-            ],
-          ))),
-    );
+    return Scaffold(
+        appBar:
+        AppBar(title: Row(children: [Text('즐겨찾기  '), Icon(Icons.star)])),
+        body: Container(
+            child: Column(
+              children: <Widget>[
+                Expanded(child: _buildBody(context)),
+              ],
+            )));
   }
 }

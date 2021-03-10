@@ -1,9 +1,13 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:flutter_app/class/recipe_serach.dart';
+import 'package:flutter_app/core/routes.dart';
 import 'dart:math' as math;
 
 import 'package:flutter_app/widget/camera.dart';
 import 'package:flutter_app/widget/bndbox.dart';
+import 'package:provider/provider.dart';
 
 class CameraScreen extends StatefulWidget {
   List<CameraDescription> cameras;
@@ -16,27 +20,73 @@ class CameraScreen extends StatefulWidget {
 
 class _CameraScreenState extends State<CameraScreen> {
   List<dynamic> _recognitions;
+  Set<String> _prevClasses;
+  int _duration;
+  int _lastTime;
   int _imageHeight = 0;
   int _imageWidth = 0;
 
-  setRecognitions(recognitions, imageHeight, imageWidth) {
+  _CameraScreenState() {
+    _duration = 3;
+    _prevClasses = Set<String>();
+  }
+
+  setRecognitions(recognitions, imageHeight, imageWidth, currentTime) {
     setState(() {
       _recognitions = recognitions;
       _imageHeight = imageHeight;
       _imageWidth = imageWidth;
     });
+
+    Set<String> currentClasses = new Set<String>();
+    _recognitions
+        .map((item) => item["detectedClass"])
+        .toList()
+        .forEach((element) {
+      currentClasses.add(element);
+    });
+    print(currentClasses);
+
+    if (currentClasses.isNotEmpty && _prevClasses.isEmpty) {
+      // 처음 객체를 감지한 경우
+      _prevClasses = Set<String>.from(currentClasses);
+      _lastTime = new DateTime.now().millisecondsSinceEpoch;
+    } else if (_prevClasses.isNotEmpty &&
+        !currentClasses.containsAll(_prevClasses)) {
+      // 이전의 감지한 객체가 있지만 달라진 경우
+      _prevClasses = Set<String>.from(currentClasses);
+      _lastTime = new DateTime.now().millisecondsSinceEpoch;
+    }
+
+    if (_prevClasses.isNotEmpty && currentClasses.containsAll(_prevClasses)) {
+      // 감지한 객체가 달라지지 않은 경우
+      var t = new DateTime.now().millisecondsSinceEpoch - _lastTime;
+      if (_duration < t / 1000) {
+        Navigator.pop(context);
+        // 감지한 객체 검색
+        RecipeSearcher searcher =
+            Provider.of<RecipeSearcher>(context, listen: false);
+        List<String> ingredients = currentClasses.toList();
+        searcher.AddIngredients(ingredients);
+        Navigator.pushNamed(context, AppRoutes.search);
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     Size screen = MediaQuery.of(context).size;
+    double devicePaddingTop = MediaQuery.of(context).padding.top;
+
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.black87,
           title: Text("촬영 모드"),
-          leading: IconButton(icon: Icon(Icons.arrow_back), onPressed: () {
-            Navigator.pop(context);
-          }),
+          leading: IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: () {
+                Navigator.pop(context);
+              }),
         ),
         backgroundColor: Colors.white,
         body: Stack(
@@ -47,13 +97,13 @@ class _CameraScreenState extends State<CameraScreen> {
             ),
             BndBox(
               _recognitions == null ? [] : _recognitions,
-              math.max(_imageHeight, _imageWidth),
-              math.min(_imageHeight, _imageWidth),
+              -devicePaddingTop,
+              _imageHeight,
+              _imageWidth,
               screen.height,
               screen.width,
             ),
           ],
-        )
-    );
+        ));
   }
 }

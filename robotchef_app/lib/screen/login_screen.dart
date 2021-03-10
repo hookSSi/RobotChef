@@ -13,6 +13,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final _email = TextEditingController();
   final _password = TextEditingController();
   final _storage = new FlutterSecureStorage();
@@ -28,6 +29,7 @@ class _LoginScreenState extends State<LoginScreen> {
     state.login(_email.text, _password.text);
 
     if(!state.isLoggedIn) {
+      print(state.error);
       showInSnackBar(state.error);
     }
   }
@@ -49,19 +51,17 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   showInSnackBar(content){
-    final scaffold = Scaffold.of(context);
-    scaffold.showSnackBar(
-      SnackBar(
-        content: Text(content),
-        action: SnackBarAction(
-            label: 'Ok', onPressed: scaffold.hideCurrentSnackBar),
-      ),
-    );
+    _scaffoldKey.currentState.showSnackBar(SnackBar(
+      content: Text(content),
+      action: SnackBarAction(
+          label: 'Ok', onPressed: _scaffoldKey.currentState.hideCurrentSnackBar),
+    ));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: Colors.black26,
       appBar: AppBar(
         title: Text("Login Page"),

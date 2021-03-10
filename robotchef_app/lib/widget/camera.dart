@@ -11,7 +11,7 @@ import 'dart:math' as math;
 
 import 'package:wakelock/wakelock.dart';
 
-typedef void Callback(List<dynamic> list, int h, int w);
+typedef void Callback(List<dynamic> list, int h, int w, int time);
 
 class Camera extends StatefulWidget {
   final List<CameraDescription> cameras;
@@ -88,7 +88,7 @@ class _CameraState extends State<Camera>
       await controller.startImageStream((image) => _processCameraImage(image));
     } on CameraException catch (e) {
       // 에러 표시
-      showInSnackBar('Error: ${e.code}\n${e.description}');
+      // showInSnackBar('Error: ${e.code}\n${e.description}');
     }
 
     if (mounted) {
@@ -96,16 +96,16 @@ class _CameraState extends State<Camera>
     }
   }
 
-  showInSnackBar(content){
-    final scaffold = Scaffold.of(context);
-    scaffold.showSnackBar(
-      SnackBar(
-        content: Text(content),
-        action: SnackBarAction(
-            label: 'Ok', onPressed: scaffold.hideCurrentSnackBar),
-      ),
-    );
-  }
+  // showInSnackBar(content){
+  //   final scaffold = Scaffold.of(context);
+  //   scaffold.showSnackBar(
+  //     SnackBar(
+  //       content: Text(content),
+  //       action: SnackBarAction(
+  //           label: 'Ok', onPressed: scaffold.hideCurrentSnackBar),
+  //     ),
+  //   );
+  // }
 
   void _objectDetectionProcess(Uint8List img) async {
     if (!_isDetecting) {
@@ -122,8 +122,9 @@ class _CameraState extends State<Camera>
 
         if(response.statusCode == 200){
               var result = response.data;
-              widget.setRecognitions(result['data'], result['height'], result['width']);
-              print("Job took ${(new DateTime.now().millisecondsSinceEpoch - startTime) / 1000} seconds");
+              var currentTime = new DateTime.now().millisecondsSinceEpoch;
+              widget.setRecognitions(result['data'], result['height'], result['width'], currentTime);
+              print("Job took ${(currentTime - startTime) / 1000} seconds");
         }
       }
       catch(error){

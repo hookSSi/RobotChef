@@ -7,7 +7,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 class AuthState extends ChangeNotifier{
   Client client = Client();
 
-  FlutterSecureStorage secureStorage = new FlutterSecureStorage();
+  FlutterSecureStorage secureStorage = FlutterSecureStorage();
   Account account;
   bool _isLoggedIn;
   User _user;

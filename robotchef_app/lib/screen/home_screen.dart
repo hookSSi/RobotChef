@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/screen/camera_screen.dart';
 import 'package:flutter_app/screen/detected_image_screen.dart';
+import 'package:flutter_exif_rotation/flutter_exif_rotation.dart';
 import 'package:image_picker/image_picker.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -16,11 +17,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future getImage(ImageSource imageSource) async {
     final picker = ImagePicker();
-    final pickedFile = await picker.getImage(source: imageSource);
+    final pickedFile =
+        await picker.getImage(source: imageSource, imageQuality: 50);
 
+    final rotatedFile = await FlutterExifRotation.rotateImage(path: pickedFile.path);
     setState(() {
       if (pickedFile != null) {
-        _image = File(pickedFile.path);
+        _image = rotatedFile;
       } else {
         print('No image selected');
       }
@@ -57,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
   takeImageFromCamera() async {
     await getImage(ImageSource.camera);
 
-    if(_image != null){
+    if (_image != null) {
       Navigator.of(context).push(MaterialPageRoute(
           fullscreenDialog: true,
           builder: (BuildContext context) {
@@ -99,6 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       padding: EdgeInsets.all(20.0),
                     ),
                     onTap: () {
+                      Navigator.of(context, rootNavigator: true).pop('dialog');
                       takeImageFromGallary();
                     },
                   ),
@@ -125,6 +129,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       padding: EdgeInsets.all(20.0),
                     ),
                     onTap: () {
+                      Navigator.of(context, rootNavigator: true).pop('dialog');
                       takeImageFromCamera();
                     },
                   ),
@@ -139,101 +144,93 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'MyApp',
-      theme: ThemeData(
-        brightness: Brightness.dark,
-        primaryColor: Colors.black,
-        accentColor: Colors.white,
-      ),
-      home: Scaffold(
-          appBar: AppBar(
-              title: Row(children: [Text('Robot Chef  '), Icon(Icons.tv)])),
-          body: Center(
-            child: Container(
-              child: Column(
-                children: <Widget>[
-                  Expanded(
-                    child: Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: Material(
-                            child: InkWell(
-                              child: Container(
-                                child: Row(
-                                  children: <Widget>[
-                                    Icon(
-                                      Icons.videocam,
-                                      color: Colors.black87,
-                                    ),
-                                    Text(
-                                      "실시간",
-                                      style: TextStyle(color: Colors.black87),
-                                    )
-                                  ],
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                ),
-                                decoration: BoxDecoration(
-                                    shape: BoxShape.rectangle,
-                                    color: Colors.transparent),
-                                padding: EdgeInsets.all(20.0),
-                                alignment: Alignment.center,
+    return Scaffold(
+        appBar: AppBar(
+            title: Row(children: [Text('Robot Chef  '), Icon(Icons.tv)])),
+        body: Center(
+          child: Container(
+            child: Column(
+              children: <Widget>[
+                Expanded(
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: Material(
+                          child: InkWell(
+                            child: Container(
+                              child: Row(
+                                children: <Widget>[
+                                  Icon(
+                                    Icons.videocam,
+                                    color: Colors.black87,
+                                  ),
+                                  Text(
+                                    "실시간",
+                                    style: TextStyle(color: Colors.black87),
+                                  )
+                                ],
+                                mainAxisAlignment: MainAxisAlignment.center,
                               ),
-                              onTap: () {
-                                realTimeObjectDetect();
-                                print("tab");
-                              },
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.rectangle,
+                                  color: Colors.transparent),
+                              padding: EdgeInsets.all(20.0),
+                              alignment: Alignment.center,
                             ),
-                            color: Colors.white60,
+                            onTap: () {
+                              realTimeObjectDetect();
+                              print("tab");
+                            },
                           ),
-                          flex: 10,
-                        )
-                      ],
-                    ),
-                    flex: 5,
+                          color: Colors.white60,
+                        ),
+                        flex: 10,
+                      )
+                    ],
                   ),
-                  Expanded(
-                    child: Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: Material(
-                            child: InkWell(
-                              child: Container(
-                                child: Row(
-                                  children: <Widget>[
-                                    Icon(
-                                      Icons.photo,
-                                      color: Colors.white60,
-                                    ),
-                                    Text(
-                                      "이미지 선택",
-                                      style: TextStyle(color: Colors.white60),
-                                    )
-                                  ],
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                ),
-                                decoration: BoxDecoration(
-                                    shape: BoxShape.rectangle,
-                                    color: Colors.transparent),
-                                padding: EdgeInsets.all(20.0),
-                                alignment: Alignment.center,
+                  flex: 5,
+                ),
+                Expanded(
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: Material(
+                          child: InkWell(
+                            child: Container(
+                              child: Row(
+                                children: <Widget>[
+                                  Icon(
+                                    Icons.photo,
+                                    color: Colors.white60,
+                                  ),
+                                  Text(
+                                    "이미지 선택",
+                                    style: TextStyle(color: Colors.white60),
+                                  )
+                                ],
+                                mainAxisAlignment: MainAxisAlignment.center,
                               ),
-                              onTap: () {
-                                createChooseDialogue(context);
-                              },
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.rectangle,
+                                  color: Colors.transparent),
+                              padding: EdgeInsets.all(20.0),
+                              alignment: Alignment.center,
                             ),
-                            color: Colors.black26,
+                            onTap: () {
+                              createChooseDialogue(context);
+                            },
                           ),
-                          flex: 10,
-                        )
-                      ],
-                    ),
-                    flex: 5,
+                          color: Colors.black26,
+                        ),
+                        flex: 10,
+                      )
+                    ],
                   ),
-                ],
-              ),
+                  flex: 5,
+                ),
+              ],
             ),
-          )),
-    );
+          ),
+        ));
   }
 }

@@ -23,6 +23,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  collection: any
   image_picker: ^0.6.7+17
   camera: ^0.7.0
   elastic_client: ^0.1.13
@@ -34,6 +35,7 @@ dependencies:
   permission_handler: ^5.0.0+hotfix.5
   rxdart: ^0.24.0
   wakelock: ^0.2.1+1
+  flutter_exif_rotation: ^0.3.2
 
 dev_dependencies:
   flutter_test:

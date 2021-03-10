@@ -9,6 +9,7 @@ class AppRoutes {
   static const String register = "register";
   static const String main = "main";
   static const String myApp = "myApp";
+  static const String search = "search";
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     print(settings.name);
@@ -18,9 +19,11 @@ class AppRoutes {
             case myApp:
               return MyApp();
             case main:
-              return MainScreen();
+              return MainScreen(0);
             case register:
               return RegisterScreen();
+            case search:
+              return MainScreen(1);
             case login:
             default:
               return LoginScreen();
