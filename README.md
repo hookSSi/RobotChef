@@ -1,6 +1,40 @@
 # RobotChef
 Recipe extractor using machine learning
 
+# train with darknet
+**anchor 계산**
+
+darknet.exe detector calc_anchors data/obj.data -num_of_clusters 9 -width 608 -height 608
+
+1. obj.data : 학습할 데이터셋에 대한 세팅 파일
+
+**학습**
+
+darknet.exe detector train data/obj.data cfg/yolov4-custom.cfg yolov4.conv.137 -clear -map
+
+1. obj.data : 학습할 데이터셋에 대한 세팅 파일
+2. yolov4-custom.cfg : yolov4 신경망 구성 세팅 파일
+3. yolov4.conv.137 : coco 데이터셋으로 pre-trained된 yolov4
+
+**map 측정**
+
+darknet.exe detector map data/obj.data cfg/yolov4-custom.cfg backup/yolov4-custom_best.weights
+
+1. obj.data : 학습할 데이터셋에 대한 세팅 파일
+2. yolov4-custom.cfg : yolov4 신경망 구성 세팅 파일
+3. yolov4-custom_best.weights : 학습된 결과 weight 파일
+
+# Client
+1. Flutter로 구현한 어플 Http 통신으로는 Dio 플러그인 사용
+
+# Servers
+
+로그인서버: Appwrite(Docker) - Flask로 옮길지 고민중
+
+검색서버: ElasticSearch(Docker)
+
+YOLOv4 object detect server: Flask + Opencv 4.4.0(Cuda)로 구성한 서버
+
 # TODO-list
 1. 데이터 훈련 자동화
 현재 모여진 데이터로는 객체 인식이 되지만 아직 부족한 듯 하다 이것을 해결하기 위하여
