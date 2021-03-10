@@ -2,6 +2,8 @@
 Recipe extractor using machine learning
 
 # train with darknet
+AlexeyAB의 darknet [프레임워크](https://github.com/AlexeyAB/darknet)를 사용
+
 **anchor 계산**
 
 darknet.exe detector calc_anchors data/obj.data -num_of_clusters 9 -width 608 -height 608
@@ -29,9 +31,9 @@ darknet.exe detector map data/obj.data cfg/yolov4-custom.cfg backup/yolov4-custo
 
 # Servers
 
-로그인서버: Appwrite(Docker)
+로그인서버: [Appwrite(Docker)](https://github.com/appwrite/appwrite)
 
-검색서버: ElasticSearch(Docker)
+검색서버: [ElasticSearch(Docker)](https://github.com/elastic/elasticsearch)
 
 YOLOv4 object detect server: Flask + Opencv 4.4.0(Cuda)로 구성한 서버
 
