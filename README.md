@@ -1,8 +1,15 @@
 # RobotChef
 Recipe extractor using machine learning
 
+#Why?
+바쁜 현대인은 가지고 있는 재료를 일일히 보면서 레시피를 찾기 힘듭니다.
+
+그래서 저희는 딥러닝을 이용해 재료를 파악하고 그것들과 연관된 레시피를 쉽게 추천해줍니다.
+
 # train with darknet
-AlexeyAB의 darknet [프레임워크](https://github.com/AlexeyAB/darknet)를 사용
+AlexeyAB의 darknet [프레임워크](https://github.com/AlexeyAB/darknet)를 사용하여 yolov4 모델로 학습하였습니다.
+
+과정을 간단히 정리하자면 다음과 같습니다.
 
 **anchor 계산**
 
