@@ -6,6 +6,13 @@ Recipe extractor using machine learning
 
 그래서 저희는 딥러닝을 이용해 재료를 파악하고 그것들과 연관된 레시피를 쉽게 추천해줍니다.
 
+# datasets
+
+1. youtube에서 클래스별로 검색해서 얻은 영상을 저장 - 영상제작자들의 자체 편집 및 다양한 구도의 이미지를 얻을 수 있어서 구글에서 이미지를 다운 받는 것 보다 훨씬 좋다고 생각됨(나중에 비교해보겠음)
+2. 프레임별로 분리해서 원하는 프레임에 라벨링
+3. 라벨링된 이미지를 해상도를 1:1로 만든다.
+4. 7:3 비율로 학습 데이터를 나누어서 학습시킨다.
+
 # train with darknet
 AlexeyAB의 darknet [프레임워크](https://github.com/AlexeyAB/darknet)를 사용하여 yolov4 모델로 학습하였습니다.
 
