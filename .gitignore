@@ -9,6 +9,7 @@
 *.json
 *.webp
 *.weights
+*.hwp
 
 # not yet
 ingredient_detector/
