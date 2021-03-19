@@ -12,7 +12,6 @@ RobotChef
     * [회원 관리](#회원-관리)
     * [레시피 검색](#레시피-검색)
     * [이미지 전송](#이미지-전송)
-5. [To-Do List](#To-Do-List)
 
 # Why?
 누구나 인터넷을 통해 검색을 할 수 있는 시대에서도 냉장고 안에 한정된 재료들로 요리할 수 있는 음식을 찾는 것은 쉬운 일이 아닙니다.
@@ -92,10 +91,3 @@ Docker에서 Open-Source 검색 엔진 중 하나인 [ElasticSearch](https://git
 앱에서 카메라의 이미지를 실시간으로 전송하려면 Yuv 포멧을 Jpeg로 변환하여 할 필요가 있습니다. 
 
 그래서 다음의 [오픈 소스 프로젝트](https://github.com/tomerblecher/YUV_2_RGB)에서 컨버터를 가져왔습니다.
-
-# TODO-list
-1. 데이터 훈련 자동화
-
-2. 어플 버그 및 UI 개선
-
-3. elasticsearch 동의어 사전 적용 ex) egg == 달걀, 계란
