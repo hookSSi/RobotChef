@@ -62,6 +62,8 @@ class _SearchScreenState extends State<SearchScreen> {
                   "match": {
                     "ingredients.name": {
                       "query": tagDict["ingredients"].join(','),
+                      "analyzer" : "korean_analyzer",
+                      "operator" : "and",
                       "fuzziness": "AUTO"
                     }
                   }
@@ -76,6 +78,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   "match": {
                     "title": {
                       "query": tagDict["title"].join(','),
+                      "analyzer" : "korean_analyzer",
                       "fuzziness": "AUTO"
                     }
                   }
@@ -177,6 +180,7 @@ class _SearchScreenState extends State<SearchScreen> {
     final recipe = Recipe.fromMap(data.doc);
     return InkWell(
       child: Container(
+        color: Colors.amberAccent,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -185,6 +189,7 @@ class _SearchScreenState extends State<SearchScreen> {
             Expanded(
                 child: Text(
               recipe.title,
+              style: TextStyle(color: Colors.black87),
               overflow: TextOverflow.ellipsis,
             )),
           ],
@@ -211,13 +216,14 @@ class _SearchScreenState extends State<SearchScreen> {
 
     return Scaffold(
       body: Container(
+        color: Colors.orangeAccent,
         child: Column(
           children: <Widget>[
             Padding(
-              padding: EdgeInsets.all(30),
+              padding: EdgeInsets.all(12),
             ),
             Container(
-              color: Colors.black,
+              color: Colors.lightGreen,
               padding: EdgeInsets.fromLTRB(5, 10, 5, 10),
               child: Row(
                 children: <Widget>[

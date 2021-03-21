@@ -12,6 +12,7 @@ class MoreScreen extends StatefulWidget {
 }
 
 class _MoreScreenState extends State<MoreScreen> {
+  // recip 정보 테스트 용
   Recipe recipe = Recipe.fromMap({
     'recipe_id': "44",
     'title': "Test 레시피",
@@ -40,8 +41,8 @@ class _MoreScreenState extends State<MoreScreen> {
     return MaterialApp(
         title: '더 보기',
         theme: ThemeData(
-          brightness: Brightness.dark,
-          primaryColor: Colors.black,
+          brightness: Brightness.light,
+          primaryColor: Colors.redAccent,
           accentColor: Colors.white,
         ),
         onGenerateRoute: AppRoutes.onGenerateRoute,

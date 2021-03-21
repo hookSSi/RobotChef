@@ -51,11 +51,13 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   showInSnackBar(content){
-    _scaffoldKey.currentState.showSnackBar(SnackBar(
-      content: Text(content),
-      action: SnackBarAction(
-          label: 'Ok', onPressed: _scaffoldKey.currentState.hideCurrentSnackBar),
-    ));
+    if(content != null){
+      _scaffoldKey.currentState.showSnackBar(SnackBar(
+        content: Text(content),
+        action: SnackBarAction(
+            label: 'Ok', onPressed: _scaffoldKey.currentState.hideCurrentSnackBar),
+      ));
+    }
   }
 
   @override

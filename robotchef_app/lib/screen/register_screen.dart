@@ -16,7 +16,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black26,
+      backgroundColor: Colors.lightGreenAccent,
       appBar: AppBar(
         title: Text("Register Page"),
       ),
@@ -76,9 +76,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     onPressed: () {
                       AuthState state =
                           Provider.of<AuthState>(context, listen: false);
-                      state.createAccount(
+                      final result = state.createAccount(
                           _username.text, _email.text, _password.text);
-                      Navigator.pop(context);
+                      result.then((msg){
+                        if(msg != null){
+                          Navigator.pop(context);
+                        }
+                      });
                     },
                     child: Text(
                       '회원가입',

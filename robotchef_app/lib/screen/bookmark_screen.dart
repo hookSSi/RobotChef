@@ -30,16 +30,16 @@ class _BookmarkScreen extends State<BookmarkScreen> {
     print(user_email);
 
     var recipe_id_list = [];
-    try{
+    try {
       var result = await state.database.listDocuments(
           collectionId: AppWriteConstants.bookmarkDocId,
           filters: ['email=$user_email'],
           limit: FETCH_ROW * (_lastRow + 1));
 
       var jsonObj = jsonDecode(result.toString());
-      recipe_id_list = List<String>.from(jsonObj['documents'].map((item) => item['recipe_id']));
-    }
-    catch(error) {
+      recipe_id_list = List<String>.from(
+          jsonObj['documents'].map((item) => item['recipe_id']));
+    } catch (error) {
       print(error);
     }
 
@@ -110,7 +110,10 @@ class _BookmarkScreen extends State<BookmarkScreen> {
     return StreamBuilder<SearchResult>(
       stream: Stream.fromFuture(stream),
       builder: (context, snapshot) {
-        if (snapshot.hasError) return Center(child: Icon(Icons.error),);
+        if (snapshot.hasError)
+          return Center(
+            child: Icon(Icons.error),
+          );
         if (!snapshot.hasData) return LinearProgressIndicator();
         return _buildList(context, snapshot.data.hits);
       },
@@ -145,6 +148,7 @@ class _BookmarkScreen extends State<BookmarkScreen> {
                 child: Text(
               recipe.title,
               overflow: TextOverflow.ellipsis,
+              style: TextStyle(color: Colors.black87),
             )),
           ],
         ),
@@ -164,12 +168,13 @@ class _BookmarkScreen extends State<BookmarkScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar:
-        AppBar(title: Row(children: [Text('즐겨찾기  '), Icon(Icons.star)])),
+            AppBar(title: Row(children: [Text('즐겨찾기  '), Icon(Icons.star)])),
+        backgroundColor: Colors.orange,
         body: Container(
             child: Column(
-              children: <Widget>[
-                Expanded(child: _buildBody(context)),
-              ],
-            )));
+          children: <Widget>[
+            Expanded(child: _buildBody(context)),
+          ],
+        )));
   }
 }

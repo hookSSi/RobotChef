@@ -20,7 +20,8 @@ class _HomeScreenState extends State<HomeScreen> {
     final pickedFile =
         await picker.getImage(source: imageSource, imageQuality: 50);
 
-    final rotatedFile = await FlutterExifRotation.rotateImage(path: pickedFile.path);
+    final rotatedFile =
+        await FlutterExifRotation.rotateImage(path: pickedFile.path);
     setState(() {
       if (pickedFile != null) {
         _image = rotatedFile;
@@ -146,7 +147,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-            title: Row(children: [Text('Robot Chef  '), Icon(Icons.tv)])),
+          title: Row(children: [Text('Robot Chef  '), Icon(Icons.tv)]),
+          backgroundColor: Colors.redAccent,
+        ),
         body: Center(
           child: Container(
             child: Column(
@@ -162,11 +165,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                 children: <Widget>[
                                   Icon(
                                     Icons.videocam,
-                                    color: Colors.black87,
+                                    color: Colors.white,
                                   ),
                                   Text(
                                     "실시간",
-                                    style: TextStyle(color: Colors.black87),
+                                    style: TextStyle(color: Colors.white),
                                   )
                                 ],
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -182,7 +185,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               print("tab");
                             },
                           ),
-                          color: Colors.white60,
+                          color: Colors.lightGreen,
                         ),
                         flex: 10,
                       )
@@ -201,11 +204,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                 children: <Widget>[
                                   Icon(
                                     Icons.photo,
-                                    color: Colors.white60,
+                                    color: Colors.white,
                                   ),
                                   Text(
                                     "이미지 선택",
-                                    style: TextStyle(color: Colors.white60),
+                                    style: TextStyle(color: Colors.white),
                                   )
                                 ],
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -220,7 +223,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               createChooseDialogue(context);
                             },
                           ),
-                          color: Colors.black26,
+                          color: Colors.orange,
                         ),
                         flex: 10,
                       )

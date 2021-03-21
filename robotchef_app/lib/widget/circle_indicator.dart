@@ -47,11 +47,11 @@ class _CircleIndicatorState extends State<CircleIndicator>
               children: <Widget>[
                 Text(
                   widget.nutrient.name,
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: Colors.black87),
                 ),
                 Text(
                   widget.nutrient.weight,
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: Colors.black87),
                 ),
               ],
             ),

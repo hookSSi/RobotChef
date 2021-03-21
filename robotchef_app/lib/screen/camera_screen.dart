@@ -80,7 +80,7 @@ class _CameraScreenState extends State<CameraScreen> {
 
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.black87,
+          backgroundColor: Colors.white,
           title: Text("촬영 모드"),
           leading: IconButton(
               icon: Icon(Icons.arrow_back),

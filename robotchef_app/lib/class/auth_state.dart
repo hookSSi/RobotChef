@@ -61,9 +61,11 @@ class AuthState extends ChangeNotifier{
     try{
       var result = await account.create(name: username, email: email, password: password);
       print(result);
+      return result;
     }
     catch(error){
       print(error.message);
+      return null;
     }
   }
 
@@ -98,8 +100,8 @@ class AuthState extends ChangeNotifier{
       if(result.statusCode == 201){
         _isLoggedIn = true;
         _user = await _getAccount();
-        notifyListeners();
       }
+      notifyListeners();
       print(result);
     }
     catch(error){

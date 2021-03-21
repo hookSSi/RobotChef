@@ -438,6 +438,14 @@ def verifyImage():
 
     return jsonify(result = "success")
 
+@app.route('/register', methods=['POST'])
+def register():
+    print("register")
+
+@app.route('/login', methods=['POST'])
+def login():
+    print("login")
+
 # setup flask app config
 if __name__ == "__main__":
     directory = "static/images/"

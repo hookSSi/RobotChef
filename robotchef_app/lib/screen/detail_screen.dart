@@ -137,6 +137,7 @@ class _DetailScreenState extends State<DetailScreen> {
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
             SliverAppBar(
+              backgroundColor: Colors.amber,
               expandedHeight: 200.0,
               floating: false,
               pinned: true,
@@ -154,11 +155,12 @@ class _DetailScreenState extends State<DetailScreen> {
           ];
         },
         body: Container(
-          color: Theme.of(context).scaffoldBackgroundColor,
+          color: Colors.amber,
           padding: EdgeInsets.only(top: 8.0),
           child: SingleChildScrollView(
             physics: BouncingScrollPhysics(),
             child: Material(
+              color: Colors.amber,
               child: Column(
                 children: <Widget>[
                   Row(
@@ -167,7 +169,7 @@ class _DetailScreenState extends State<DetailScreen> {
                       Text(
                         widget.recipe.title,
                         style: TextStyle(
-                            color: Colors.white,
+                            color: Colors.black87,
                             fontWeight: FontWeight.bold,
                             fontSize: 20),
                       ),
@@ -194,7 +196,7 @@ class _DetailScreenState extends State<DetailScreen> {
                   ),
                   Text('영양',
                       style: TextStyle(
-                          color: Colors.white,
+                          color: Colors.black87,
                           fontWeight: FontWeight.bold,
                           fontSize: 20)),
                   CalorieWidget(
@@ -202,7 +204,7 @@ class _DetailScreenState extends State<DetailScreen> {
                   ),
                   Text('필요한 재료들',
                       style: TextStyle(
-                          color: Colors.white,
+                          color: Colors.black87,
                           fontWeight: FontWeight.bold,
                           fontSize: 20)),
                   IngredientsWidget(
@@ -210,7 +212,7 @@ class _DetailScreenState extends State<DetailScreen> {
                   ),
                   Text('요리순서',
                       style: TextStyle(
-                          color: Colors.white,
+                          color: Colors.black87,
                           fontWeight: FontWeight.bold,
                           fontSize: 20)),
                   RecipeSteps(
