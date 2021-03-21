@@ -71,6 +71,7 @@ class _CircleIndicatorState extends State<CircleIndicator>
 
 class CirclePainter extends CustomPainter {
   Paint _paint;
+  Paint _backgroundPaint;
   double _fraction;
 
   CirclePainter(this._fraction) {
@@ -79,11 +80,17 @@ class CirclePainter extends CustomPainter {
       ..strokeWidth = 5.0
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke;
+    _backgroundPaint = Paint()
+      ..color = Colors.white
+      ..strokeWidth = 5.0
+      ..strokeCap = StrokeCap.round
+      ..style = PaintingStyle.stroke;
   }
 
   @override
   void paint(Canvas canvas, Size size) {
     var rect = Offset(0.0, 0.0) & size;
+    canvas.drawArc(rect, -pi / 2, pi * 2, false, _backgroundPaint);
     canvas.drawArc(rect, -pi / 2, pi * 2 * _fraction, false, _paint);
   }
 

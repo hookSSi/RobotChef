@@ -49,30 +49,30 @@ class _MoreScreenState extends State<MoreScreen> {
         home: Scaffold(
           appBar: AppBar(title: Row(children: [Text('더 보기  ')])),
           body: Consumer<AuthState>(builder: (context, state, child) {
-            if (!state.isLoggedIn) {
-              return Container();
-            }
+            // if (!state.isLoggedIn) {
+            //   return Container();
+            // }
             return ListView(
               padding: const EdgeInsets.all(16.0),
               children: <Widget>[
-                Center(
-                    child: Text(
-                      state.user.name ?? '',
-                      style: Theme
-                          .of(context)
-                          .textTheme
-                          .headline4,
-                    )),
-                Center(child: Text(state.user.email)),
-                Center(
-                  child: RaisedButton(
-                    onPressed: () async {
-                      await state.logout();
-                      runApp(MyApp());
-                    },
-                    child: Text("Log Out"),
-                  ),
-                ),
+                // Center(
+                //     child: Text(
+                //       state.user.name ?? '',
+                //       style: Theme
+                //           .of(context)
+                //           .textTheme
+                //           .headline4,
+                //     )),
+                // Center(child: Text(state.user.email)),
+                // Center(
+                //   child: RaisedButton(
+                //     onPressed: () async {
+                //       await state.logout();
+                //       runApp(MyApp());
+                //     },
+                //     child: Text("Log Out"),
+                //   ),
+                // ),
                 Center(
                     child: Container(
                       child: Hero(

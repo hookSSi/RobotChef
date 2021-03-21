@@ -199,6 +199,7 @@ class _DetailScreenState extends State<DetailScreen> {
                           color: Colors.black87,
                           fontWeight: FontWeight.bold,
                           fontSize: 20)),
+                  Divider(),
                   CalorieWidget(
                     calorie: widget.recipe.calorie,
                   ),
@@ -207,6 +208,7 @@ class _DetailScreenState extends State<DetailScreen> {
                           color: Colors.black87,
                           fontWeight: FontWeight.bold,
                           fontSize: 20)),
+                  Divider(),
                   IngredientsWidget(
                     ingredients: widget.recipe.ingredients,
                   ),
@@ -215,6 +217,7 @@ class _DetailScreenState extends State<DetailScreen> {
                           color: Colors.black87,
                           fontWeight: FontWeight.bold,
                           fontSize: 20)),
+                  Divider(),
                   RecipeSteps(
                     instructions: widget.recipe.instructions,
                   )
@@ -251,15 +254,24 @@ class RecipeSteps extends StatelessWidget {
                     style: TextStyle(
                         color: Colors.black, fontWeight: FontWeight.bold)),
               ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Text(instructions[index].desc,
+              Padding(
+                padding: EdgeInsets.fromLTRB(8, 0, 0, 0),
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  FadeInImage(
+                    placeholder: AssetImage('images/loading.gif'),
+                    image: NetworkImage(instructions[index].image),
+                    width: 200,
+                    height: 100,
+                  ),
+                  Text(instructions[index].desc,
                       style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
-                          fontSize: 16)),
-                ),
+                          fontSize: 16))
+                ],
               )
             ],
           ),
