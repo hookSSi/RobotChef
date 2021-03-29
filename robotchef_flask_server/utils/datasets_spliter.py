@@ -15,13 +15,23 @@ def check_verification(dirpath, name):
     else:
         return False
 
-# read files path list
-def load_dataset(dirpath):
+# load dataset
+def load_dataset_json(dirpath):
     dataset = list()
     for (dirpath, dirnames, filenames) in os.walk(dirpath):
         for filename in filenames:
             name, extension = os.path.splitext(filename)
             if 'jpg' in extension and check_verification(dirpath, name):
+                dataset.append(os.path.join(dirpath, filename))
+    return dataset
+
+def load_dataset_yolo(dirpath):
+    dataset = list()
+    for (dirpath, dirnames, filenames) in os.walk(dirpath):
+        for filename in filenames:
+            name, extension = os.path.splitext(filename)
+            txt_path = os.path.join(dirpath, name + '.txt')
+            if 'jpg' in extension and os.path.exists(txt_path):
                 dataset.append(os.path.join(dirpath, filename))
     return dataset
 

@@ -33,22 +33,6 @@ def create_dataset_txt(txt_file_path, src_folder_path):
     txt.close()
     return txt_file_path
 
-def split_dataset():
-
-
-def clean_dataset():
-    try:
-        shutil.rmtree(TRAIN_DATASET_FOLDER_PATH)
-    except:
-        print
-    
-    shutil.rmtree(VALID_DATASET_FOLDER_PATH)
-
-
-def load_dataset(folder_path):
-
-
-
 # create dataset setting files for yolo
 def create_yolo_data():
     print('obj.data 파일 생성 시작')
@@ -83,6 +67,10 @@ def cal_anchor(width, height):
     proc = subprocess.Popen('calc_anchors.cmd', shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
     out, err = proc.communicate()
 
+    with open(ANCHOR_FILE_PATH, 'r') as f:
+        print("\nanchor : " + f.read())
+
+
 def create_partial():
     if os.path.isfile(WEIGHT_FILE_PATH):
         print("pre-trained 모델 생성")
@@ -102,7 +90,6 @@ def configure_cfg(width, height, learning_rate):
 
     classes_num = len(class_name_list)
     max_batches = classes_num * 2000
-    max_batches = 10
     steps_min, steps_max = int(max_batches * 0.8), int(max_batches * 0.9)
 
     yolo_cfg = read_cfg(PREV_CFG_FILE_PATH)
@@ -112,6 +99,9 @@ def configure_cfg(width, height, learning_rate):
     yolo_cfg[0]['[net]'] = apply_configure('learning_rate', learning_rate, yolo_cfg[0]['[net]'])
     yolo_cfg[0]['[net]'] = apply_configure('max_batches', max_batches, yolo_cfg[0]['[net]'])
     yolo_cfg[0]['[net]'] = apply_configure('steps', '%s, %s' % (steps_min, steps_max), yolo_cfg[0]['[net]'])
+
+    print("\n==cfg 설정 결과==")
+    print(yolo_cfg[0]['[net]'])
 
     # read anchors
     f = open(ANCHOR_FILE_PATH, 'r')
@@ -124,6 +114,8 @@ def configure_cfg(width, height, learning_rate):
             yolo_cfg[i]['[yolo]'] = apply_configure('anchors', anchors, yolo_cfg[i]['[yolo]'])
             yolo_cfg[i]['[yolo]'] = apply_configure('classes', classes_num, yolo_cfg[i]['[yolo]'])
             yolo_cfg[i-1]['[convolutional]'] = apply_configure('filters', filters, yolo_cfg[i-1]['[convolutional]'])
+            print("[convolutional]\n" + yolo_cfg[i-1]['[convolutional]'])
+            print("[yolo]\n" + yolo_cfg[i]['[yolo]'])
     
     save_cfg(CFG_FILE_PATH, yolo_cfg)
     # 훈련이 완료되면 
@@ -159,7 +151,7 @@ def read_cfg(path):
     return yolo_cfg
 
 # setting before to start training
-def setting(width = 416, height = 416, learning_rate = 0.001, create_pretrained = False):
+def setting(width = 608, height = 608, learning_rate = 0.001, create_pretrained = False):
     create_yolo_data()
     cal_anchor(width, height)
     
@@ -209,4 +201,11 @@ if __name__ == '__main__':
     except:
         print("darknet 폴더가 존재하지 않습니다.")
 
-    calc_map()
+    setting()
+    confirm = input("훈련을 실행 할까요?")
+
+    if confirm == 'y':
+        print("훈련 시작")
+        #train_start()
+    else:
+        print("종료")
