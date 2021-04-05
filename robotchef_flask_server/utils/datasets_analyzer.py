@@ -32,7 +32,7 @@ def print_result(dic):
     for key in dic.keys():
         print(key + " : " + str(dic[key]))
 
-dir_path = "C:/Users/HookSSi/Desktop/DarkLabel2.3"
+dir_path = "C:/Users/HookSSi/Desktop/grad portfolio/dataset/직접모은것"
 datasets = load_dataset(dir_path)
 result = counting_classes(datasets)
 print_result(result)

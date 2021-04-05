@@ -95,18 +95,21 @@ class AuthState extends ChangeNotifier{
   }
 
   login(String email, String password) async {
-    try{
-      var result = await account.createSession(email: email, password: password);
-      if(result.statusCode == 201){
-        _isLoggedIn = true;
-        _user = await _getAccount();
-      }
-      notifyListeners();
-      print(result);
-    }
-    catch(error){
-      _error = error.message;
-      print(error.message);
-    }
+    // 테스트를 위해 로그인 처리 주석
+    // try{
+    //   var result = await account.createSession(email: email, password: password);
+    //   if(result.statusCode == 201){
+    //     _isLoggedIn = true;
+    //     _user = await _getAccount();
+    //   }
+    //   notifyListeners();
+    //   print(result);
+    // }
+    // catch(error){
+    //   _error = error.message;
+    //   print(error.message);
+    // }
+    _isLoggedIn = true;
+    notifyListeners();
   }
 }

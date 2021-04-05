@@ -1,4 +1,5 @@
 import os
+import re
 
 def get_labels(labels_path):
     # class labels 로드
@@ -18,6 +19,27 @@ def import_label(json_data, labels):
 
     if result == "":
         print("json 결과가 없음")
+        return None
+
+    return result
+
+def import_label_yolo(yolo_data, labels):
+    result = ""
+    for line in yolo_data:
+        vals = re.split('\s+', line.rstrip())
+        vals_len = len(vals)
+        class_name = " ".join(vals[:vals_len-4])
+        result += "%d %f %f %f %f \n" % (
+            labels.index(class_name),
+            float(vals[vals_len-4]),
+            float(vals[vals_len-3]),
+            float(vals[vals_len-2]),
+            float(vals[vals_len-1])
+        )
+    result = result.rstrip()
+
+    if result == "":
+        print("yolo 결과가 없음")
         return None
 
     return result
