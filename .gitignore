@@ -19,3 +19,4 @@ yolo_makr/
 
 # 데이터 json 파일만 포함
 !/recipe_db_generator/dataset/*.json
+!캡스톤디자인2 보고서.hwp
