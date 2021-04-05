@@ -1,25 +1,49 @@
-import sys
-import os
-import imghdr
-import csv
-import argparse
+def check_valid(src, dst):
+    delta_x = src[0] - dst[0]
+    delta_y = src[1] - dst[1]
+    distance = delta_x * delta_x + delta_y * delta_y
 
-from flask import Flask, redirect, url_for, request
-from flask import render_template
-from flask import send_file
+    return distance <= 1
 
-# Initialize the Flask application
-app = Flask(__name__)
+def get_valid_batchu_set(pos, pos_set_list):
+    valid_set_list = list()
+    not_valid_set_list = list()
+    for batchu_set in pos_set_list:
+        valid = False
+        for batchu_pos in batchu_set:
+            if check_valid(pos, batchu_pos):
+                valid = True
+                break
+        if valid:
+            valid_set_list.append(batchu_set)
+        else:
+            not_valid_set_list.append(batchu_set)
+        
+    return valid_set_list, not_valid_set_list
+        
+def merge_batchu_set(pos, set_list):
+    valid_batchu_set_list, not_valid_set_list = get_valid_batchu_set(pos, set_list)
 
-if __name__ == "__main__":
-    directory = "static/images/"
-    app.config["IMAGES"] = directory
-    app.config["LABELS"] = []
-    files = list()
-    for (dirpath, dirnames, filenames) in os.walk(app.config["IMAGES"]):
-        for filename in filenames:
-            name, extension = os.path.splitext(filename)
-            if 'jpg' in extension:
-                txt_path = os.path.join(dirpath, name + '.txt')
-                if os.path.exists(txt_path):
-                    files.append(os.path.join(dirpath, filename))
+    merged_set = list()
+    merged_set.append(pos)
+    for batchu_set in valid_batchu_set_list:
+        merged_set = merged_set + batchu_set
+
+    not_valid_set_list.append(merged_set)
+    return not_valid_set_list
+
+N = int(input())
+result_list = list()
+
+for i in range(0, N):
+    pos_set_list = list()
+    width, height, num_batchu = map(int, input().split(' '))
+    
+    for j in range(0, num_batchu):
+        x, y = map(int, input().split(' '))
+        pos = [x, y]
+        pos_set_list = merge_batchu_set(pos, pos_set_list)
+    result_list.append(len(pos_set_list))
+
+for result in result_list:
+    print(result)

@@ -4,7 +4,7 @@ import numpy as np
 import cv2
 import sys, os, re
 from import_labeling import *
-from dataset_split import *
+from datasets_spliter import *
 
 path = "C:\\Users\\HookSSi\\Desktop\\grad portfolio\\dataset\\downloads\\train\\"
 dst = "C:\\Users\\HookSSi\\Desktop\\grad portfolio\\ingredient_detector\\darknet\\data\\train\\"
@@ -303,7 +303,7 @@ if __name__ == '__main__':
     clear_dataset(train_dir_path, test_dir_path)
 
     # split dataset
-    dataset = load_dataset("C:/Users/HookSSi/Desktop/grad portfolio/robotchef_flask_server/static/images")
+    dataset = load_dataset_json("C:/Users/HookSSi/Desktop/grad portfolio/robotchef_flask_server/static/images")
     trains, tests = split_set(dataset, 0.3)
 
     # augmentation
