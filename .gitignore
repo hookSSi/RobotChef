@@ -3,9 +3,9 @@
 *.pdf
 *.mdj
 *.docx
-*.png
-*.jpg
-*.jpeg
+/*.png
+/*.jpg
+/*.jpeg
 *.json
 *.webp
 *.weights

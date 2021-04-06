@@ -47,7 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    autoLogin();
+    // autoLogin();
   }
 
   showInSnackBar(content){
@@ -110,7 +110,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   decoration: BoxDecoration(
                       color: Colors.white60,
                       borderRadius: BorderRadius.circular(10)),
-                  child: FlatButton(
+                  child: TextButton(
                     onPressed: () {
                       login();
                     },
