@@ -40,8 +40,7 @@ class MyApp extends StatelessWidget {
         onGenerateRoute: AppRoutes.onGenerateRoute,
         home: Consumer<AuthState>(
           builder: (context, state, child) {
-            return MainScreen(0);
-            // return state.isLoggedIn ? MainScreen(0) : LoginScreen();
+            return state.isLoggedIn ? MainScreen(0) : LoginScreen();
           },
         ),
       ),
