@@ -20,7 +20,7 @@ class _MoreScreenState extends State<MoreScreen> {
     'image':
     "https://cloudfront.haemukja.com/vh.php?url=https://d1hk7gw6lgygff.cloudfront.net/uploads/direction/image_file/3401/org_resized_0.png&convert=jpgmin&rt=600",
     'cooking_time': "60분",
-    'calorie': "461.3 kcal",
+    'calorie': "461.3kcal",
     'ingredients': [
       {"name": "홍합", "amount": "1 kg"},
       {"name": "청주", "amount": "1.5스푼"}
@@ -38,16 +38,14 @@ class _MoreScreenState extends State<MoreScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        title: '더 보기',
-        theme: ThemeData(
-          brightness: Brightness.light,
-          primaryColor: Colors.redAccent,
-          accentColor: Colors.white,
-        ),
-        onGenerateRoute: AppRoutes.onGenerateRoute,
-        home: Scaffold(
-          appBar: AppBar(title: Row(children: [Text('더 보기  ')])),
+    return Scaffold(
+          appBar: AppBar(title: Text('더 보기  ', style: TextStyle(color: Colors.white)),
+            leading: IconButton(
+                icon: Icon(Icons.arrow_back),
+                onPressed: () {
+                  Navigator.pop(context);
+                }),
+            iconTheme: IconThemeData(color: Colors.white)),
           body: Consumer<AuthState>(builder: (context, state, child) {
             // if (!state.isLoggedIn) {
             //   return Container();
@@ -94,6 +92,6 @@ class _MoreScreenState extends State<MoreScreen> {
               ],
             );
           }),
-        ));
+        );
   }
 }

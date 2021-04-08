@@ -47,11 +47,11 @@ class _CircleIndicatorState extends State<CircleIndicator>
               children: <Widget>[
                 Text(
                   widget.nutrient.name,
-                  style: TextStyle(color: Colors.black87),
+                  style: TextStyle(color: Colors.black),
                 ),
                 Text(
                   widget.nutrient.weight,
-                  style: TextStyle(color: Colors.black87),
+                  style: TextStyle(color: Colors.black),
                 ),
               ],
             ),
@@ -76,7 +76,7 @@ class CirclePainter extends CustomPainter {
 
   CirclePainter(this._fraction) {
     _paint = Paint()
-      ..color = Color(0xff8DB646)
+      ..color = Color(0xffbf6b11)
       ..strokeWidth = 5.0
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke;

@@ -137,7 +137,7 @@ class _DetailScreenState extends State<DetailScreen> {
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
             SliverAppBar(
-              backgroundColor: Colors.amber,
+              backgroundColor: Colors.white,
               expandedHeight: 200.0,
               floating: false,
               pinned: true,
@@ -155,12 +155,12 @@ class _DetailScreenState extends State<DetailScreen> {
           ];
         },
         body: Container(
-          color: Colors.amber,
+          color: Color(0xFFFFFFFF),
           padding: EdgeInsets.only(top: 8.0),
           child: SingleChildScrollView(
             physics: BouncingScrollPhysics(),
             child: Material(
-              color: Colors.amber,
+              color: Color(0xFFABBB64),
               child: Column(
                 children: <Widget>[
                   Row(
@@ -169,13 +169,14 @@ class _DetailScreenState extends State<DetailScreen> {
                       Text(
                         widget.recipe.title,
                         style: TextStyle(
-                            color: Colors.black87,
+                            color: Colors.white,
                             fontWeight: FontWeight.bold,
-                            fontSize: 20),
+                            fontSize: 30),
+                        textAlign: TextAlign.center,
                       ),
                       like
                           ? IconButton(
-                              color: Colors.yellowAccent,
+                              color: Color(0xFFFFFFFF),
                               icon: Icon(Icons.star),
                               onPressed: () {
                                 Future<bool> isEnd = removeBookmark();
@@ -184,7 +185,7 @@ class _DetailScreenState extends State<DetailScreen> {
                                     }));
                               })
                           : IconButton(
-                              color: Colors.yellowAccent,
+                              color: Color(0xFFFFFFFF),
                               icon: Icon(Icons.star_border),
                               onPressed: () {
                                 Future<bool> isEnd = addBookmark();
@@ -194,30 +195,30 @@ class _DetailScreenState extends State<DetailScreen> {
                               })
                     ],
                   ),
+                  Divider(),
                   Text('영양',
                       style: TextStyle(
-                          color: Colors.black87,
+                          color: Colors.white,
                           fontWeight: FontWeight.bold,
                           fontSize: 20)),
-                  Divider(),
                   CalorieWidget(
                     calorie: widget.recipe.calorie,
                   ),
+                  Divider(),
                   Text('필요한 재료들',
                       style: TextStyle(
-                          color: Colors.black87,
+                          color: Colors.white,
                           fontWeight: FontWeight.bold,
                           fontSize: 20)),
-                  Divider(),
                   IngredientsWidget(
                     ingredients: widget.recipe.ingredients,
                   ),
+                  Divider(),
                   Text('요리순서',
                       style: TextStyle(
-                          color: Colors.black87,
+                          color: Colors.white,
                           fontWeight: FontWeight.bold,
                           fontSize: 20)),
-                  Divider(),
                   RecipeSteps(
                     instructions: widget.recipe.instructions,
                   )
