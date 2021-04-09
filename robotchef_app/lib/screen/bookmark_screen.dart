@@ -168,8 +168,13 @@ class _BookmarkScreen extends State<BookmarkScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar:
-            AppBar(title: Row(children: [Text('즐겨찾기  '), Icon(Icons.star)])),
-        backgroundColor: Colors.orange,
+            AppBar(title: Text('즐겨찾기  ', style: TextStyle(color: Colors.white)),
+              leading: IconButton(
+                  icon: Icon(Icons.arrow_back),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  }),
+              iconTheme: IconThemeData(color: Colors.white)),
         body: Container(
             child: Column(
           children: <Widget>[

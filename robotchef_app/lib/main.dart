@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/class/providers.dart';
-import 'package:flutter_app/screen/login_screen.dart';
 import 'package:flutter_app/screen/main_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_app/core/routes.dart';
@@ -33,14 +32,14 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
-          brightness: Brightness.dark,
-          primaryColor: Colors.black,
-          accentColor: Colors.white,
+          brightness: Brightness.light,
+          primaryColor: Color(0xFFABBB64),
+          accentColor: Color(0xFFFFFFFF),
         ),
         onGenerateRoute: AppRoutes.onGenerateRoute,
         home: Consumer<AuthState>(
           builder: (context, state, child) {
-            return state.isLoggedIn ? MainScreen(0) : LoginScreen();
+            return MainScreen(0);
           },
         ),
       ),

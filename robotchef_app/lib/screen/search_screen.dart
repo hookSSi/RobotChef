@@ -6,6 +6,7 @@ import 'package:flutter_app/model/model_recipe.dart';
 import 'package:elastic_client/console_http_transport.dart';
 import 'package:elastic_client/elastic_client.dart' as elastic;
 import 'package:flutter_app/screen/detail_screen.dart';
+import 'package:flutter_app/screen/home_screen.dart';
 import 'package:provider/provider.dart';
 
 // title:된장찌개,불고기 ingredient:오이,마늘
@@ -154,7 +155,15 @@ class _SearchScreenState extends State<SearchScreen> {
     return StreamBuilder<SearchResult>(
       stream: Stream.fromFuture(stream),
       builder: (context, snapshot) {
-        if (snapshot.hasError) return Icon(Icons.error);
+        if (snapshot.hasError)
+          return Container(
+            child:Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Icon(Icons.error),
+              ],
+            ));
         if (!snapshot.hasData) return LinearProgressIndicator();
         return _buildList(context, snapshot.data.hits);
       },
@@ -189,7 +198,7 @@ class _SearchScreenState extends State<SearchScreen> {
             Expanded(
                 child: Text(
               recipe.title,
-              style: TextStyle(color: Colors.black87),
+              style: TextStyle(color: Colors.white),
               overflow: TextOverflow.ellipsis,
             )),
           ],
@@ -215,65 +224,71 @@ class _SearchScreenState extends State<SearchScreen> {
     }
 
     return Scaffold(
+      appBar: AppBar(title: Container(
+        color: Color(0xFFABBB64),
+        padding: EdgeInsets.fromLTRB(2, 2, 2, 2),
+        child: Row(
+          children: <Widget>[
+            Expanded(
+              child: TextField(
+                focusNode: focusNode,
+                style: TextStyle(
+                  fontSize: 20,
+                ),
+                autofocus: true,
+                controller: _filter,
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Colors.white12,
+                  prefixIcon: Icon(
+                    Icons.search,
+                    color: Colors.white,
+                    size: 20,
+                  ),
+                  suffixIcon: focusNode.hasFocus
+                      ? IconButton(
+                    icon: Icon(Icons.cancel),
+                    color: Colors.white,
+                    onPressed: () {
+                      setState(() {
+                        _filter.clear();
+                        focusNode.unfocus();
+                      });
+                    },
+                  )
+                      : Container(),
+                  hintText: '검색',
+                  labelStyle: TextStyle(color: Colors.black),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.transparent),
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.transparent),
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                  ),
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.transparent),
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          }),
+        iconTheme: IconThemeData(color: Colors.white)),
       body: Container(
-        color: Colors.orangeAccent,
+        color: Colors.white,
         child: Column(
           children: <Widget>[
             Padding(
               padding: EdgeInsets.all(12),
-            ),
-            Container(
-              color: Colors.lightGreen,
-              padding: EdgeInsets.fromLTRB(5, 10, 5, 10),
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    flex: 6,
-                    child: TextField(
-                      focusNode: focusNode,
-                      style: TextStyle(
-                        fontSize: 15,
-                      ),
-                      autofocus: true,
-                      controller: _filter,
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Colors.white12,
-                        prefixIcon: Icon(
-                          Icons.search,
-                          color: Colors.white60,
-                          size: 20,
-                        ),
-                        suffixIcon: focusNode.hasFocus
-                            ? IconButton(
-                                icon: Icon(Icons.cancel),
-                                onPressed: () {
-                                  setState(() {
-                                    _filter.clear();
-                                    focusNode.unfocus();
-                                  });
-                                },
-                              )
-                            : Container(),
-                        hintText: '검색',
-                        labelStyle: TextStyle(color: Colors.white),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.transparent),
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.transparent),
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                        ),
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.transparent),
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
             ),
             Expanded(child: _buildBody(context)),
           ],

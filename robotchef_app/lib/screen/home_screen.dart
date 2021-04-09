@@ -2,8 +2,12 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
+import 'package:flutter_app/screen/bookmark_screen.dart';
 import 'package:flutter_app/screen/camera_screen.dart';
 import 'package:flutter_app/screen/detected_image_screen.dart';
+import 'package:flutter_app/screen/more_screen.dart';
+import 'package:flutter_app/screen/search_screen.dart';
 import 'package:flutter_exif_rotation/flutter_exif_rotation.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -76,92 +80,18 @@ class _HomeScreenState extends State<HomeScreen> {
         builder: (context) {
           return AlertDialog(
             title: Text(
-              "선택",
-              style: TextStyle(color: Colors.blue),
+              "이미지 선택",
+              style: TextStyle(color: Colors.black),
             ),
             content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Material(
-                  child: InkWell(
-                    child: Container(
-                      child: Row(
-                        children: <Widget>[
-                          Icon(
-                            Icons.photo,
-                            color: Colors.blue,
-                          ),
-                          Text(
-                            "갤러리",
-                            style: TextStyle(color: Colors.blue),
-                          )
-                        ],
-                        mainAxisAlignment: MainAxisAlignment.center,
-                      ),
-                      decoration: BoxDecoration(
-                          shape: BoxShape.rectangle, color: Colors.transparent),
-                      padding: EdgeInsets.all(20.0),
-                    ),
-                    onTap: () {
-                      Navigator.of(context, rootNavigator: true).pop('dialog');
-                      takeImageFromGallary();
-                    },
-                  ),
-                  color: Colors.white,
-                ),
-                Material(
-                  child: InkWell(
-                    child: Container(
-                      child: Row(
-                        children: <Widget>[
-                          Icon(
-                            Icons.camera_alt_outlined,
-                            color: Colors.blue,
-                          ),
-                          Text(
-                            "사진 촬영",
-                            style: TextStyle(color: Colors.blue),
-                          )
-                        ],
-                        mainAxisAlignment: MainAxisAlignment.center,
-                      ),
-                      decoration: BoxDecoration(
-                          shape: BoxShape.rectangle, color: Colors.transparent),
-                      padding: EdgeInsets.all(20.0),
-                    ),
-                    onTap: () {
-                      Navigator.of(context, rootNavigator: true).pop('dialog');
-                      takeImageFromCamera();
-                    },
-                  ),
-                  color: Colors.white,
-                )
-              ],
-            ),
-            backgroundColor: Colors.white,
-          );
-        });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: Row(children: [Text('Robot Chef  '), Icon(Icons.tv)]),
-          backgroundColor: Colors.redAccent,
-        ),
-        body: Center(
-          child: Container(
-            child: Column(
-              children: <Widget>[
-                Expanded(
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: Material(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                  Material(
                           child: InkWell(
                             child: Container(
-                              child: Row(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
                                   Icon(
                                     Icons.videocam,
@@ -170,70 +100,293 @@ class _HomeScreenState extends State<HomeScreen> {
                                   Text(
                                     "실시간",
                                     style: TextStyle(color: Colors.white),
-                                  )
+                                  ),
                                 ],
-                                mainAxisAlignment: MainAxisAlignment.center,
                               ),
+                              width: 125,
                               decoration: BoxDecoration(
-                                  shape: BoxShape.rectangle,
-                                  color: Colors.transparent),
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(color : Colors.white, width: 5.0),
+                                  color: Color(0xFFABBB64)),
                               padding: EdgeInsets.all(20.0),
-                              alignment: Alignment.center,
                             ),
                             onTap: () {
+                              Navigator.of(context, rootNavigator: true).pop('dialog');
                               realTimeObjectDetect();
-                              print("tab");
                             },
                           ),
-                          color: Colors.lightGreen,
                         ),
-                        flex: 10,
-                      )
-                    ],
-                  ),
-                  flex: 5,
-                ),
-                Expanded(
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: Material(
+                  Material(
                           child: InkWell(
                             child: Container(
-                              child: Row(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
                                   Icon(
                                     Icons.photo,
                                     color: Colors.white,
                                   ),
                                   Text(
-                                    "이미지 선택",
+                                    "갤러리",
                                     style: TextStyle(color: Colors.white),
                                   )
                                 ],
-                                mainAxisAlignment: MainAxisAlignment.center,
                               ),
+                              width: 125,
                               decoration: BoxDecoration(
-                                  shape: BoxShape.rectangle,
-                                  color: Colors.transparent),
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(color : Colors.white, width: 5.0),
+                                  color: Color(0xFFABBB64)),
                               padding: EdgeInsets.all(20.0),
-                              alignment: Alignment.center,
                             ),
                             onTap: () {
-                              createChooseDialogue(context);
+                              Navigator.of(context, rootNavigator: true).pop('dialog');
+                              takeImageFromGallary();
                             },
                           ),
-                          color: Colors.orange,
                         ),
-                        flex: 10,
+                  Material(
+                          child: InkWell(
+                            child: Container(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Icon(
+                                    Icons.camera_alt_outlined,
+                                    color: Colors.white,
+                                  ),
+                                  Text(
+                                    "사진 촬영",
+                                    style: TextStyle(color: Colors.white),
+                                  )
+                                ],
+                              ),
+                              width: 125,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(color : Colors.white, width: 5.0),
+                                  color: Color(0xFFABBB64)),
+                              padding: EdgeInsets.all(20.0),
+                            ),
+                            onTap: () {
+                              Navigator.of(context, rootNavigator: true).pop('dialog');
+                              takeImageFromCamera();
+                            },
+                          ),
+                        ),
+                ],
+              ),
+            backgroundColor: Colors.white,
+          );
+        });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        body:Container(
+            child: Column(
+              children: <Widget>[
+                Container(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        child: Material(
+                          child: InkWell(
+                            child: Container(
+                              child: Column(
+                                children: <Widget>[
+                                  Image.asset('images/robothead2.png'),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
                       )
                     ],
                   ),
-                  flex: 5,
+                  margin: EdgeInsets.only(top:30.0, bottom: 10.0, left: 10.0, right: 10.0),
                 ),
-              ],
+                Expanded(
+                    child: Row(
+                        children: <Widget>[
+                          Expanded(
+                              child: Column(
+                                  children: <Widget>[
+                                    Expanded(
+                                      child: Row(
+                                        children: <Widget>[
+                                          Expanded(
+                                            child: Material(
+                                              child: InkWell(
+                                                child: Container(
+                                                  child: Column(
+                                                    children: <Widget>[
+                                                      Icon(
+                                                        Icons.photo,
+                                                        color: Colors.white,
+                                                      ),
+                                                      Text(
+                                                        "이미지 선택",
+                                                        style: TextStyle(color: Colors.white),
+                                                      )
+                                                    ],
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                  ),
+                                                  decoration: BoxDecoration(
+                                                      borderRadius: BorderRadius.circular(20),
+                                                      border: Border.all(color : Colors.white, width: 5.0),
+                                                      color: Color(0xFFABBB64)),
+                                                  padding: EdgeInsets.all(20.0),
+                                                  alignment: Alignment.center,
+                                                ),
+                                                onTap: () {
+                                                  createChooseDialogue(context);
+                                                },
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Row(
+                                        children: <Widget>[
+                                          Expanded(
+                                            child: Material(
+                                              child: InkWell(
+                                                child: Container(
+                                                  child: Column(
+                                                    children: <Widget>[
+                                                      Icon(
+                                                        Icons.star,
+                                                        color: Colors.white,
+                                                      ),
+                                                      Text(
+                                                        "즐겨찾기",
+                                                        style: TextStyle(color: Colors.white),
+                                                      )
+                                                    ],
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                  ),
+                                                  decoration: BoxDecoration(
+                                                      borderRadius: BorderRadius.circular(20),
+                                                      border: Border.all(color : Colors.white, width: 5.0),
+                                                      color: Color(0xFFABBB64)),
+                                                  padding: EdgeInsets.all(20.0),
+                                                  alignment: Alignment.center,
+                                                ),
+                                                onTap: () {
+                                                  Navigator.of(context).push(MaterialPageRoute(
+                                                      fullscreenDialog: true,
+                                                      builder: (BuildContext context) {
+                                                        return BookmarkScreen();
+                                                      }));
+                                                },
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ]
+                              )
+                          ),
+                          Expanded(
+                              child: Column(
+                                  children: <Widget>[
+                                    Expanded(
+                                      child: Row(
+                                        children: <Widget>[
+                                          Expanded(
+                                            child: Material(
+                                              child: InkWell(
+                                                child: Container(
+                                                  child: Column(
+                                                    children: <Widget>[
+                                                      Icon(
+                                                        Icons.search,
+                                                        color: Colors.white,
+                                                      ),
+                                                      Text(
+                                                        "검색",
+                                                        style: TextStyle(color: Colors.white),
+                                                      )
+                                                    ],
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                  ),
+                                                  decoration: BoxDecoration(
+                                                      borderRadius: BorderRadius.circular(20),
+                                                      border: Border.all(color : Colors.white, width: 5.0),
+                                                      color: Color(0xFFABBB64)),
+                                                  padding: EdgeInsets.all(20.0),
+                                                  alignment: Alignment.center,
+                                                ),
+                                                onTap: () {
+                                                  Navigator.of(context).push(MaterialPageRoute(
+                                                      fullscreenDialog: true,
+                                                      builder: (BuildContext context) {
+                                                        return SearchScreen();
+                                                      }));
+                                                },
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Row(
+                                        children: <Widget>[
+                                          Expanded(
+                                            child: Material(
+                                              child: InkWell(
+                                                child: Container(
+                                                  child: Column(
+                                                    children: <Widget>[
+                                                      Icon(
+                                                        Icons.list,
+                                                        color: Colors.white,
+                                                      ),
+                                                      Text(
+                                                        "더 보기",
+                                                        style: TextStyle(color: Colors.white),
+                                                      )
+                                                    ],
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                  ),
+                                                  decoration: BoxDecoration(
+                                                      borderRadius: BorderRadius.circular(20),
+                                                      border: Border.all(color : Colors.white, width: 5.0),
+                                                      color: Color(0xFFABBB64)),
+                                                  padding: EdgeInsets.all(20.0),
+                                                  alignment: Alignment.center,
+                                                ),
+                                                onTap: () {
+                                                  Navigator.of(context).push(MaterialPageRoute(
+                                                      fullscreenDialog: true,
+                                                      builder: (BuildContext context) {
+                                                        return MoreScreen();
+                                                      }));
+                                                },
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ]
+                              )
+                          ),
+                        ]
+                    )),
+              ]
             ),
-          ),
-        ));
+          margin: EdgeInsets.all(10.0),
+          )
+        );
   }
 }
