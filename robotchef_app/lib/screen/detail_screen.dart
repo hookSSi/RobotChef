@@ -121,34 +121,52 @@ class _DetailScreenState extends State<DetailScreen> {
                   )),
                   Divider(),
                   // 레시피 영양 정보
-                  Text('영양',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20)),
-                  CalorieWidget(
-                    calorie: widget.recipe.calorie,
+                  Container(
+                    child: Column(
+                      children: <Widget>[
+                        Text('영양',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20)),
+                        CalorieWidget(
+                          calorie: widget.recipe.calorie,
+                        ),
+                      ],
+                    ),
                   ),
                   Divider(),
                   // 필요한 재료들
-                  Text('필요한 재료들',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20)),
-                  IngredientsWidget(
-                    ingredients: widget.recipe.ingredients,
+                  Container(
+                    child: Column(
+                      children: <Widget>[
+                        Text('필요한 재료들',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20)),
+                        IngredientsWidget(
+                          ingredients: widget.recipe.ingredients,
+                        ),
+                      ],
+                    ),
                   ),
                   Divider(),
                   // 레시피 순서
-                  Text('요리순서',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20)),
-                  RecipeSteps(
-                    instructions: widget.recipe.instructions,
-                  )
+                  Container(
+                    child: Column(
+                      children: <Widget>[
+                        Text('요리순서',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20)),
+                        RecipeSteps(
+                          instructions: widget.recipe.instructions,
+                        )
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
