@@ -6,7 +6,6 @@ import 'package:flutter_app/model/model_recipe.dart';
 import 'package:elastic_client/console_http_transport.dart';
 import 'package:elastic_client/elastic_client.dart' as elastic;
 import 'package:flutter_app/screen/detail_screen.dart';
-import 'package:flutter_app/screen/home_screen.dart';
 import 'package:provider/provider.dart';
 
 // title:된장찌개,불고기 ingredient:오이,마늘

@@ -3,7 +3,6 @@ import 'package:flutter_app/class/providers.dart';
 import 'package:flutter_app/screen/main_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_app/core/routes.dart';
-import 'package:flutter_app/class/auth_state.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -37,11 +36,7 @@ class MyApp extends StatelessWidget {
           accentColor: Color(0xFFFFFFFF),
         ),
         onGenerateRoute: AppRoutes.onGenerateRoute,
-        home: Consumer<AuthState>(
-          builder: (context, state, child) {
-            return MainScreen(0);
-          },
-        ),
+        home: MainScreen(0),
       ),
     );
   }

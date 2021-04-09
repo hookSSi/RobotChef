@@ -1,17 +1,13 @@
-import 'dart:convert';
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/class/app_constants.dart';
 import 'package:flutter_app/model/model_recipe.dart';
 import 'package:flutter_app/widget/circle_indicator.dart';
-import 'package:flutter_app/class/auth_state.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_app/class/app_constants.dart';
+import 'package:flutter_app/class/db_manager.dart';
 
 // 레시피의 상세 화면을 만드는 스크린
 class DetailScreen extends StatefulWidget {
-  // final Recipe recipe;
-  // DetailScreen({this.recipe});
   final Recipe recipe;
 
   DetailScreen({this.recipe});
@@ -22,109 +18,31 @@ class DetailScreen extends StatefulWidget {
 class _DetailScreenState extends State<DetailScreen> {
   bool like = false;
 
-  Future<bool> createBookmarkDoc(user_email, recipe_id) async {
-    try {
-      AuthState state = Provider.of<AuthState>(context, listen: false);
-
-      var result = await state.database.createDocument(
-          collectionId: AppWriteConstants.bookmarkDocId,
-          data: {"email": user_email, "recipe_id": recipe_id},
-          read: ["*"],
-          write: ["*"]);
-      return true;
-    } catch (error) {
-      print(error);
-      return false;
-    }
+  Future<bool> addBookmark(int recipe_id) async {
+    var res =
+        await DBManager.Instance.AddData(AppConstants.bookmarkDoc, recipe_id);
+    print(res);
+    return true;
   }
 
-  Future<bool> removeBookmarkDoc(documentId) async {
-    try {
-      AuthState state = Provider.of<AuthState>(context, listen: false);
-
-      var result = await state.database.deleteDocument(
-          collectionId: AppWriteConstants.bookmarkDocId,
-          documentId: documentId);
-      return true;
-    } catch (error) {
-      print(error);
-      return false;
-    }
+  Future<bool> removeBookmark(int recipe_id) async {
+    var res = await DBManager.Instance.DeleteData(
+        AppConstants.bookmarkDoc, recipe_id);
+    print(res);
+    return true;
   }
 
-  Future<bool> addBookmark() async {
-    try {
-      AuthState state = Provider.of<AuthState>(context, listen: false);
-
-      String user_email = state.user.email;
-      String recipe_id = widget.recipe.recipe_id;
-
-      var result = await state.database.listDocuments(
-          collectionId: AppWriteConstants.bookmarkDocId,
-          filters: ['email=$user_email', 'recipe_id=$recipe_id']);
-
-      dynamic jsonObj = jsonDecode(result.toString());
-      if (jsonObj['sum'] == 0) {
-        createBookmarkDoc(user_email, recipe_id);
-        return true;
-      } else {
-        return false;
-      }
-    } catch (error) {
-      print(error);
-      return false;
-    }
-  }
-
-  Future<bool> removeBookmark() async {
-    try {
-      AuthState state = Provider.of<AuthState>(context, listen: false);
-
-      String user_email = state.user.email;
-      String recipe_id = widget.recipe.recipe_id;
-
-      var result = await state.database.listDocuments(
-          collectionId: AppWriteConstants.bookmarkDocId,
-          filters: ['email=$user_email', 'recipe_id=$recipe_id']);
-
-      dynamic jsonObj = jsonDecode(result.toString());
-      if (jsonObj['sum'] != 0) {
-        removeBookmarkDoc(jsonObj['documents'][0]['\$id']);
-        return true;
-      } else {
-        return false;
-      }
-    } catch (error) {
-      return false;
-    }
-  }
-
-  Future<bool> getBookmark() async {
-    try {
-      AuthState state = Provider.of<AuthState>(context, listen: false);
-
-      String user_email = state.user.email;
-      String recipe_id = widget.recipe.recipe_id;
-
-      var result = await state.database.listDocuments(
-          collectionId: AppWriteConstants.bookmarkDocId,
-          filters: ['email=$user_email', 'recipe_id=$recipe_id']);
-
-      dynamic jsonObj = jsonDecode(result.toString());
-      if (jsonObj['sum'] != 0) {
-        return true;
-      } else {
-        return false;
-      }
-    } catch (error) {
-      return false;
-    }
+  Future<bool> getBookmark(int recipe_id) async {
+    var res =
+        await DBManager.Instance.GetData(AppConstants.bookmarkDoc, recipe_id);
+    return res;
   }
 
   @override
   void initState() {
     super.initState();
-    Future<bool> result = getBookmark();
+    int recipe_id = int.tryParse(widget.recipe.recipe_id);
+    Future<bool> result = getBookmark(recipe_id);
     result.then((value) => setState(() {
           like = value;
         }));
@@ -163,7 +81,9 @@ class _DetailScreenState extends State<DetailScreen> {
               color: Color(0xFFABBB64),
               child: Column(
                 children: <Widget>[
-                  Row(
+                  // 레시피 제목
+                  Container(
+                      child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Text(
@@ -179,7 +99,9 @@ class _DetailScreenState extends State<DetailScreen> {
                               color: Color(0xFFFFFFFF),
                               icon: Icon(Icons.star),
                               onPressed: () {
-                                Future<bool> isEnd = removeBookmark();
+                                int recipe_id =
+                                    int.tryParse(widget.recipe.recipe_id);
+                                Future<bool> isEnd = removeBookmark(recipe_id);
                                 isEnd.then((value) => setState(() {
                                       like = false;
                                     }));
@@ -188,14 +110,17 @@ class _DetailScreenState extends State<DetailScreen> {
                               color: Color(0xFFFFFFFF),
                               icon: Icon(Icons.star_border),
                               onPressed: () {
-                                Future<bool> isEnd = addBookmark();
+                                int recipe_id =
+                                    int.tryParse(widget.recipe.recipe_id);
+                                Future<bool> isEnd = addBookmark(recipe_id);
                                 isEnd.then((value) => setState(() {
                                       like = true;
                                     }));
                               })
                     ],
-                  ),
+                  )),
                   Divider(),
+                  // 레시피 영양 정보
                   Text('영양',
                       style: TextStyle(
                           color: Colors.white,
@@ -205,6 +130,7 @@ class _DetailScreenState extends State<DetailScreen> {
                     calorie: widget.recipe.calorie,
                   ),
                   Divider(),
+                  // 필요한 재료들
                   Text('필요한 재료들',
                       style: TextStyle(
                           color: Colors.white,
@@ -214,6 +140,7 @@ class _DetailScreenState extends State<DetailScreen> {
                     ingredients: widget.recipe.ingredients,
                   ),
                   Divider(),
+                  // 레시피 순서
                   Text('요리순서',
                       style: TextStyle(
                           color: Colors.white,
