@@ -29,13 +29,14 @@ dependencies:
   elastic_client: ^0.1.13
   dio: ^3.0.1
   http: ^0.12.2
-  appwrite: ^0.3.0-dev.2
   provider: ^4.3.3
   flutter_secure_storage: ^3.3.5
   permission_handler: ^5.0.0+hotfix.5
   rxdart: ^0.24.0
   wakelock: ^0.2.1+1
   flutter_exif_rotation: ^0.3.2
+  path_provider: ^2.0.1
+  sqflite: ^2.0.0+3
 
 dev_dependencies:
   flutter_test:
