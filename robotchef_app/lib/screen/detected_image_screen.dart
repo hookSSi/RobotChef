@@ -102,7 +102,6 @@ class _DetectedImageScreenState extends State<DetectedImageScreen> {
             ],
           )));
     } else {
-
       var imageWidget = Image.file(
         widget.image,
       );
@@ -116,7 +115,7 @@ class _DetectedImageScreenState extends State<DetectedImageScreen> {
       final imageWidth = math.min(_imageHeight, _imageWidth);
       final imageHeight = math.max(_imageHeight, _imageWidth);
 
-      double screenH = _imageHeight * (screen.width /  _imageWidth);
+      double screenH = _imageHeight * (screen.width / _imageWidth);
       double paddingTop = (screen.height - screenH) / 2;
 
       return Scaffold(
@@ -150,15 +149,22 @@ class _DetectedImageScreenState extends State<DetectedImageScreen> {
                                   .map((item) => item['detectedClass'])
                                   .toList());
                           searcher.AddIngredients(ingredients);
+                          Navigator.pop(context);
                           Navigator.pushNamed(context, AppRoutes.search);
                         },
-                        child: Text("확인"),
+                        child: Text(
+                          "확인",
+                          style: TextStyle(color: Colors.white),
+                        ),
                         color: Colors.black87),
                     RaisedButton(
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      child: Text("돌아가기"),
+                      child: Text(
+                        "돌아가기",
+                        style: TextStyle(color: Colors.white),
+                      ),
                       color: Colors.black87,
                     )
                   ],

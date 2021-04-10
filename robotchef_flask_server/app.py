@@ -1,9 +1,3 @@
-# @Author: Dwivedi Chandan
-# @Date:   2019-08-05T13:35:05+05:30
-# @Email:  chandandwivedi795@gmail.com
-# @Last modified by:   Dwivedi Chandan
-# @Last modified time: 2019-08-07T11:52:45+05:30
-
 # import the necessary packages
 import numpy as np
 import argparse
@@ -21,7 +15,7 @@ import glob
 from PIL import Image
 from uuid import uuid4
 
-confthres = 0.3
+confthres = 0.25
 nmsthres = 0.1
 yolo_path = './'
 
@@ -54,6 +48,8 @@ def load_model(configPath, weightsPath):
     # 훈련된 yolo 모델을 로드
     print("[INFO] YOLO 불러오는 중...")
     net = cv2.dnn.readNetFromDarknet(configPath, weightsPath)
+    net.setPreferableBackend(cv2.dnn.DNN_BACKEND_CUDA)
+    net.setPreferableTarget(cv2.dnn.DNN_TARGET_CUDA_FP16)
     return net
 
 def image_to_byte_array(image:Image):
@@ -63,7 +59,9 @@ def image_to_byte_array(image:Image):
     return imgByteArr
 
 def get_predection(image, net, LABELS, COLORS):
+    image = cv2.resize(image, dsize=(608, 608), interpolation=cv2.INTER_AREA)
     (H, W) = image.shape[:2]
+    cv2.imwrite("resize.png", image)
 
     ln = net.getLayerNames()
     ln = [ln[i[0] - 1] for i in net.getUnconnectedOutLayers()]
@@ -71,8 +69,10 @@ def get_predection(image, net, LABELS, COLORS):
     # construct a blob from the input image and then perform a forward
     # pass of the YOLO object detector, giving us our bounding boxes and
     # associated probabilities
-    blob = cv2.dnn.blobFromImage(image, 1 / 255.0, (608, 608), crop=False)
 
+    blob = cv2.dnn.blobFromImage(image, 0.00392156, (608, 608), (0, 0, 0), True, False, cv2.CV_32F)
+    blobb = blob.reshape(blob.shape[2] * blob.shape[1], blob.shape[3], 1) 
+    cv2.imwrite('Blod.png', blobb)
     net.setInput(blob)
 
     start = time.time()
@@ -129,10 +129,8 @@ def get_predection(image, net, LABELS, COLORS):
 
     detected_obj_list = list()
 
-    # import copy
+    import copy
     # 테스트
-    # 169, 547, 370, 220
-    # [259, 488, 192, 197]
     # obj_test = dict()
     # rect_test = dict()
 
@@ -178,6 +176,7 @@ def get_predection(image, net, LABELS, COLORS):
             obj['color'] = color
 
             detected_obj_list.append(obj)
+            print(boxes[i])
 
             # # extract the bounding box coordinates
             # (x, y) = (boxes[i][0], boxes[i][1])
@@ -260,8 +259,6 @@ Lables=get_labels(labelsPath)
 CFG=get_config(cfgpath)
 Weights=get_weights(wpath)
 nets=load_model(CFG,Weights)
-nets.setPreferableBackend(cv2.dnn.DNN_BACKEND_CUDA)
-nets.setPreferableTarget(cv2.dnn.DNN_TARGET_CUDA)
 Colors=get_colors(Lables)
 
 # auto labeling using trained yolov4 model
@@ -285,10 +282,13 @@ def auto_label(path):
 @app.route('/detect', methods=['POST'])
 def detect():
     img = request.files['image']
-    image = cv2.imdecode(np.fromstring(img.read(),np.uint8), cv2.IMREAD_UNCHANGED)
+    image = cv2.imdecode(np.frombuffer(img.read(),np.uint8), cv2.IMREAD_COLOR)
+    # cv2.imwrite('prev_test.jpg', image)
 
     result_image, obj_list = get_predection(image, nets, Lables, Colors)
     H, W = result_image.shape[:2]
+
+    # cv2.imwrite('test.jpg', result_image)
 
     json_data = jsonify({'data' : obj_list, 'width' : W, 'height' : H})
     print(obj_list)
@@ -454,4 +454,4 @@ if __name__ == "__main__":
 
     load_files()
 
-    app.run(host='0.0.0.0', port=5000, threaded=True)
+    app.run(host='0.0.0.0', port=5000, threaded=True, debug=True)
