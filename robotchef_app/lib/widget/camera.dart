@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
@@ -16,7 +15,7 @@ typedef void Callback(List<dynamic> list, int h, int w, int time);
 class Camera extends StatefulWidget {
   final List<CameraDescription> cameras;
   final Callback setRecognitions;
-  final DELAY_TIME = 160;
+  final delayTime = 160;
 
   Camera(this.cameras, this.setRecognitions);
 
@@ -26,7 +25,7 @@ class Camera extends StatefulWidget {
 
 class _CameraState extends State<Camera>
     with WidgetsBindingObserver {
-  List<StreamSubscription> _subscription = List();
+  List<StreamSubscription> _subscription = [];
   ImageResultProcessorService _imageResultProcessorService;
   CameraController controller;
   bool _isDetecting = false;
@@ -88,7 +87,7 @@ class _CameraState extends State<Camera>
       await controller.startImageStream((image) => _processCameraImage(image));
     } on CameraException catch (e) {
       // 에러 표시
-      // showInSnackBar('Error: ${e.code}\n${e.description}');
+      showInSnackBar('Error: ${e.code}\n${e.description}');
     }
 
     if (mounted) {
@@ -96,16 +95,16 @@ class _CameraState extends State<Camera>
     }
   }
 
-  // showInSnackBar(content){
-  //   final scaffold = Scaffold.of(context);
-  //   scaffold.showSnackBar(
-  //     SnackBar(
-  //       content: Text(content),
-  //       action: SnackBarAction(
-  //           label: 'Ok', onPressed: scaffold.hideCurrentSnackBar),
-  //     ),
-  //   );
-  // }
+  showInSnackBar(content){
+    final scaffold = ScaffoldMessenger.of(context);
+    scaffold.showSnackBar(
+      SnackBar(
+        content: Text(content),
+        action: SnackBarAction(
+            label: 'Ok', onPressed: scaffold.hideCurrentSnackBar),
+      ),
+    );
+  }
 
   void _objectDetectionProcess(Uint8List img) async {
     if (!_isDetecting) {
@@ -141,7 +140,7 @@ class _CameraState extends State<Camera>
     if (_isProcessing) return;
     _isProcessing = true;
     // 이미지 처리
-    await Future.delayed(Duration(milliseconds: widget.DELAY_TIME), () => _imageResultProcessorService.addRawImage(image));
+    await Future.delayed(Duration(milliseconds: widget.delayTime), () => _imageResultProcessorService.addRawImage(image));
   }
 
   @override

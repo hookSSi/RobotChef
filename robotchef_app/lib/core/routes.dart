@@ -20,6 +20,8 @@ class AppRoutes {
               return MainScreen(0);
             case search:
               return MainScreen(1);
+            default:
+              return MyApp();
           }
         }
     );

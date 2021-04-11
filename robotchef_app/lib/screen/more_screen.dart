@@ -55,7 +55,7 @@ class _MoreScreenState extends State<MoreScreen> {
           Center(
               child: Container(
             child: Hero(
-                tag: recipe.recipe_id,
+                tag: recipe.recipeId,
                 child: Material(
                   child: IconButton(
                     icon: Icon(Icons.info),

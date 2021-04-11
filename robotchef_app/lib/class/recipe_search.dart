@@ -8,18 +8,18 @@ class RecipeSearcher with ChangeNotifier {
     _tagDict = {"ingredients" : []};
   }
 
-  void Clear(){
+  void clear(){
     _tagDict["ingredients"].clear();
     notifyListeners();
   }
 
-  void AddIngredients(List<String> ingredients){
+  void addIngredients(List<String> ingredients){
     print(ingredients);
     _tagDict["ingredients"] = ingredients;
     notifyListeners();
   }
 
-  String GetSearchText(){
+  String getSearchText(){
     if(_tagDict["ingredients"].length > 0){
       String searchText = "ingredients:" + _tagDict["ingredients"].join(',');
       return searchText;

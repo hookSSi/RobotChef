@@ -1,16 +1,15 @@
 import 'dart:io';
 import 'dart:ui';
 import 'package:dio/dio.dart';
-import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import 'package:flutter_app/class/recipe_serach.dart';
+import 'package:flutter_app/class/recipe_search.dart';
 import 'package:flutter_app/core/routes.dart';
 import 'package:flutter_app/widget/bndbox.dart';
 import 'package:flutter_app/class/yolo_server_constants.dart';
 import 'package:provider/provider.dart';
 
 class DetectedImageScreen extends StatefulWidget {
-  File image;
+  final File image;
 
   DetectedImageScreen(this.image);
 
@@ -40,7 +39,7 @@ class _DetectedImageScreenState extends State<DetectedImageScreen> {
   }
 
   showInSnackBar(content) {
-    final scaffold = Scaffold.of(context);
+    final scaffold = ScaffoldMessenger.of(context);
     scaffold.showSnackBar(
       SnackBar(
         content: Text(content),
@@ -106,14 +105,7 @@ class _DetectedImageScreenState extends State<DetectedImageScreen> {
         widget.image,
       );
 
-      var imageBox = OverflowBox(
-        child: imageWidget,
-      );
-
       Size screen = MediaQuery.of(context).size;
-
-      final imageWidth = math.min(_imageHeight, _imageWidth);
-      final imageHeight = math.max(_imageHeight, _imageWidth);
 
       double screenH = _imageHeight * (screen.width / _imageWidth);
       double paddingTop = (screen.height - screenH) / 2;
@@ -139,25 +131,24 @@ class _DetectedImageScreenState extends State<DetectedImageScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
-                    RaisedButton(
-                        onPressed: () {
-                          RecipeSearcher searcher = Provider.of<RecipeSearcher>(
-                              context,
-                              listen: false);
-                          List<String> ingredients = List<String>.from(
-                              _recognitions
-                                  .map((item) => item['detectedClass'])
-                                  .toList());
-                          searcher.AddIngredients(ingredients);
-                          Navigator.pop(context);
-                          Navigator.pushNamed(context, AppRoutes.search);
-                        },
-                        child: Text(
-                          "확인",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        color: Colors.black87),
-                    RaisedButton(
+                    ElevatedButton(
+                      onPressed: () {
+                        RecipeSearcher searcher =
+                            Provider.of<RecipeSearcher>(context, listen: false);
+                        List<String> ingredients = List<String>.from(
+                            _recognitions
+                                .map((item) => item['detectedClass'])
+                                .toList());
+                        searcher.addIngredients(ingredients);
+                        Navigator.pop(context);
+                        Navigator.pushNamed(context, AppRoutes.search);
+                      },
+                      child: Text(
+                        "확인",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    ElevatedButton(
                       onPressed: () {
                         Navigator.pop(context);
                       },
@@ -165,7 +156,6 @@ class _DetectedImageScreenState extends State<DetectedImageScreen> {
                         "돌아가기",
                         style: TextStyle(color: Colors.white),
                       ),
-                      color: Colors.black87,
                     )
                   ],
                 ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
-import 'package:flutter_app/class/recipe_serach.dart';
+import 'package:flutter_app/class/recipe_search.dart';
 import 'package:flutter_app/core/routes.dart';
 
 import 'package:flutter_app/widget/camera.dart';
@@ -8,7 +8,7 @@ import 'package:flutter_app/widget/bndbox.dart';
 import 'package:provider/provider.dart';
 
 class CameraScreen extends StatefulWidget {
-  List<CameraDescription> cameras;
+  final List<CameraDescription> cameras;
 
   CameraScreen(this.cameras);
 
@@ -65,7 +65,7 @@ class _CameraScreenState extends State<CameraScreen> {
         RecipeSearcher searcher =
             Provider.of<RecipeSearcher>(context, listen: false);
         List<String> ingredients = currentClasses.toList();
-        searcher.AddIngredients(ingredients);
+        searcher.addIngredients(ingredients);
         Navigator.pushNamed(context, AppRoutes.search);
       }
     }

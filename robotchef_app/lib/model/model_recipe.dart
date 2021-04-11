@@ -1,15 +1,18 @@
+import 'package:flutter_app/class/app_constants.dart';
+import 'package:flutter_app/class/db_manager.dart';
+
 class Instruction {
-  int proc_num;
+  int procNum;
   String desc;
   String image;
 
   Instruction.fromMap(Map<String, dynamic> map)
-      : proc_num = map['proc_num'],
+      : procNum = map['proc_num'],
         desc = map['desc'],
         image = map['image'];
 
   @override
-  String toString() => "Instruction<$proc_num : $desc>";
+  String toString() => "Instruction<$procNum : $desc>";
 }
 
 class Ingredient {
@@ -24,39 +27,53 @@ class Ingredient {
   String toString() => "Ingredient<$name : $amount>";
 }
 
-class Nutrients{
+class Nutrients {
   String name;
   String weight;
   double percent;
+
   Nutrients({this.name, this.weight, this.percent});
 }
 
+double calcPercent(weight, max){
+  var regex = new RegExp(r'[0-9]*\.?[0-9]+');
+  var match = regex.firstMatch(weight);
+  double res = double.tryParse(match.group(0)) / max;
+
+  return res;
+}
+
 class Recipe {
-  String recipe_id;
+  String recipeId;
   String title;
   String thumbnail;
   String sumry;
-  String cooking_time;
+  String cookingTime;
   Nutrients calorie;
   List<Ingredient> ingredients;
   List<Instruction> instructions;
-  bool like;
 
   Recipe.fromMap(Map<String, dynamic> map)
-      : recipe_id = map['recipe_id'],
+      : recipeId = map['recipe_id'],
         title = map['title'],
         thumbnail = map['image'],
         sumry = map['sumry'],
-        cooking_time = map['cooking_time'],
-        calorie = Nutrients(name: 'calorie', weight: map['calorie'], percent: 0.5),
+        cookingTime = map['cooking_time'],
+        // 칼로리 하루 평균 성인 남자 기준 2700
+        calorie =
+            Nutrients(name: 'calorie', weight: map['calorie'], percent: calcPercent(map['calorie'], 2700)),
         ingredients = List<Ingredient>.from(map['ingredients']
             .map((item) => Ingredient.fromMap(item))
             .toList()),
         instructions = List<Instruction>.from(map['instructions']
             .map((item) => Instruction.fromMap(item))
-            .toList()),
-        like = false;
+            .toList());
+
+    Future<bool> getBookmark() async{
+    return await DBManager.getInstance.getData(AppConstants.bookmarkDoc, int.tryParse(recipeId));
+  }
 
   @override
-  String toString() => "Recipe<$recipe_id : $title> $ingredients , $instructions";
+  String toString() =>
+      "Recipe<$recipeId : $title> $ingredients , $instructions";
 }
