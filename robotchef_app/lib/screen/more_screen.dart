@@ -19,6 +19,10 @@ class _MoreScreenState extends State<MoreScreen> {
     'calorie': "461.3kcal",
     'ingredients': [
       {"name": "홍합", "amount": "1 kg"},
+      {"name": "홍합", "amount": "1 kg"},
+      {"name": "홍합", "amount": "1 kg"},
+      {"name": "청주", "amount": "1.5스푼"},
+      {"name": "청주", "amount": "1.5스푼"},
       {"name": "청주", "amount": "1.5스푼"}
     ],
     'instructions': [

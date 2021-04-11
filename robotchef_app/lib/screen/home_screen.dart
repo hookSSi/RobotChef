@@ -186,6 +186,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
         body:Container(
             child: Column(
               children: <Widget>[
@@ -199,7 +200,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: Container(
                               child: Column(
                                 children: <Widget>[
-                                  Image.asset('images/robothead2.png'),
+                                  Image.asset('images/robotchef.png', width: 350, height: 350),
                                 ],
                               ),
                             ),
