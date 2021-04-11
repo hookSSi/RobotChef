@@ -5,7 +5,7 @@ import 'package:flutter_app/screen/search_screen.dart';
 import 'package:flutter_app/screen/bookmark_screen.dart';
 
 class MainScreen extends StatelessWidget {
-  int selectedPage;
+  final int selectedPage;
   MainScreen(this.selectedPage);
 
   @override

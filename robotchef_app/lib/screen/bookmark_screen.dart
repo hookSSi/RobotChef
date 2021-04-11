@@ -7,6 +7,8 @@ import 'package:elastic_client/elastic_client.dart' as elastic;
 import 'package:flutter_app/screen/detail_screen.dart';
 import 'package:flutter_app/class/app_constants.dart';
 import 'package:flutter_app/class/db_manager.dart';
+import 'package:flutter_app/screen/home_screen.dart';
+import 'package:flutter_app/widget/RecipeCard.dart';
 
 class BookmarkScreen extends StatefulWidget {
   _BookmarkScreen createState() => _BookmarkScreen();
@@ -17,12 +19,12 @@ class _BookmarkScreen extends State<BookmarkScreen> {
   FocusNode focusNode = FocusNode();
 
   var _lastRow = 0;
-  final FETCH_ROW = 10;
+  final fetchRow = 10;
   var stream;
   bool isDisposed = true;
 
   Future<SearchResult> newStream() async {
-    var recipe_id_list = await DBManager.Instance.GetAllData(AppConstants.bookmarkDoc);
+    var recipeIdList = await DBManager.getInstance.getAllData(AppConstants.bookmarkDoc);
 
     final String url = ElasticConstants.endpoint;
     final transport = ConsoleHttpTransport(Uri.parse(url));
@@ -31,28 +33,28 @@ class _BookmarkScreen extends State<BookmarkScreen> {
     var response;
 
     response = await client.search(
-        'recipe', '_doc', createQuery(recipe_id_list),
+        'recipe', '_doc', createQuery(recipeIdList),
         source: true,
         offset: 0,
-        limit: FETCH_ROW * (_lastRow + 1),
+        limit: fetchRow * (_lastRow + 1),
         sort: [
           {
             "title.keyword": {"order": "asc"}
           }
-        ]);
+        ]).timeout(Duration(seconds: 2));
 
     await transport.close();
 
     return response;
   }
 
-  Map<dynamic, dynamic> createQuery(recipe_id_list) {
+  Map<dynamic, dynamic> createQuery(recipeIdList) {
     Map<dynamic, dynamic> query = {
       "bool": {
         "must": [
           {
             "match": {
-              "recipe_id": {"query": "" + recipe_id_list.join(", ")}
+              "recipe_id": {"query": "" + recipeIdList.join(", ")}
             }
           }
         ]
@@ -106,7 +108,7 @@ class _BookmarkScreen extends State<BookmarkScreen> {
       controller: _scrollController,
       itemCount: snapshots.length,
       itemBuilder: (context, i) {
-        final currentRow = (i + 1) ~/ FETCH_ROW;
+        final currentRow = (i + 1) ~/ fetchRow;
         if (_lastRow != currentRow) {
           _lastRow = currentRow;
         }
@@ -117,32 +119,22 @@ class _BookmarkScreen extends State<BookmarkScreen> {
   }
 
   Widget _buildListItem(BuildContext context, Doc data) {
-    final recipe = Recipe.fromMap(data.doc);
-    return InkWell(
-      child: Container(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Image.network(recipe.thumbnail,
-                width: 100, height: 100, fit: BoxFit.fill),
-            Expanded(
-                child: Text(
-              recipe.title,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(color: Colors.black87),
-            )),
-          ],
-        ),
-      ),
-      onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(
-            fullscreenDialog: true,
-            builder: (BuildContext context) {
-              return DetailScreen(recipe: recipe);
-            }));
-        print(recipe.toString());
-      },
-    );
+    final recipeData = Recipe.fromMap(data.doc);
+    return new RecipeCard(
+        recipe: recipeData,
+        onTapCard: () {
+          Navigator.of(context).push(MaterialPageRoute(
+              fullscreenDialog: true,
+              builder: (BuildContext context) {
+                return DetailScreen(recipe: recipeData, onPop: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      fullscreenDialog: true,
+                      builder: (BuildContext context) {
+                        return this.widget;
+                      }));
+                },);
+              }));
+        });
   }
 
   @override
@@ -153,7 +145,11 @@ class _BookmarkScreen extends State<BookmarkScreen> {
               leading: IconButton(
                   icon: Icon(Icons.arrow_back),
                   onPressed: () {
-                    Navigator.pop(context);
+                    Navigator.of(context).push(MaterialPageRoute(
+                        fullscreenDialog: true,
+                        builder: (BuildContext context) {
+                          return HomeScreen();
+                        }));
                   }),
               iconTheme: IconThemeData(color: Colors.white)),
         body: Container(

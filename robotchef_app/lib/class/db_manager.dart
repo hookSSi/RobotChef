@@ -7,24 +7,24 @@ import 'app_constants.dart';
 
 class DBManager {
   static DBManager instance;
-  Database database = null;
+  Database database;
 
-  static DBManager get Instance {
+  static DBManager get getInstance {
     if (instance == null) {
       instance = DBManager();
     }
     return instance;
   }
 
-  Future<Database> get DB async {
+  Future<Database> get getDB async {
     if (database == null) {
-      database = await Init();
+      database = await init();
     }
 
     return database;
   }
 
-  Init() async {
+  init() async {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, 'BookmarkDB.db');
 
@@ -38,30 +38,30 @@ class DBManager {
     );
   }
 
-  AddData(String tableName, int recipe_id) async {
-    final db = await DB;
-    var res = await db.insert(tableName, {"recipe_id" : recipe_id} );
+  addData(String tableName, int recipeId) async {
+    final db = await getDB;
+    var res = await db.insert(tableName, {"recipe_id" : recipeId} );
     return res;
   }
 
-  GetData(String tableName, int recipe_id) async {
-    final db = await DB;
-    var res = await db.query(tableName, where: "recipe_id = ?", whereArgs: [recipe_id]);
+  getData(String tableName, int recipeId) async {
+    final db = await getDB;
+    var res = await db.query(tableName, where: "recipe_id = ?", whereArgs: [recipeId]);
     return res.isNotEmpty ? true : false;
   }
 
-  DeleteData(String tableName, int recipe_id) async {
-    final db = await DB;
-    db.delete(tableName, where: 'recipe_id = ?', whereArgs: [recipe_id]);
-    var res = await GetData(tableName, recipe_id);
+  deleteData(String tableName, int recipeId) async {
+    final db = await getDB;
+    db.delete(tableName, where: 'recipe_id = ?', whereArgs: [recipeId]);
+    var res = await getData(tableName, recipeId);
 
     return res == null ? true : false;
   }
 
-  GetAllData(String tableName) async {
-    final db = await DB;
+  getAllData(String tableName) async {
+    final db = await getDB;
     var res = await db.query(tableName);
-    List<dynamic> recipe_list = res.isNotEmpty ? res.map((e) => e["recipe_id"]).toList() :  [];
-    return recipe_list;
+    List<dynamic> recipeList = res.isNotEmpty ? res.map((e) => e["recipe_id"]).toList() :  [];
+    return recipeList;
   }
 }

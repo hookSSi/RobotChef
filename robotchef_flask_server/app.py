@@ -1,9 +1,3 @@
-# @Author: Dwivedi Chandan
-# @Date:   2019-08-05T13:35:05+05:30
-# @Email:  chandandwivedi795@gmail.com
-# @Last modified by:   Dwivedi Chandan
-# @Last modified time: 2019-08-07T11:52:45+05:30
-
 # import the necessary packages
 import numpy as np
 import argparse
@@ -21,7 +15,7 @@ import glob
 from PIL import Image
 from uuid import uuid4
 
-confthres = 0.3
+confthres = 0.25
 nmsthres = 0.1
 yolo_path = './'
 
@@ -54,7 +48,13 @@ def load_model(configPath, weightsPath):
     # 훈련된 yolo 모델을 로드
     print("[INFO] YOLO 불러오는 중...")
     net = cv2.dnn.readNetFromDarknet(configPath, weightsPath)
-    return net
+    net.setPreferableBackend(cv2.dnn.DNN_BACKEND_CUDA)
+    net.setPreferableTarget(cv2.dnn.DNN_TARGET_CUDA_FP16)
+
+    model = cv2.dnn_DetectionModel(net)
+    model.setInputParams(size=(608, 608), scale=1/255, swapRB=True)
+
+    return model
 
 def image_to_byte_array(image:Image):
     imgByteArr = io.BytesIO()
@@ -65,129 +65,48 @@ def image_to_byte_array(image:Image):
 def get_predection(image, net, LABELS, COLORS):
     (H, W) = image.shape[:2]
 
-    ln = net.getLayerNames()
-    ln = [ln[i[0] - 1] for i in net.getUnconnectedOutLayers()]
-
-    # construct a blob from the input image and then perform a forward
-    # pass of the YOLO object detector, giving us our bounding boxes and
-    # associated probabilities
-    blob = cv2.dnn.blobFromImage(image, 1 / 255.0, (608, 608), crop=False)
-
-    net.setInput(blob)
-
     start = time.time()
-    layerOutputs = net.forward(ln)
-    # print(layerOutputs)
-    end = time.time()
-
+    classes, scores, boxes = net.detect(image, confthres, nmsthres)
     # show timing information on YOLO
+    end = time.time()
     print("[INFO] YOLO 탐지 {:.6f} 초 소요되었습니다.".format(end - start))
 
-    # initialize our lists of detected bounding boxes, confidences, and
-    # class IDs, respectively
-    boxes = []
     confidences = []
-    classIDs = []
-
-    # loop over each of the layer outputs
-    for output in layerOutputs:
-        # loop over each of the detections
-        for detection in output:
-            # extract the class ID and confidence (i.e., probability) of
-            # the current object detection
-            scores = detection[5:]
-            # print(scores)
-            classID = np.argmax(scores)
-            # print(classID)
-            confidence = scores[classID]
-
-            # filter out weak predictions by ensuring the detected
-            # probability is greater than the minimum probability
-            if confidence > confthres:
-                # scale the bounding box coordinates back relative to the
-                # size of the image, keeping in mind that YOLO actually
-                # returns the center (x, y)-coordinates of the bounding
-                # box followed by the boxes' width and height
-                box = detection[0:4] * np.array([W, H, W, H])
-                (centerX, centerY, width, height) = box.astype("int")
-
-                # use the center (x, y)-coordinates to derive the top and
-                # and left corner of the bounding box
-                x = int(centerX - (width / 2))
-                y = int(centerY - (height / 2))
-
-                # update our list of bounding box coordinates, confidences,
-                # and class IDs
-                boxes.append([x, y, min(W, int(width)), min(H, int(height))])
-                confidences.append(float(confidence))
-                classIDs.append(classID)
-
-                    # apply non-maxima suppression to suppress weak, overlapping bounding
-    # boxes
-    idxs = cv2.dnn.NMSBoxes(boxes, confidences, confthres,
-                            nmsthres)
+    detected_classIDs = []
 
     detected_obj_list = list()
 
-    # import copy
-    # 테스트
-    # 169, 547, 370, 220
-    # [259, 488, 192, 197]
-    # obj_test = dict()
-    # rect_test = dict()
+    for (classid, score, box) in zip(classes, scores, boxes):
+        print(classid)
+        print(round(score[0], 3))
+        print(box)
 
-    # rect_test['x'] = 259
-    # rect_test['y'] = 488
-    # rect_test['w'] = 192
-    # rect_test['h'] = 197
+        obj = dict()
+        rect = dict()
 
-    # obj_test['rect'] = rect_test
-    # obj_test['detectedClass'] = 'test'
-    # obj_test['confidenceInClass'] = 0.85
-    # obj_test['color'] = [int(c) for c in COLORS[1]]
+        # bounding box scaling and append
+        (centerX, centerY, width, height) = box.astype("int")
 
-    # detected_obj_list.append(copy.deepcopy(obj_test))
+        rect['x'] = int(centerX) # left corner x
+        rect['y'] = int(centerY) # left corner y
+        rect['w'] = int(width) # width
+        rect['h'] = int(height) # height
 
-    # rect_test['x'] = W / 3
-    # rect_test['y'] = H / 3
-    # rect_test['w'] = 100
-    # rect_test['h'] = 50
-    # obj_test['rect'] = rect_test
+        obj['rect'] = rect
+        obj['detectedClass'] = LABELS[classid[0]]
+        obj['confidenceInClass'] = float(score[0])
 
-    # detected_obj_list.append(copy.deepcopy(obj_test))
+        # 바운딩 박스 컬러 지정
+        # 정해진 시드에서 미리 초기화하기 때문에 동일한 객체에 늘 같은 색깔 지정
+        color = [int(c) for c in COLORS[int(classid) % len(COLORS)]]
+        obj['color'] = color
 
-    # ensure at least one detection exists
-    if len(idxs) > 0:
-        # loop over the indexes we are keeping
-        for i in idxs.flatten():
-            obj = dict()
-            rect = dict()
+        detected_obj_list.append(obj)
 
-            rect['x'] = boxes[i][0] # left corner x
-            rect['y'] = boxes[i][1] # left corner y
-            rect['w'] = boxes[i][2] # width
-            rect['h'] = boxes[i][3] # height
-
-            obj['rect'] = rect
-            obj['detectedClass'] = LABELS[classIDs[i]]
-            obj['confidenceInClass'] = confidences[i]
-
-            # 바운딩 박스 컬러 지정
-            # 정해진 시드에서 미리 초기화하기 때문에 동일한 객체에 늘 같은 색깔 지정
-            color = [int(c) for c in COLORS[classIDs[i]]]
-            obj['color'] = color
-
-            detected_obj_list.append(obj)
-
-            # # extract the bounding box coordinates
-            # (x, y) = (boxes[i][0], boxes[i][1])
-            # (w, h) = (boxes[i][2], boxes[i][3])
-
-            # # draw a bounding box rectangle and label on the image
-            # cv2.rectangle(image, (x, y), (x + w, y + h), color, 2)
-            # text = "{}: {:.4f}".format(LABELS[classIDs[i]], confidences[i])
-            # cv2.putText(image, text, (x, y - 5), cv2.FONT_HERSHEY_SIMPLEX,0.5, color, 2)
-            # cv2.imwrite('test.jpg', image)
+        label = "%s : %f" % (LABELS[classid[0]], score)
+        cv2.rectangle(image, box, color, 2)
+        cv2.putText(image, label, (box[0], box[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+    cv2.imwrite("detections.png", image)
     
     return image, detected_obj_list
 
@@ -260,8 +179,6 @@ Lables=get_labels(labelsPath)
 CFG=get_config(cfgpath)
 Weights=get_weights(wpath)
 nets=load_model(CFG,Weights)
-nets.setPreferableBackend(cv2.dnn.DNN_BACKEND_CUDA)
-nets.setPreferableTarget(cv2.dnn.DNN_TARGET_CUDA)
 Colors=get_colors(Lables)
 
 # auto labeling using trained yolov4 model
@@ -285,10 +202,13 @@ def auto_label(path):
 @app.route('/detect', methods=['POST'])
 def detect():
     img = request.files['image']
-    image = cv2.imdecode(np.fromstring(img.read(),np.uint8), cv2.IMREAD_UNCHANGED)
+    image = cv2.imdecode(np.frombuffer(img.read(),np.uint8), cv2.IMREAD_COLOR)
+    # cv2.imwrite('prev_test.jpg', image)
 
     result_image, obj_list = get_predection(image, nets, Lables, Colors)
     H, W = result_image.shape[:2]
+
+    # cv2.imwrite('test.jpg', result_image)
 
     json_data = jsonify({'data' : obj_list, 'width' : W, 'height' : H})
     print(obj_list)
@@ -454,4 +374,4 @@ if __name__ == "__main__":
 
     load_files()
 
-    app.run(host='0.0.0.0', port=5000, threaded=True)
+    app.run(host='0.0.0.0', port=5000, threaded=True, debug=True)

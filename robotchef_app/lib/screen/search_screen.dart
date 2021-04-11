@@ -1,13 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/class/elastic_constants.dart';
-import 'package:flutter_app/class/recipe_serach.dart';
+import 'package:flutter_app/class/recipe_search.dart';
 import 'package:flutter_app/model/model_recipe.dart';
 import 'package:elastic_client/console_http_transport.dart';
 import 'package:elastic_client/elastic_client.dart' as elastic;
 import 'package:flutter_app/screen/detail_screen.dart';
+import 'package:flutter_app/screen/home_screen.dart';
+import 'package:flutter_app/widget/RecipeCard.dart';
 import 'package:provider/provider.dart';
 
+// 검색 방법
 // title:된장찌개,불고기 ingredient:오이,마늘
 
 class SearchScreen extends StatefulWidget {
@@ -21,7 +24,7 @@ class _SearchScreenState extends State<SearchScreen> {
   final Map<String, List<String>> tagDict = {"title": [], "ingredients": []};
 
   var _lastRow = 0;
-  final FETCH_ROW = 10;
+  final fetchRow = 10;
   var stream;
 
   bool init = false;
@@ -34,18 +37,20 @@ class _SearchScreenState extends State<SearchScreen> {
     var response;
 
     if (_filter.text.isNotEmpty) {
-      response = await client.search('recipe', '_doc', createQuery(),
-          source: true, offset: 0, limit: FETCH_ROW * (_lastRow + 1));
+      response = await client
+          .search('recipe', '_doc', createQuery(),
+              source: true, offset: 0, limit: fetchRow * (_lastRow + 1))
+          .timeout(Duration(seconds: 2));
     } else {
       response = await client.search('recipe', '_doc', Query.matchAll(),
           source: true,
           offset: 0,
-          limit: FETCH_ROW * (_lastRow + 1),
+          limit: fetchRow * (_lastRow + 1),
           sort: [
             {
               "title.keyword": {"order": "asc"}
             }
-          ]);
+          ]).timeout(Duration(seconds: 2));
     }
 
     await transport.close();
@@ -62,8 +67,8 @@ class _SearchScreenState extends State<SearchScreen> {
                   "match": {
                     "ingredients.name": {
                       "query": tagDict["ingredients"].join(','),
-                      "analyzer" : "korean_analyzer",
-                      "operator" : "and",
+                      "analyzer": "korean_analyzer",
+                      "operator": "and",
                       "fuzziness": "AUTO"
                     }
                   }
@@ -78,7 +83,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   "match": {
                     "title": {
                       "query": tagDict["title"].join(','),
-                      "analyzer" : "korean_analyzer",
+                      "analyzer": "korean_analyzer",
                       "fuzziness": "AUTO"
                     }
                   }
@@ -110,7 +115,7 @@ class _SearchScreenState extends State<SearchScreen> {
           tagDict[tag].clear();
 
           RegExp regExp = new RegExp(
-              "(${tag}:)" + r"([a-z|A-Z|ㄱ-ㅎ|ㅏ-ㅣ|가-힣|0-9|\s]+,?)*(?=\s|$)");
+              "($tag:)" + r"([a-z|A-Z|ㄱ-ㅎ|ㅏ-ㅣ|가-힣|0-9|\s]+,?)*(?=\s|$)");
           Match match = regExp.firstMatch(_searchText);
 
           if (match != null) {
@@ -156,25 +161,26 @@ class _SearchScreenState extends State<SearchScreen> {
       builder: (context, snapshot) {
         if (snapshot.hasError)
           return Container(
-            child:Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Icon(Icons.error),
-              ],
-            ));
+              child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Icon(Icons.error),
+            ],
+          ));
         if (!snapshot.hasData) return LinearProgressIndicator();
         return _buildList(context, snapshot.data.hits);
       },
     );
   }
 
+  // 레시피 리스트
   Widget _buildList(BuildContext context, List<Doc> snapshots) {
     return ListView.separated(
       controller: _scrollController,
       itemCount: snapshots.length,
       itemBuilder: (context, i) {
-        final currentRow = (i + 1) ~/ FETCH_ROW;
+        final currentRow = (i + 1) ~/ fetchRow;
         if (_lastRow != currentRow) {
           _lastRow = currentRow;
         }
@@ -184,104 +190,103 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
+  // 레시피 리스트 아이템을 만드는 부분
   Widget _buildListItem(BuildContext context, Doc data) {
-    final recipe = Recipe.fromMap(data.doc);
-    return InkWell(
-      child: Container(
-        color: Colors.amberAccent,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Image.network(recipe.thumbnail,
-                width: 100, height: 100, fit: BoxFit.fill),
-            Expanded(
-                child: Text(
-              recipe.title,
-              style: TextStyle(color: Colors.white),
-              overflow: TextOverflow.ellipsis,
-            )),
-          ],
-        ),
-      ),
-      onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(
-            fullscreenDialog: true,
-            builder: (BuildContext context) {
-              return DetailScreen(recipe: recipe);
-            }));
-        print(recipe.toString());
-      },
-    );
+    final recipeData = Recipe.fromMap(data.doc);
+
+    RecipeCard recipeCard = new RecipeCard(
+        recipe: recipeData,
+        onTapCard: () {
+          Navigator.of(context).push(MaterialPageRoute(
+              fullscreenDialog: true,
+              builder: (BuildContext context) {
+                return DetailScreen(recipe: recipeData, onPop: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      fullscreenDialog: true,
+                      builder: (BuildContext context) {
+                        return this.widget;
+                      }));
+                },);
+              }));
+        });
+
+    return recipeCard;
   }
 
   @override
   Widget build(BuildContext context) {
-    if(!init) {
-      RecipeSearcher searcher = Provider.of<RecipeSearcher>(context, listen: false);
-      _filter.text = searcher.GetSearchText();
+    if (!init) {
+      RecipeSearcher searcher =
+          Provider.of<RecipeSearcher>(context, listen: false);
+      _filter.text = searcher.getSearchText();
       init = true;
     }
 
     return Scaffold(
-      appBar: AppBar(title: Container(
-        color: Color(0xFFABBB64),
-        padding: EdgeInsets.fromLTRB(2, 2, 2, 2),
-        child: Row(
-          children: <Widget>[
-            Expanded(
-              child: TextField(
-                focusNode: focusNode,
-                style: TextStyle(
-                  fontSize: 20,
+      appBar: AppBar(
+          title: Container(
+            color: Color(0xFFABBB64),
+            padding: EdgeInsets.fromLTRB(2, 2, 2, 2),
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: TextField(
+                    focusNode: focusNode,
+                    style: TextStyle(
+                      fontSize: 20,
+                    ),
+                    autofocus: true,
+                    controller: _filter,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white12,
+                      prefixIcon: Icon(
+                        Icons.search,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                      suffixIcon: focusNode.hasFocus
+                          ? IconButton(
+                              icon: Icon(Icons.cancel),
+                              color: Colors.white,
+                              onPressed: () {
+                                setState(() {
+                                  _filter.clear();
+                                  focusNode.unfocus();
+                                });
+                              },
+                            )
+                          : Container(),
+                      hintText: '검색',
+                      labelStyle: TextStyle(color: Colors.black),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.transparent),
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.transparent),
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.transparent),
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
+                    ),
+                  ),
                 ),
-                autofocus: true,
-                controller: _filter,
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Colors.white12,
-                  prefixIcon: Icon(
-                    Icons.search,
-                    color: Colors.white,
-                    size: 20,
-                  ),
-                  suffixIcon: focusNode.hasFocus
-                      ? IconButton(
-                    icon: Icon(Icons.cancel),
-                    color: Colors.white,
-                    onPressed: () {
-                      setState(() {
-                        _filter.clear();
-                        focusNode.unfocus();
-                      });
-                    },
-                  )
-                      : Container(),
-                  hintText: '검색',
-                  labelStyle: TextStyle(color: Colors.black),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.transparent),
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.transparent),
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                  ),
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.transparent),
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                  ),
-                ),
-              ),
+              ],
             ),
-          ],
-        ),
-      ),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          }),
-        iconTheme: IconThemeData(color: Colors.white)),
+          ),
+          leading: IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    fullscreenDialog: true,
+                    builder: (BuildContext context) {
+                      return HomeScreen();
+                    }));
+              }),
+          iconTheme: IconThemeData(color: Colors.white)),
       body: Container(
         color: Colors.white,
         child: Column(

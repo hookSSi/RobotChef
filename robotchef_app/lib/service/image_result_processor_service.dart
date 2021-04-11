@@ -14,7 +14,7 @@ class ImageResultProcessorService  {
 
   addRawImage(CameraImage cameraImage) async {
     // num sTime = DateTime.now().millisecondsSinceEpoch;
-    Uint8List imgJpeg = await _yuvChannelling.yuv_transform(cameraImage);
+    Uint8List imgJpeg = await _yuvChannelling.yuvTransform(cameraImage);
     // print("Job took ${(DateTime.now().millisecondsSinceEpoch - sTime)/1000} seconds to complete.");
     _queue.sink.add(imgJpeg);
   }

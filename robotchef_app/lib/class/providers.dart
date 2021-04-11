@@ -1,4 +1,4 @@
-import 'package:flutter_app/class/recipe_serach.dart';
+import 'package:flutter_app/class/recipe_search.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
