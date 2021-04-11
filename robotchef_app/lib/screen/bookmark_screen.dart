@@ -1,15 +1,12 @@
-import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/class/app_constants.dart';
 import 'package:flutter_app/class/elastic_constants.dart';
-import 'package:flutter_app/core/routes.dart';
 import 'package:flutter_app/model/model_recipe.dart';
 import 'package:elastic_client/console_http_transport.dart';
 import 'package:elastic_client/elastic_client.dart' as elastic;
-import 'package:flutter_app/class/auth_state.dart';
 import 'package:flutter_app/screen/detail_screen.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_app/class/app_constants.dart';
+import 'package:flutter_app/class/db_manager.dart';
 
 class BookmarkScreen extends StatefulWidget {
   _BookmarkScreen createState() => _BookmarkScreen();
@@ -25,23 +22,7 @@ class _BookmarkScreen extends State<BookmarkScreen> {
   bool isDisposed = true;
 
   Future<SearchResult> newStream() async {
-    AuthState state = Provider.of<AuthState>(context, listen: false);
-    String user_email = state.user.email;
-    print(user_email);
-
-    var recipe_id_list = [];
-    try {
-      var result = await state.database.listDocuments(
-          collectionId: AppWriteConstants.bookmarkDocId,
-          filters: ['email=$user_email'],
-          limit: FETCH_ROW * (_lastRow + 1));
-
-      var jsonObj = jsonDecode(result.toString());
-      recipe_id_list = List<String>.from(
-          jsonObj['documents'].map((item) => item['recipe_id']));
-    } catch (error) {
-      print(error);
-    }
+    var recipe_id_list = await DBManager.Instance.GetAllData(AppConstants.bookmarkDoc);
 
     final String url = ElasticConstants.endpoint;
     final transport = ConsoleHttpTransport(Uri.parse(url));

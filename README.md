@@ -5,10 +5,12 @@ RobotChef
 
 1. [만드는 이유](#Why?)
 2. [제공 서비스](#제공-서비스)
-3. [RobotChef OD Server](#RobotChef-OD-Server)
+3. [요구사항](#요구사항)
+4. [설치 및 실행](#설치-및-실행)
+5. [RobotChef OD Server](#RobotChef-OD-Server)
     * [모델과 학습](#모델과-학습)
     * [객체 인식](#객체-인식)
-4. [RobotChef App](#RobotChef-App)
+6. [RobotChef App](#RobotChef-App)
     * [회원 관리](#회원-관리)
     * [레시피 검색](#레시피-검색)
     * [이미지 전송](#이미지-전송)
@@ -30,6 +32,21 @@ RobotChef
 ## Example
 
 자취생인 A는 아침을 먹기 위해 요리 준비를 한다. 먼저 냉장고에서 먹을 재료들을 책상에 올린다. 재료들은 다음과 같다. “두부 1모, 양파 1개, 된장, 호박 1개” 그리고 A는 스마트폰을 꺼내어 RobotChef를 실행시킨 뒤 사진 촬영 옵션을 선택하여 재료들이 놓인 모습을 촬영한다. 프로그램이 분석을 끝내어 요리 재료와 연관성이 높은 레시피 목록들을 출력한다. A는 된장찌개를 해보고 싶은 생각이 들기 때문에 “된장” 으로 검색을 한다. 된장찌개의 레시피가 검색되어 해당 레시피를 선택하여 상세 요리 정보를 보며 요리한다. 그리고 레시피가 마음에 든 A는 레시피를 즐겨찾기에 등록한다.
+
+# 요구사항
+
+1. [ElasticSearch](https://github.com/elastic/elasticsearch)
+2. [Appwrite](https://github.com/appwrite/appwrite)
+3. Android Studio
+4. Flutter
+5. Python, opencv_python-4.5.1, Flask
+
+# 설치 및 실행
+1. project clone
+2. ElasticSearch, Appwrite 서버 설치 및 실행
+3. robotchef_flask_server\app.py 실행
+4. robotchef_app를 안드로이드 스튜디오 프로젝트로 열기
+5. 프로젝트를 실행 및 빌드  
 
 # RobotChef OD Server
 
