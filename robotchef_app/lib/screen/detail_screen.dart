@@ -94,8 +94,7 @@ class _DetailScreenState extends State<DetailScreen> {
                   children: <Widget>[
                     // 레시피 제목
                     Container(
-                        child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                        child: Wrap(
                       children: <Widget>[
                         Text(
                           widget.recipe.title,
@@ -261,13 +260,27 @@ class IngredientsWidget extends StatelessWidget {
 
   Widget itemBuilder(BuildContext context, Ingredient ingredient) {
     return new Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.all(Radius.circular(40)),
+        boxShadow: [
+          BoxShadow(
+              color: Colors.grey[500],
+              offset: Offset(4.0, 4.0),
+              blurRadius: 15.0,
+              spreadRadius: 1.0)
+        ],
+      ),
       margin: EdgeInsets.all(8.0),
-      child: Chip(
-        labelPadding: EdgeInsets.all(0.8),
-        backgroundColor: Theme.of(context).accentColor,
-        label: Text(ingredient.amount + " " + ingredient.name,
-            overflow: TextOverflow.visible,
-            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+      child: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Wrap(
+          children: [
+            Text(ingredient.amount + " " + ingredient.name,
+                style:
+                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold))
+          ],
+        ),
       ),
     );
   }
@@ -276,7 +289,6 @@ class IngredientsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     List<TableRow> rows = [];
 
-    print(ingredients.length);
     int rowNum = 3;
     int colNum =
         (ingredients.length ~/ 3) + ((ingredients.length % 3) > 0 ? 1 : 0);
