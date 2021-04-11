@@ -137,7 +137,34 @@ class _DetailScreenState extends State<DetailScreen> {
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
             SliverAppBar(
-              backgroundColor: Colors.white,
+              leading: IconButton(
+                icon: Icon(Icons.arrow_back),
+                 onPressed: () {
+                 Navigator.pop(context);
+               }),
+              actions: [
+                like
+                    ? IconButton(
+                    color: Color(0xFFFD0016),
+                    icon: Icon(Icons.favorite, size: 30),
+                    onPressed: () {
+                      Future<bool> isEnd = removeBookmark();
+                      isEnd.then((value) => setState(() {
+                        like = false;
+                      }));
+                    })
+                    : IconButton(
+                    color: Color(0xFFFD0016),
+                    icon: Icon(Icons.favorite_border, size: 30),
+                    onPressed: () {
+                      Future<bool> isEnd = addBookmark();
+                      isEnd.then((value) => setState(() {
+                        like = true;
+                      }));
+                    }),
+              ],
+              iconTheme: IconThemeData(color: Colors.black),
+              backgroundColor: Color(0xFFABBB64),
               expandedHeight: 200.0,
               floating: false,
               pinned: true,
@@ -156,7 +183,7 @@ class _DetailScreenState extends State<DetailScreen> {
         },
         body: Container(
           color: Color(0xFFFFFFFF),
-          padding: EdgeInsets.only(top: 8.0),
+          padding: EdgeInsets.only(top: 5.0),
           child: SingleChildScrollView(
             physics: BouncingScrollPhysics(),
             child: Material(
@@ -164,7 +191,7 @@ class _DetailScreenState extends State<DetailScreen> {
               child: Column(
                 children: <Widget>[
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Text(
                         widget.recipe.title,
@@ -172,30 +199,14 @@ class _DetailScreenState extends State<DetailScreen> {
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
                             fontSize: 30),
-                        textAlign: TextAlign.center,
                       ),
-                      like
-                          ? IconButton(
-                              color: Color(0xFFFFFFFF),
-                              icon: Icon(Icons.star),
-                              onPressed: () {
-                                Future<bool> isEnd = removeBookmark();
-                                isEnd.then((value) => setState(() {
-                                      like = false;
-                                    }));
-                              })
-                          : IconButton(
-                              color: Color(0xFFFFFFFF),
-                              icon: Icon(Icons.star_border),
-                              onPressed: () {
-                                Future<bool> isEnd = addBookmark();
-                                isEnd.then((value) => setState(() {
-                                      like = true;
-                                    }));
-                              })
                     ],
                   ),
-                  Divider(),
+                  Divider(
+                    height: 30.0,
+                    color: Colors.white,
+                    thickness:  3.0,
+                  ),
                   Text('영양',
                       style: TextStyle(
                           color: Colors.white,
@@ -204,8 +215,12 @@ class _DetailScreenState extends State<DetailScreen> {
                   CalorieWidget(
                     calorie: widget.recipe.calorie,
                   ),
-                  Divider(),
-                  Text('필요한 재료들',
+                  Divider(
+                    height: 30.0,
+                    color: Colors.white,
+                    thickness:  3.0,
+                  ),
+                  Text('필요 재료',
                       style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -213,8 +228,12 @@ class _DetailScreenState extends State<DetailScreen> {
                   IngredientsWidget(
                     ingredients: widget.recipe.ingredients,
                   ),
-                  Divider(),
-                  Text('요리순서',
+                  Divider(
+                    height: 30.0,
+                    color: Colors.white,
+                    thickness:  3.0,
+                  ),
+                  Text('요리 과정',
                       style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -226,6 +245,7 @@ class _DetailScreenState extends State<DetailScreen> {
               ),
             ),
           ),
+          margin: EdgeInsets.only(left:5.0, right:5.0),
         ),
       ),
     );
