@@ -76,7 +76,7 @@ class CirclePainter extends CustomPainter {
 
   CirclePainter(this._fraction) {
     _paint = Paint()
-      ..color = Color(0xFFFFB874)
+      ..color = Color(0xffbf6b11)
       ..strokeWidth = 5.0
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke;
