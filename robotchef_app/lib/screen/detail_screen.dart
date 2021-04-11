@@ -55,7 +55,34 @@ class _DetailScreenState extends State<DetailScreen> {
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
             SliverAppBar(
-              backgroundColor: Colors.white,
+              leading: IconButton(
+                icon: Icon(Icons.arrow_back),
+                 onPressed: () {
+                 Navigator.pop(context);
+               }),
+              actions: [
+                like
+                    ? IconButton(
+                    color: Color(0xFFFD0016),
+                    icon: Icon(Icons.favorite, size: 30),
+                    onPressed: () {
+                      Future<bool> isEnd = removeBookmark();
+                      isEnd.then((value) => setState(() {
+                        like = false;
+                      }));
+                    })
+                    : IconButton(
+                    color: Color(0xFFFD0016),
+                    icon: Icon(Icons.favorite_border, size: 30),
+                    onPressed: () {
+                      Future<bool> isEnd = addBookmark();
+                      isEnd.then((value) => setState(() {
+                        like = true;
+                      }));
+                    }),
+              ],
+              iconTheme: IconThemeData(color: Colors.black),
+              backgroundColor: Color(0xFFABBB64),
               expandedHeight: 200.0,
               floating: false,
               pinned: true,
@@ -74,17 +101,16 @@ class _DetailScreenState extends State<DetailScreen> {
         },
         body: Container(
           color: Color(0xFFFFFFFF),
-          padding: EdgeInsets.only(top: 8.0),
+          padding: EdgeInsets.only(top: 5.0),
           child: SingleChildScrollView(
             physics: BouncingScrollPhysics(),
             child: Material(
               color: Color(0xFFABBB64),
               child: Column(
                 children: <Widget>[
-                  // 레시피 제목
-                  Container(
-                      child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Text(
                         widget.recipe.title,
@@ -92,85 +118,54 @@ class _DetailScreenState extends State<DetailScreen> {
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
                             fontSize: 30),
-                        textAlign: TextAlign.center,
                       ),
-                      like
-                          ? IconButton(
-                              color: Color(0xFFFFFFFF),
-                              icon: Icon(Icons.star),
-                              onPressed: () {
-                                int recipe_id =
-                                    int.tryParse(widget.recipe.recipe_id);
-                                Future<bool> isEnd = removeBookmark(recipe_id);
-                                isEnd.then((value) => setState(() {
-                                      like = false;
-                                    }));
-                              })
-                          : IconButton(
-                              color: Color(0xFFFFFFFF),
-                              icon: Icon(Icons.star_border),
-                              onPressed: () {
-                                int recipe_id =
-                                    int.tryParse(widget.recipe.recipe_id);
-                                Future<bool> isEnd = addBookmark(recipe_id);
-                                isEnd.then((value) => setState(() {
-                                      like = true;
-                                    }));
-                              })
+
                     ],
-                  )),
-                  Divider(),
-                  // 레시피 영양 정보
-                  Container(
-                    child: Column(
-                      children: <Widget>[
-                        Text('영양',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20)),
-                        CalorieWidget(
-                          calorie: widget.recipe.calorie,
-                        ),
-                      ],
-                    ),
                   ),
-                  Divider(),
-                  // 필요한 재료들
-                  Container(
-                    child: Column(
-                      children: <Widget>[
-                        Text('필요한 재료들',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20)),
-                        IngredientsWidget(
-                          ingredients: widget.recipe.ingredients,
-                        ),
-                      ],
-                    ),
+                  Divider(
+                    height: 30.0,
+                    color: Colors.white,
+                    thickness:  3.0,
                   ),
-                  Divider(),
-                  // 레시피 순서
-                  Container(
-                    child: Column(
-                      children: <Widget>[
-                        Text('요리순서',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20)),
-                        RecipeSteps(
-                          instructions: widget.recipe.instructions,
-                        )
-                      ],
-                    ),
+                  Text('영양',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20)),
+                  CalorieWidget(
+                    calorie: widget.recipe.calorie,
                   ),
+                  Divider(
+                    height: 30.0,
+                    color: Colors.white,
+                    thickness:  3.0,
+                  ),
+                  Text('필요 재료',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20)),
+                  IngredientsWidget(
+                    ingredients: widget.recipe.ingredients,
+                  ),
+                  Divider(
+                    height: 30.0,
+                    color: Colors.white,
+                    thickness:  3.0,
+                  ),
+                  Text('요리 과정',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20)),
+                  RecipeSteps(
+                    instructions: widget.recipe.instructions,
+                  )
                 ],
               ),
             ),
           ),
+          margin: EdgeInsets.only(left:5.0, right:5.0),
         ),
       ),
     );

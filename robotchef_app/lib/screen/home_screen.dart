@@ -199,7 +199,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: Container(
                               child: Column(
                                 children: <Widget>[
-                                  Image.asset('images/robothead2.png'),
+                                  Image.asset('images/robotchef.png', width: 300, height: 350)
                                 ],
                               ),
                             ),
@@ -208,7 +208,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       )
                     ],
                   ),
-                  margin: EdgeInsets.only(top:30.0, bottom: 10.0, left: 10.0, right: 10.0),
+                  margin: EdgeInsets.only(top: 20.0, left: 10.0, right: 10.0),
                 ),
                 Expanded(
                     child: Row(
