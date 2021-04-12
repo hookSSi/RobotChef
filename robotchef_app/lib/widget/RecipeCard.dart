@@ -51,9 +51,11 @@ class _RecipeCardState extends State<RecipeCard> {
         },
         child: Icon(
           like ? Icons.favorite : Icons.favorite_border,
+          color: Color(0xFFFD0016)
         ),
+
         elevation: 2.0,
-        fillColor: Theme.of(context).buttonColor,
+        fillColor: Colors.white,
         shape: CircleBorder(),
       );
     }
