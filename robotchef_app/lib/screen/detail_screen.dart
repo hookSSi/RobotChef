@@ -277,9 +277,14 @@ class IngredientsWidget extends StatelessWidget {
         padding: EdgeInsets.all(16.0),
         child: Wrap(
           children: [
-            Text(ingredient.amount + " " + ingredient.name,
+            Align(
+              child: Text(
+                ingredient.name + " " + ingredient.amount,
                 style:
-                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold))
+                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+              ),
+              alignment: Alignment.center,
+            )
           ],
         ),
       ),
