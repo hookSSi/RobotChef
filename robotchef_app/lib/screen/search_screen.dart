@@ -38,11 +38,11 @@ class _SearchScreenState extends State<SearchScreen> {
 
     if (_filter.text.isNotEmpty) {
       response = await client
-          .search('recipe', '_doc', createQuery(),
+          .search('recipe-robotchef', '_doc', createQuery(),
               source: true, offset: 0, limit: fetchRow * (_lastRow + 1))
-          .timeout(Duration(seconds: 2));
+          .timeout(Duration(seconds: 5));
     } else {
-      response = await client.search('recipe', '_doc', Query.matchAll(),
+      response = await client.search('recipe-robotchef', '_doc', Query.matchAll(),
           source: true,
           offset: 0,
           limit: fetchRow * (_lastRow + 1),
@@ -50,8 +50,9 @@ class _SearchScreenState extends State<SearchScreen> {
             {
               "title.keyword": {"order": "asc"}
             }
-          ]).timeout(Duration(seconds: 2));
+          ]).timeout(Duration(seconds: 5));
     }
+    print(response);
 
     await transport.close();
 

@@ -1,3 +1,3 @@
 class ElasticConstants{
-  static const String endpoint = "http://robotchef.shop:9200/";
+  static const String endpoint = "http://elastic:ab4202@robotchef.shop:9200";
 }

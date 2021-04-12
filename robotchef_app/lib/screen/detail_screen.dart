@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_app/model/model_recipe.dart';
-import 'package:flutter_app/screen/search_screen.dart';
 import 'package:flutter_app/widget/circle_indicator.dart';
 import 'package:flutter_app/class/app_constants.dart';
 import 'package:flutter_app/class/db_manager.dart';
@@ -56,7 +55,9 @@ class _DetailScreenState extends State<DetailScreen> {
               actions: [
                 IconButton(
                     color: Color(0xFFFD0016),
-                    icon: like ? Icon(Icons.favorite) : Icon(Icons.favorite_border),
+                    icon: like
+                        ? Icon(Icons.favorite)
+                        : Icon(Icons.favorite_border),
                     onPressed: () {
                       int recipeId = int.tryParse(widget.recipe.recipeId);
                       Future<bool> isEnd = bookmark(recipeId);
@@ -96,17 +97,16 @@ class _DetailScreenState extends State<DetailScreen> {
                   children: <Widget>[
                     // 레시피 제목
                     Container(
-                        child: Wrap(
-                      children: <Widget>[
-                        Text(
-                          widget.recipe.title,
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 30),
-                          textAlign: TextAlign.center,
-                        )
-                    ),
+                        child: Wrap(children: <Widget>[
+                      Text(
+                        widget.recipe.title,
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 30),
+                        textAlign: TextAlign.center,
+                      )
+                    ])),
                     Divider(
                       height: 30.0,
                       color: Colors.white,
@@ -119,16 +119,16 @@ class _DetailScreenState extends State<DetailScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
-                              Text('영양',
+                              Text(
+                                '영양',
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 20),),
+                                    fontSize: 20),
+                              ),
                             ],
                           ),
-                          CalorieWidget(
-                            calorie: widget.recipe.calorie
-                          ),
+                          CalorieWidget(calorie: widget.recipe.calorie),
                         ],
                       ),
                     ),
@@ -151,9 +151,9 @@ class _DetailScreenState extends State<DetailScreen> {
                                       fontSize: 20)),
                             ],
                           ),
-                              IngredientsWidget(
-                                ingredients: widget.recipe.ingredients,
-                              )
+                          IngredientsWidget(
+                            ingredients: widget.recipe.ingredients,
+                          )
                         ],
                       ),
                     ),
@@ -219,7 +219,6 @@ class RecipeSteps extends StatelessWidget {
                     children: <Widget>[
                       CircleAvatar(
                         backgroundColor: Theme.of(context).accentColor,
-
                         child: Text('${index + 1}',
                             style: TextStyle(
                                 color: Colors.black,
