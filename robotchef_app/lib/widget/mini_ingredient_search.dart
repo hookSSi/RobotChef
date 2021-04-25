@@ -34,17 +34,18 @@ class _MiniIngredientSearchState extends State<MiniIngredientSearch> {
 
     if (_filter.text.isNotEmpty) {
       response = await client
-          .search('recipe-robotchef', '_doc', createQuery(),
-          source: true, offset: 0, limit: fetchRow * (_lastRow + 1))
+          .search('ingredients-robotchef', '_doc', createQuery(),
+              source: true, offset: 0, limit: fetchRow * (_lastRow + 1))
           .timeout(Duration(seconds: 5));
     } else {
-      response = await client.search('recipe-robotchef', '_doc', Query.matchAll(),
+      response = await client.search(
+          'ingredients-robotchef', '_doc', Query.matchAll(),
           source: true,
           offset: 0,
           limit: fetchRow * (_lastRow + 1),
           sort: [
             {
-              "title.keyword": {"order": "asc"}
+              "name.sort": {"order": "asc"}
             }
           ]).timeout(Duration(seconds: 5));
     }
@@ -60,11 +61,10 @@ class _MiniIngredientSearchState extends State<MiniIngredientSearch> {
 
     Map<dynamic, dynamic> query = {
       "bool": {
-        "must": _searchText.length > 0
-            ? [
+        "must": [
           {
             "match": {
-              "ingredients.name": {
+              "name": {
                 "query": _searchText,
                 "analyzer": "korean_analyzer",
                 "operator": "and",
@@ -72,9 +72,6 @@ class _MiniIngredientSearchState extends State<MiniIngredientSearch> {
               }
             }
           }
-        ]
-            : [
-          {"match_all": {}}
         ]
       }
     };
@@ -118,12 +115,12 @@ class _MiniIngredientSearchState extends State<MiniIngredientSearch> {
         if (snapshot.hasError)
           return Container(
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Icon(Icons.error),
-                ],
-              ));
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Icon(Icons.error),
+            ],
+          ));
         if (!snapshot.hasData) return LinearProgressIndicator();
         return _buildList(context, snapshot.data.hits);
       },
@@ -148,32 +145,18 @@ class _MiniIngredientSearchState extends State<MiniIngredientSearch> {
 
   // 레시피 리스트 아이템을 만드는 부분
   Widget _buildListItem(BuildContext context, Doc data) {
-    final recipeData = Recipe.fromMap(data.doc);
+    final ingredientData = data.doc;
 
-    RecipeCard recipeCard = new RecipeCard(
-        recipe: recipeData,
-        onTapCard: () {
-          Navigator.of(context).push(MaterialPageRoute(
-              fullscreenDialog: true,
-              builder: (BuildContext context) {
-                return DetailScreen(recipe: recipeData, onPop: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      fullscreenDialog: true,
-                      builder: (BuildContext context) {
-                        return this.widget;
-                      }));
-                },);
-              }));
-        });
+    InputChip chip = new InputChip(label: Text(ingredientData['name']));
 
-    return recipeCard;
+    return chip;
   }
 
   @override
   Widget build(BuildContext context) {
     if (!init) {
       RecipeSearcher searcher =
-      Provider.of<RecipeSearcher>(context, listen: false);
+          Provider.of<RecipeSearcher>(context, listen: false);
       _filter.text = searcher.getSearchText();
       init = true;
     }
@@ -204,15 +187,15 @@ class _MiniIngredientSearchState extends State<MiniIngredientSearch> {
                       ),
                       suffixIcon: focusNode.hasFocus
                           ? IconButton(
-                        icon: Icon(Icons.cancel),
-                        color: Colors.white,
-                        onPressed: () {
-                          setState(() {
-                            _filter.clear();
-                            focusNode.unfocus();
-                          });
-                        },
-                      )
+                              icon: Icon(Icons.cancel),
+                              color: Colors.white,
+                              onPressed: () {
+                                setState(() {
+                                  _filter.clear();
+                                  focusNode.unfocus();
+                                });
+                              },
+                            )
                           : Container(),
                       hintText: '검색',
                       labelStyle: TextStyle(color: Colors.black),

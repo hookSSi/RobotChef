@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_app/class/elastic_constants.dart';
 import 'package:flutter_app/model/model_recipe.dart';
 import 'package:elastic_client/console_http_transport.dart';
@@ -16,6 +17,8 @@ class BookmarkScreen extends StatefulWidget {
 
 class _BookmarkScreen extends State<BookmarkScreen> {
   ScrollController _scrollController = ScrollController();
+  bool _showAppbar = true;
+  bool isScrollingDown = false;
   FocusNode focusNode = FocusNode();
 
   var _lastRow = 0;
@@ -73,10 +76,6 @@ class _BookmarkScreen extends State<BookmarkScreen> {
   @override
   void initState() {
     super.initState();
-    stream = newStream();
-  }
-
-  _BookmarkScreen() {
     _lastRow = 0;
 
     _scrollController.addListener(() {
@@ -86,7 +85,27 @@ class _BookmarkScreen extends State<BookmarkScreen> {
           stream = newStream();
         });
       }
+
+      if (_scrollController.position.userScrollDirection ==
+          ScrollDirection.reverse) {
+        if (!isScrollingDown) {
+          isScrollingDown = true;
+          _showAppbar = false;
+          setState(() {});
+        }
+      }
+
+      if (_scrollController.position.userScrollDirection ==
+          ScrollDirection.forward) {
+        if (isScrollingDown) {
+          isScrollingDown = false;
+          _showAppbar = true;
+          setState(() {});
+        }
+      }
     });
+
+    stream = newStream();
   }
 
   Widget _buildBody(BuildContext context) {
@@ -140,23 +159,29 @@ class _BookmarkScreen extends State<BookmarkScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar:
-            AppBar(title: Text('즐겨찾기  ', style: TextStyle(color: Colors.white)),
-              leading: IconButton(
-                  icon: Icon(Icons.arrow_back),
-                  onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        fullscreenDialog: true,
-                        builder: (BuildContext context) {
-                          return HomeScreen();
-                        }));
-                  }),
-              iconTheme: IconThemeData(color: Colors.white)),
-        body: Container(
-            child: Column(
-          children: <Widget>[
-            Expanded(child: _buildBody(context)),
-          ],
-        )));
+        body: SafeArea(
+          child: Column(
+            children: <Widget>[
+              AnimatedContainer(
+                height: _showAppbar ? 56.0 : 0.0,
+                duration: Duration(milliseconds: 200),
+                child: AppBar(title: Text('즐겨찾기  ', style: TextStyle(color: Colors.white)),
+                    leading: IconButton(
+                        icon: Icon(Icons.arrow_back),
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              fullscreenDialog: true,
+                              builder: (BuildContext context) {
+                                return HomeScreen();
+                              }));
+                        }),
+                    iconTheme: IconThemeData(color: Colors.white)),),
+              Padding(
+                padding: EdgeInsets.all(12),
+              ),
+              Expanded(child: _buildBody(context))
+            ],
+          ),
+        ));
   }
 }

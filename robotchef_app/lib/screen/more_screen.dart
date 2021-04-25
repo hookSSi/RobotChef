@@ -42,14 +42,15 @@ class _MoreScreenState extends State<MoreScreen> {
     ],
     'like': false
   });
-
+  
+  // 재료 추가 창
   createChooseDialogue(BuildContext context) {
     return showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
             title: Text(
-              "재료 선택",
+              "재료 추가",
               style: TextStyle(color: Colors.black),
             ),
             content: MiniIngredientSearch(),

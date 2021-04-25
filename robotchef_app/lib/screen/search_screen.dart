@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_app/class/elastic_constants.dart';
 import 'package:flutter_app/class/recipe_search.dart';
 import 'package:flutter_app/model/model_recipe.dart';
@@ -20,6 +21,8 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _filter = TextEditingController();
   ScrollController _scrollController = ScrollController();
+  bool _showAppbar = true;
+  bool isScrollingDown = false;
   FocusNode focusNode = FocusNode();
   final Map<String, List<String>> tagDict = {"title": [], "ingredients": []};
 
@@ -42,13 +45,14 @@ class _SearchScreenState extends State<SearchScreen> {
               source: true, offset: 0, limit: fetchRow * (_lastRow + 1))
           .timeout(Duration(seconds: 5));
     } else {
-      response = await client.search('recipe-robotchef', '_doc', Query.matchAll(),
+      response = await client.search(
+          'recipe-robotchef', '_doc', Query.matchAll(),
           source: true,
           offset: 0,
           limit: fetchRow * (_lastRow + 1),
           sort: [
             {
-              "title.keyword": {"order": "asc"}
+              "title.sort": {"order": "asc"}
             }
           ]).timeout(Duration(seconds: 5));
     }
@@ -103,6 +107,35 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   void initState() {
     super.initState();
+
+    _initFilter();
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        setState(() {
+          stream = newStream();
+        });
+      }
+
+      if (_scrollController.position.userScrollDirection ==
+          ScrollDirection.reverse) {
+        if (!isScrollingDown) {
+          isScrollingDown = true;
+          _showAppbar = false;
+          setState(() {});
+        }
+      }
+
+      if (_scrollController.position.userScrollDirection ==
+          ScrollDirection.forward) {
+        if (isScrollingDown) {
+          isScrollingDown = false;
+          _showAppbar = true;
+          setState(() {});
+        }
+      }
+    });
+
     stream = newStream();
   }
 
@@ -144,16 +177,11 @@ class _SearchScreenState extends State<SearchScreen> {
     });
   }
 
-  _SearchScreenState() {
-    _initFilter();
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels ==
-          _scrollController.position.maxScrollExtent) {
-        setState(() {
-          stream = newStream();
-        });
-      }
-    });
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    _scrollController.removeListener(() {});
+    super.dispose();
   }
 
   Widget _buildBody(BuildContext context) {
@@ -201,13 +229,16 @@ class _SearchScreenState extends State<SearchScreen> {
           Navigator.of(context).push(MaterialPageRoute(
               fullscreenDialog: true,
               builder: (BuildContext context) {
-                return DetailScreen(recipe: recipeData, onPop: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      fullscreenDialog: true,
-                      builder: (BuildContext context) {
-                        return this.widget;
-                      }));
-                },);
+                return DetailScreen(
+                  recipe: recipeData,
+                  onPop: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        fullscreenDialog: true,
+                        builder: (BuildContext context) {
+                          return this.widget;
+                        }));
+                  },
+                );
               }));
         });
 
@@ -223,79 +254,124 @@ class _SearchScreenState extends State<SearchScreen> {
       init = true;
     }
 
+    List<String> _dynamicChips = [
+      'Health',
+      'Food',
+      'Nature',
+      'Health',
+      'Food',
+      'Nature',
+      'Health',
+      'Food',
+      'Nature',
+      'Health',
+      'Food',
+      'Nature',
+      'Health',
+      'Food',
+      'Nature'
+    ];
+
     return Scaffold(
-      appBar: AppBar(
-          title: Container(
-            color: Color(0xFFABBB64),
-            padding: EdgeInsets.fromLTRB(2, 2, 2, 2),
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  child: TextField(
-                    focusNode: focusNode,
-                    style: TextStyle(
-                      fontSize: 20,
-                    ),
-                    autofocus: true,
-                    controller: _filter,
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Colors.white12,
-                      prefixIcon: Icon(
-                        Icons.search,
-                        color: Colors.white,
-                        size: 20,
-                      ),
-                      suffixIcon: focusNode.hasFocus
-                          ? IconButton(
-                              icon: Icon(Icons.cancel),
-                              color: Colors.white,
-                              onPressed: () {
-                                setState(() {
-                                  _filter.clear();
-                                  focusNode.unfocus();
-                                });
-                              },
-                            )
-                          : Container(),
-                      hintText: '검색',
-                      labelStyle: TextStyle(color: Colors.black),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.transparent),
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.transparent),
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                      ),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.transparent),
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          leading: IconButton(
-              icon: Icon(Icons.arrow_back),
-              onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    fullscreenDialog: true,
-                    builder: (BuildContext context) {
-                      return HomeScreen();
-                    }));
-              }),
-          iconTheme: IconThemeData(color: Colors.white)),
-      body: Container(
-        color: Colors.white,
+      body: SafeArea(
         child: Column(
           children: <Widget>[
+            AnimatedContainer(
+              height: _showAppbar ? 112.0 : 0.0,
+              duration: Duration(milliseconds: 200),
+              child: Column(
+                children: <Widget>[
+                  AppBar(
+                      title: Container(
+                        color: Color(0xFFABBB64),
+                        padding: EdgeInsets.fromLTRB(2, 2, 2, 2),
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: TextField(
+                                focusNode: focusNode,
+                                style: TextStyle(
+                                  fontSize: 20,
+                                ),
+                                autofocus: true,
+                                controller: _filter,
+                                decoration: InputDecoration(
+                                  filled: true,
+                                  fillColor: Colors.white12,
+                                  prefixIcon: Icon(
+                                    Icons.search,
+                                    color: Colors.white,
+                                    size: 20,
+                                  ),
+                                  suffixIcon: IconButton(
+                                    icon: Icon(Icons.cancel),
+                                    color: Colors.white,
+                                    onPressed: () {
+                                      setState(() {
+                                        _filter.clear();
+                                        focusNode.unfocus();
+                                      });
+                                    },
+                                  ),
+                                  hintText: '검색',
+                                  labelStyle: TextStyle(color: Colors.black),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: Colors.transparent),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10)),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: Colors.transparent),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10)),
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: Colors.transparent),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10)),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      leading: IconButton(
+                          icon: Icon(Icons.arrow_back),
+                          onPressed: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                fullscreenDialog: true,
+                                builder: (BuildContext context) {
+                                  return HomeScreen();
+                                }));
+                          }),
+                      iconTheme: IconThemeData(color: Colors.white)),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border(
+                            bottom:
+                                BorderSide(width: 1, color: Colors.black12)),
+                      ),
+                      child: Row(
+                        children: List<Widget>.generate(_dynamicChips.length, (index) {
+                          return Chip(label: Text(_dynamicChips[index]),);
+                        }),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
             Padding(
               padding: EdgeInsets.all(12),
             ),
-            Expanded(child: _buildBody(context)),
+            Expanded(child: _buildBody(context))
           ],
         ),
       ),
