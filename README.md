@@ -11,7 +11,6 @@ RobotChef
     * [모델과 학습](#모델과-학습)
     * [객체 인식](#객체-인식)
 6. [RobotChef App](#RobotChef-App)
-    * [회원 관리](#회원-관리)
     * [레시피 검색](#레시피-검색)
     * [이미지 전송](#이미지-전송)
 
@@ -36,17 +35,17 @@ RobotChef
 # 요구사항
 
 1. [ElasticSearch](https://github.com/elastic/elasticsearch)
-2. [Appwrite](https://github.com/appwrite/appwrite)
 3. Android Studio
 4. Flutter
-5. Python, opencv_python-4.5.1, Flask
+5. Python, opencv_python-4.5.1(CUDA), Flask
 
 # 설치 및 실행
 1. project clone
-2. ElasticSearch, Appwrite 서버 설치 및 실행
-3. robotchef_flask_server\app.py 실행
-4. robotchef_app를 안드로이드 스튜디오 프로젝트로 열기
-5. 프로젝트를 실행 및 빌드  
+2. ElasticSearch 서버 설치 및 실행
+3. opencv_python-4.5.1(CUDA) 직접 빌드하여 python 라이브러리로 추가
+4. robotchef_flask_server\app.py 실행
+5. robotchef_app를 안드로이드 스튜디오 프로젝트로 열기
+6. 프로젝트를 실행 및 빌드  
 
 # RobotChef OD Server
 
@@ -85,24 +84,22 @@ darknet.exe detector map data/obj.data cfg/yolov4-custom.cfg backup/yolov4-custo
 3. yolov4-custom_best.weights : 학습된 결과 weight 파일
 
 ## 객체 인식
-서버 구축을 위한 Python 프레임워크인 Flask 사용하여 모델을 서버에 올린뒤 dnn을 지원하는 opencv_python-4.5.1을 사용하여 POST 요청으로 오는 이미지 파일을 입력으로 객체를 탐지합니다.
+서버 구축을 위한 Python 프레임워크인 Flask 사용하여 모델을 서버에 올린뒤 dnn을 지원하는 opencv_python-4.5.1(CUDA)을 사용하여 POST 요청으로 오는 이미지 파일을 입력으로 객체를 탐지합니다.
+
+이미지의 크기에 따라 다르지만 탐지 시간에 걸리는 시간은 약 0.02로 45FPS 정도됩니다.
 
 # RobotChef App
 1. Flutter로 구현한 어플 Http 통신으로는 Dio 플러그인 사용
-
-## 회원 관리
-Docker에서 다양한 플랫폼을 위한 Open-Source backend 서버인 [Appwrite](https://github.com/appwrite/appwrite)를 설치하여 회원 관리로 사용하고 있습니다.
-
-회원 관리의 주요 기능으로는 다음과 같습니다.
-
-* 회원가입
-* 로그인
-* 레시피 즐겨찾기
 
 ## 레시피 검색
 Docker에서 Open-Source 검색 엔진 중 하나인 [ElasticSearch](https://github.com/elastic/elasticsearch)를 설치하여 검색 서버 및 레시피 DB로 사용하고 있습니다.
 
 레시피들에 대한 정보는 [해먹남녀](https://haemukja.com/)에서 크롤링하여 사용하고 있고 갯수는 4,617개 입니다.
+
+## 레시피 즐겨찾기
+앱의 로컬 저장소에 DB를 생성하여 레시피ID를 저장하는 방식으로 즐겨찾기에 등록합니다.
+
+라이브러리는 sqflite를 사용했습니다.
 
 ## 이미지 전송
 앱에서 카메라의 이미지를 실시간으로 전송하려면 Yuv 포멧을 Jpeg로 변환하여 할 필요가 있습니다. 

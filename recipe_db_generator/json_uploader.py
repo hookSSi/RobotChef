@@ -2,13 +2,13 @@ import time
 import requests
 import tqdm
 import json
-import firebase_admin
 from multiprocessing import Pool, Manager
 from elasticsearch import Elasticsearch
+from datetime import datetime
 
 # 레시피 json을 elasticsearch 서버에 업로드한다.
 
-es = Elasticsearch('localhost:9200')
+es = Elasticsearch("http://username:password@robotchef.shop:9200")
 
 def remove_dupe_dicts(json_data):
     dup_check_dict = dict()
@@ -38,9 +38,8 @@ def insert_data_list():
         pass
 
 def insert_data(doc):
-    index = "recipe"
+    index = "recipe-robotchef"
     es.index(index=index, doc_type="_doc", body=doc)
 
 if __name__ == '__main__':
     insert_data_list()
-    

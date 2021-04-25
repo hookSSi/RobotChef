@@ -200,7 +200,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: Container(
                               child: Column(
                                 children: <Widget>[
-                                  Image.asset('images/robotchef.png', width: 350, height: 350),
+                                  Image.asset('images/robotchef.png', width: MediaQuery.of(context).size.width * 0.8, height: MediaQuery.of(context).size.height * 0.5),
                                 ],
                               ),
                             ),

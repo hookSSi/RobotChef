@@ -33,7 +33,7 @@ class _BookmarkScreen extends State<BookmarkScreen> {
     var response;
 
     response = await client.search(
-        'recipe', '_doc', createQuery(recipeIdList),
+        'recipe-robotchef', '_doc', createQuery(recipeIdList),
         source: true,
         offset: 0,
         limit: fetchRow * (_lastRow + 1),
@@ -41,7 +41,7 @@ class _BookmarkScreen extends State<BookmarkScreen> {
           {
             "title.keyword": {"order": "asc"}
           }
-        ]).timeout(Duration(seconds: 2));
+        ]).timeout(Duration(seconds: 5));
 
     await transport.close();
 
@@ -53,8 +53,8 @@ class _BookmarkScreen extends State<BookmarkScreen> {
       "bool": {
         "must": [
           {
-            "match": {
-              "recipe_id": {"query": "" + recipeIdList.join(", ")}
+            "terms": {
+              "recipe_id": recipeIdList
             }
           }
         ]
