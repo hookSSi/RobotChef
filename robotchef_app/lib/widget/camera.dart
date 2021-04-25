@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
@@ -10,7 +11,7 @@ import 'dart:math' as math;
 
 import 'package:wakelock/wakelock.dart';
 
-typedef void Callback(List<dynamic> list, int h, int w, int time);
+typedef void Callback(List<dynamic> list, File imgFile, int h, int w, int time);
 
 class Camera extends StatefulWidget {
   final List<CameraDescription> cameras;
@@ -112,8 +113,9 @@ class _CameraState extends State<Camera>
 
       int startTime = new DateTime.now().millisecondsSinceEpoch;
 
+      MultipartFile imgFile = MultipartFile.fromBytes(img, filename: 'uploadImage.jpeg');
       FormData formData = new FormData.fromMap({
-        "image" : MultipartFile.fromBytes(img, filename: 'uploadImage.jpeg')
+        "image" : imgFile
       });
 
       try{
@@ -122,7 +124,7 @@ class _CameraState extends State<Camera>
         if(response.statusCode == 200){
               var result = response.data;
               var currentTime = new DateTime.now().millisecondsSinceEpoch;
-              widget.setRecognitions(result['data'], result['height'], result['width'], currentTime);
+              widget.setRecognitions(result['data'], File.fromRawPath(img), result['height'], result['width'], currentTime);
               print("Job took ${(currentTime - startTime) / 1000} seconds");
         }
       }

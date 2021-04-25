@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/model/model_recipe.dart';
 import 'package:flutter_app/screen/detail_screen.dart';
+import 'package:flutter_app/widget/mini_ingredient_search.dart';
 
 class MoreScreen extends StatefulWidget {
   _MoreScreenState createState() => _MoreScreenState();
@@ -42,6 +43,21 @@ class _MoreScreenState extends State<MoreScreen> {
     'like': false
   });
 
+  createChooseDialogue(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(
+              "재료 선택",
+              style: TextStyle(color: Colors.black),
+            ),
+            content: MiniIngredientSearch(),
+            backgroundColor: Colors.white,
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,9 +72,10 @@ class _MoreScreenState extends State<MoreScreen> {
       body: ListView(
         padding: const EdgeInsets.all(16.0),
         children: <Widget>[
+          // 레시피 디테일 UI 테스트 용
           Center(
               child: Container(
-            child: Hero(
+                  child: Hero(
                 tag: recipe.recipeId,
                 child: Material(
                   child: IconButton(
@@ -73,7 +90,17 @@ class _MoreScreenState extends State<MoreScreen> {
                     },
                   ),
                 )),
-          ))
+          ),),
+          // 미니 재료 검색 dialog 테스트용
+          Center(
+            child: Container(
+                child: IconButton(
+                  icon: Icon(Icons.info),
+                  onPressed: () {
+                    createChooseDialogue(context);
+                  },
+                )
+            ),)
         ],
       ),
     );

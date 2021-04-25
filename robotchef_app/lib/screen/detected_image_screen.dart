@@ -125,6 +125,9 @@ class _DetectedImageScreenState extends State<DetectedImageScreen> {
                 screenH,
                 screen.width,
               ),
+              ListView(
+                scrollDirection: Axis.horizontal,
+              ),
               Positioned.fill(
                   child: Align(
                 alignment: Alignment.bottomCenter,
