@@ -9,6 +9,8 @@ class MoreScreen extends StatefulWidget {
 }
 
 class _MoreScreenState extends State<MoreScreen> {
+  List<String> ingredientList = [];
+
   // recip 정보 테스트 용
   Recipe recipe = Recipe.fromMap({
     'recipe_id': "44",
@@ -53,7 +55,7 @@ class _MoreScreenState extends State<MoreScreen> {
               "재료 추가",
               style: TextStyle(color: Colors.black),
             ),
-            content: MiniIngredientSearch(),
+            content: MiniIngredientSearch(ingredientList: ingredientList,),
             backgroundColor: Colors.white,
           );
         });

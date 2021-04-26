@@ -9,14 +9,14 @@ import 'package:flutter_app/screen/detail_screen.dart';
 import 'package:flutter_app/class/app_constants.dart';
 import 'package:flutter_app/class/db_manager.dart';
 import 'package:flutter_app/screen/home_screen.dart';
-import 'package:flutter_app/widget/RecipeCard.dart';
+import 'package:flutter_app/widget/recipe_card.dart';
 
 class BookmarkScreen extends StatefulWidget {
   _BookmarkScreen createState() => _BookmarkScreen();
 }
 
 class _BookmarkScreen extends State<BookmarkScreen> {
-  ScrollController _scrollController = ScrollController();
+  ScrollController _scrollController;
   bool _showAppbar = true;
   bool isScrollingDown = false;
   FocusNode focusNode = FocusNode();
@@ -68,16 +68,11 @@ class _BookmarkScreen extends State<BookmarkScreen> {
   }
 
   @override
-  void dispose() {
-    super.dispose();
-    isDisposed = true;
-  }
-
-  @override
   void initState() {
     super.initState();
     _lastRow = 0;
 
+    _scrollController = new ScrollController();
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
@@ -106,6 +101,14 @@ class _BookmarkScreen extends State<BookmarkScreen> {
     });
 
     stream = newStream();
+  }
+
+  @override
+  void dispose() {
+    isDisposed = true;
+    _scrollController.removeListener(() {});
+    _scrollController.dispose();
+    super.dispose();
   }
 
   Widget _buildBody(BuildContext context) {

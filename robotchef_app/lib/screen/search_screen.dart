@@ -8,7 +8,7 @@ import 'package:elastic_client/console_http_transport.dart';
 import 'package:elastic_client/elastic_client.dart' as elastic;
 import 'package:flutter_app/screen/detail_screen.dart';
 import 'package:flutter_app/screen/home_screen.dart';
-import 'package:flutter_app/widget/RecipeCard.dart';
+import 'package:flutter_app/widget/recipe_card.dart';
 import 'package:provider/provider.dart';
 
 // 검색 방법
@@ -25,6 +25,7 @@ class _SearchScreenState extends State<SearchScreen> {
   bool isScrollingDown = false;
   FocusNode focusNode = FocusNode();
   final Map<String, List<String>> tagDict = {"title": [], "ingredients": []};
+  final Map<String, List<String>> ingredientsDict = {"ingredients": []};
 
   var _lastRow = 0;
   final fetchRow = 10;
@@ -39,7 +40,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
     var response;
 
-    if (_filter.text.isNotEmpty) {
+    if (tagDict["title"].length > 0 || ingredientsDict["ingredients"].length > 0) {
       response = await client
           .search('recipe-robotchef', '_doc', createQuery(),
               source: true, offset: 0, limit: fetchRow * (_lastRow + 1))
@@ -66,12 +67,12 @@ class _SearchScreenState extends State<SearchScreen> {
   Map<dynamic, dynamic> createQuery() {
     Map<dynamic, dynamic> query = {
       "bool": {
-        "must": tagDict["ingredients"].length > 0
+        "must": ingredientsDict["ingredients"].length > 0
             ? [
                 {
                   "match": {
                     "ingredients.name": {
-                      "query": tagDict["ingredients"].join(','),
+                      "query": ingredientsDict["ingredients"].join(','),
                       "analyzer": "korean_analyzer",
                       "operator": "and",
                       "fuzziness": "AUTO"
@@ -101,6 +102,7 @@ class _SearchScreenState extends State<SearchScreen> {
       }
     };
 
+    print(query);
     return query;
   }
 
@@ -147,22 +149,24 @@ class _SearchScreenState extends State<SearchScreen> {
         for (String tag in tagDict.keys) {
           // 초기화
           tagDict[tag].clear();
-
+          
+          // tagDict에 있는 tag 인식
           RegExp regExp = new RegExp(
-              "($tag:)" + r"([a-z|A-Z|ㄱ-ㅎ|ㅏ-ㅣ|가-힣|0-9|\s]+,?)*(?=\s|$)");
+              "($tag:)" + r"([a-z|A-Z|ㄱ-ㅎ|ㅏ-ㅣ|가-힣|0-9|()|\s]+,?)*(?=\s|$)");
           Match match = regExp.firstMatch(_searchText);
 
+          // tag 내용 인식
           if (match != null) {
-            regExp = new RegExp(r"([a-z|A-Z|ㄱ-ㅎ|ㅏ-ㅣ|가-힣|0-9|\s]+)(?=,|$)");
+            regExp = new RegExp(r"([a-z|A-Z|ㄱ-ㅎ|ㅏ-ㅣ|가-힣|0-9|()|\s]+)(?=,|$)");
             for (Match match in regExp.allMatches(match.group(0))) {
               tagDict[tag].add(match.group(0));
             }
             print("dict : " + tagDict[tag].toString());
           }
 
-          // title 태그가 없으면
+          // title 태그가 없으면 title을 기본으로 함
           if (match == null && tag == "title") {
-            regExp = new RegExp(r"^([a-z|A-Z|ㄱ-ㅎ|ㅏ-ㅣ|가-힣|0-9|\s]+)(?=\s|$)");
+            regExp = new RegExp(r"^([a-z|A-Z|ㄱ-ㅎ|ㅏ-ㅣ|가-힣|0-9|()|\s]+)(?=\s|$)");
             match = regExp.firstMatch(_searchText);
 
             if (match != null) {
@@ -177,10 +181,36 @@ class _SearchScreenState extends State<SearchScreen> {
     });
   }
 
+  void AddIngredients(){
+    setState(() {
+      String _searchText = _filter.text;
+
+      // tagDict에 있는 tag 인식
+      RegExp regExp = new RegExp(
+          "(ingredients:)" + r"([a-z|A-Z|ㄱ-ㅎ|ㅏ-ㅣ|가-힣|0-9|()|\s]+,?)*(?=\s|$)");
+      Match match = regExp.firstMatch(_searchText);
+
+      // tag 내용 인식
+      if (match != null) {
+        regExp = new RegExp(r"([a-z|A-Z|ㄱ-ㅎ|ㅏ-ㅣ|가-힣|0-9|()|\s]+)(?=,|$)");
+        for (Match matchedThing in regExp.allMatches(match.group(0))) {
+          if(!ingredientsDict["ingredients"].contains(matchedThing.group(0))){
+            ingredientsDict["ingredients"].add(matchedThing.group(0));
+          }
+        }
+        print("dict : " + ingredientsDict["ingredients"].toString());
+      }
+      String newText = _filter.text.replaceAll(RegExp(r"ingredients:([a-z|A-Z|ㄱ-ㅎ|ㅏ-ㅣ|가-힣|()|\s]+,?)*(?=,|$)"), "");
+      _filter.text = newText;
+      _lastRow = 0;
+      stream = newStream();
+    });
+  }
+
   @override
   void dispose() {
-    _scrollController.dispose();
     _scrollController.removeListener(() {});
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -251,26 +281,10 @@ class _SearchScreenState extends State<SearchScreen> {
       RecipeSearcher searcher =
           Provider.of<RecipeSearcher>(context, listen: false);
       _filter.text = searcher.getSearchText();
+      AddIngredients();
+      searcher.clear();
       init = true;
     }
-
-    List<String> _dynamicChips = [
-      'Health',
-      'Food',
-      'Nature',
-      'Health',
-      'Food',
-      'Nature',
-      'Health',
-      'Food',
-      'Nature',
-      'Health',
-      'Food',
-      'Nature',
-      'Health',
-      'Food',
-      'Nature'
-    ];
 
     return Scaffold(
       body: SafeArea(
@@ -290,10 +304,10 @@ class _SearchScreenState extends State<SearchScreen> {
                             Expanded(
                               child: TextField(
                                 focusNode: focusNode,
+                                autofocus: _filter.text.length > 0 ? true : false,
                                 style: TextStyle(
                                   fontSize: 20,
                                 ),
-                                autofocus: true,
                                 controller: _filter,
                                 decoration: InputDecoration(
                                   filled: true,
@@ -334,6 +348,10 @@ class _SearchScreenState extends State<SearchScreen> {
                                         BorderRadius.all(Radius.circular(10)),
                                   ),
                                 ),
+                                onSubmitted: (_) {
+                                  AddIngredients();
+                                  FocusScope.of(context).unfocus();
+                                },
                               ),
                             ),
                           ],
@@ -352,15 +370,20 @@ class _SearchScreenState extends State<SearchScreen> {
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border(
-                            bottom:
-                                BorderSide(width: 1, color: Colors.black12)),
-                      ),
                       child: Row(
-                        children: List<Widget>.generate(_dynamicChips.length, (index) {
-                          return Chip(label: Text(_dynamicChips[index]),);
+                        children: List<Widget>.generate(
+                            ingredientsDict["ingredients"].length, (index) {
+                          return InputChip(
+                            label: Text(ingredientsDict["ingredients"][index]),
+                            onDeleted: () {
+                              setState(() {
+                                _filter.clear();
+                                ingredientsDict["ingredients"].removeAt(index);
+                                _lastRow = 0;
+                                stream = newStream();
+                              });
+                            },
+                          );
                         }),
                       ),
                     ),

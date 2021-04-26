@@ -6,6 +6,7 @@ import 'package:flutter_app/class/recipe_search.dart';
 import 'package:flutter_app/core/routes.dart';
 import 'package:flutter_app/widget/bndbox.dart';
 import 'package:flutter_app/class/yolo_server_constants.dart';
+import 'package:flutter_app/widget/mini_ingredient_search.dart';
 import 'package:provider/provider.dart';
 
 class DetectedImageScreen extends StatefulWidget {
@@ -19,6 +20,7 @@ class DetectedImageScreen extends StatefulWidget {
 
 class _DetectedImageScreenState extends State<DetectedImageScreen> {
   List<dynamic> _recognitions;
+  List<String> ingredients;
   int _imageHeight = 0;
   int _imageWidth = 0;
   bool _isProcessing = false;
@@ -69,8 +71,11 @@ class _DetectedImageScreenState extends State<DetectedImageScreen> {
       if (response.statusCode == 200) {
         var result = response.data;
         setRecognitions(result['data'], result['height'], result['width']);
-        print(
-            "Job took ${(new DateTime.now().millisecondsSinceEpoch - startTime) / 1000} seconds");
+        print("Job took ${(new DateTime.now().millisecondsSinceEpoch - startTime) / 1000} seconds");
+        ingredients = List<String>.from(
+            _recognitions
+                .map((item) => item['detectedClass'])
+                .toList());
       }
     } catch (error) {
       print(error.message);
@@ -82,11 +87,27 @@ class _DetectedImageScreenState extends State<DetectedImageScreen> {
     });
   }
 
+  // 재료 추가 창
+  createChooseDialogue(BuildContext context, List<String> ingredientList) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(
+              "재료 추가",
+              style: TextStyle(color: Colors.black),
+            ),
+            content: MiniIngredientSearch(ingredientList: ingredientList,),
+            backgroundColor: Colors.white,
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_isProcessing) {
       return Scaffold(
-          backgroundColor: Colors.grey,
+          backgroundColor: Color(0xFFEEE8AA),
           body: Center(
               child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -111,7 +132,7 @@ class _DetectedImageScreenState extends State<DetectedImageScreen> {
       double paddingTop = (screen.height - screenH) / 2;
 
       return Scaffold(
-          backgroundColor: Colors.grey,
+          backgroundColor: Color(0xFFEEE8AA),
           body: Stack(
             children: <Widget>[
               OverflowBox(
@@ -138,16 +159,21 @@ class _DetectedImageScreenState extends State<DetectedImageScreen> {
                       onPressed: () {
                         RecipeSearcher searcher =
                             Provider.of<RecipeSearcher>(context, listen: false);
-                        List<String> ingredients = List<String>.from(
-                            _recognitions
-                                .map((item) => item['detectedClass'])
-                                .toList());
                         searcher.addIngredients(ingredients);
                         Navigator.pop(context);
                         Navigator.pushNamed(context, AppRoutes.search);
                       },
                       child: Text(
                         "확인",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        createChooseDialogue(context, ingredients);
+                      },
+                      child: Text(
+                        "식재료 추가",
                         style: TextStyle(color: Colors.white),
                       ),
                     ),

@@ -7,11 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter_app/class/yolo_server_constants.dart';
 import 'package:flutter_app/service/image_result_processor_service.dart';
+import 'package:path_provider/path_provider.dart';
 import 'dart:math' as math;
 
 import 'package:wakelock/wakelock.dart';
 
-typedef void Callback(List<dynamic> list, File imgFile, int h, int w, int time);
+typedef void Callback(List<dynamic> list, int h, int w, int time);
 
 class Camera extends StatefulWidget {
   final List<CameraDescription> cameras;
@@ -31,6 +32,7 @@ class _CameraState extends State<Camera>
   CameraController controller;
   bool _isDetecting = false;
   bool _isProcessing = false;
+  CameraImage _savedImage;
 
   @override
   void initState() {
@@ -113,6 +115,10 @@ class _CameraState extends State<Camera>
 
       int startTime = new DateTime.now().millisecondsSinceEpoch;
 
+      final tempDir = await getTemporaryDirectory();
+      final file = await new File('${tempDir.path}/image.jpg').create();
+      file.writeAsBytesSync(img);
+
       MultipartFile imgFile = MultipartFile.fromBytes(img, filename: 'uploadImage.jpeg');
       FormData formData = new FormData.fromMap({
         "image" : imgFile
@@ -124,7 +130,8 @@ class _CameraState extends State<Camera>
         if(response.statusCode == 200){
               var result = response.data;
               var currentTime = new DateTime.now().millisecondsSinceEpoch;
-              widget.setRecognitions(result['data'], File.fromRawPath(img), result['height'], result['width'], currentTime);
+              // cameara_screen에 사진 전달
+              widget.setRecognitions(result['data'], result['height'], result['width'], currentTime);
               print("Job took ${(currentTime - startTime) / 1000} seconds");
         }
       }
@@ -141,6 +148,7 @@ class _CameraState extends State<Camera>
   void _processCameraImage(CameraImage image) async {
     if (_isProcessing) return;
     _isProcessing = true;
+    _savedImage = image;
     // 이미지 처리
     await Future.delayed(Duration(milliseconds: widget.delayTime), () => _imageResultProcessorService.addRawImage(image));
   }

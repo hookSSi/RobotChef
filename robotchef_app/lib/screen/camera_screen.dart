@@ -1,9 +1,12 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter_app/screen/detected_image_screen.dart';
+import 'package:flutter_app/service/yuv_chanelling.dart';
 import 'package:flutter_app/widget/camera.dart';
 import 'package:flutter_app/widget/bndbox.dart';
+import 'package:path_provider/path_provider.dart';
 
 class CameraScreen extends StatefulWidget {
   final List<CameraDescription> cameras;
@@ -19,7 +22,6 @@ class _CameraScreenState extends State<CameraScreen> {
   Set<String> _prevClasses;
   int _duration;
   int _lastTime;
-  File _imgFile;
   int _imageHeight = 0;
   int _imageWidth = 0;
 
@@ -28,10 +30,9 @@ class _CameraScreenState extends State<CameraScreen> {
     _prevClasses = Set<String>();
   }
 
-  setRecognitions(recognitions, imgFile, imageHeight, imageWidth, currentTime) {
+  setRecognitions(recognitions, imageHeight, imageWidth, currentTime) {
     setState(() {
       _recognitions = recognitions;
-      _imgFile = imgFile;
       _imageHeight = imageHeight;
       _imageWidth = imageWidth;
     });
@@ -60,22 +61,15 @@ class _CameraScreenState extends State<CameraScreen> {
       // 감지한 객체가 달라지지 않은 경우
       var t = new DateTime.now().millisecondsSinceEpoch - _lastTime;
       if (_duration < t / 1000) {
-        Navigator.pop(context);
-
-        if (_imgFile != null) {
-          Navigator.of(context).push(MaterialPageRoute(
-              fullscreenDialog: true,
-              builder: (BuildContext context) {
-                return DetectedImageScreen(_imgFile);
-              }));
-        }
-
-        // 감지한 객체 검색
-        // RecipeSearcher searcher =
-        //     Provider.of<RecipeSearcher>(context, listen: false);
-        // List<String> ingredients = currentClasses.toList();
-        // searcher.addIngredients(ingredients);
-        // Navigator.pushNamed(context, AppRoutes.search);
+          getTemporaryDirectory().then((tempDir) {
+            File imgFile = File('${tempDir.path}/image.jpg');
+            Navigator.pop(context);
+            Navigator.of(context).push(MaterialPageRoute(
+                fullscreenDialog: true,
+                builder: (BuildContext context) {
+                  return DetectedImageScreen(imgFile);
+                }));
+          });
       }
     }
   }
