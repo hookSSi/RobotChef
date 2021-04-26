@@ -77,20 +77,20 @@ def get_predection(image, net, LABELS, COLORS):
     detected_obj_list = list()
     
     # 실시간 카메라 테스트 용
-    test_obj = dict()
-    test_rect = dict()
+    # test_obj = dict()
+    # test_rect = dict()
 
-    test_rect['x'] = int(370) # left corner x
-    test_rect['y'] = int(364) # left corner y
-    test_rect['w'] = int(320) # width
-    test_rect['h'] = int(300) # height
+    # test_rect['x'] = int(370) # left corner x
+    # test_rect['y'] = int(364) # left corner y
+    # test_rect['w'] = int(320) # width
+    # test_rect['h'] = int(300) # height
 
-    test_obj['rect'] = test_rect
-    test_obj['detectedClass'] = LABELS[0]
-    test_obj['confidenceInClass'] = float(0.96)
-    test_color = [int(c) for c in COLORS[int(0) % len(COLORS)]]
-    test_obj['color'] = test_color
-    detected_obj_list.append(test_obj)
+    # test_obj['rect'] = test_rect
+    # test_obj['detectedClass'] = LABELS[0]
+    # test_obj['confidenceInClass'] = float(0.96)
+    # test_color = [int(c) for c in COLORS[int(0) % len(COLORS)]]
+    # test_obj['color'] = test_color
+    # detected_obj_list.append(test_obj)
 
     for (classid, score, box) in zip(classes, scores, boxes):
         print(classid)

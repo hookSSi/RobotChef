@@ -377,7 +377,6 @@ class _SearchScreenState extends State<SearchScreen> {
                             label: Text(ingredientsDict["ingredients"][index]),
                             onDeleted: () {
                               setState(() {
-                                _filter.clear();
                                 ingredientsDict["ingredients"].removeAt(index);
                                 _lastRow = 0;
                                 stream = newStream();

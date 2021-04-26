@@ -62,7 +62,7 @@ class _CameraScreenState extends State<CameraScreen> {
       var t = new DateTime.now().millisecondsSinceEpoch - _lastTime;
       if (_duration < t / 1000) {
           getTemporaryDirectory().then((tempDir) {
-            File imgFile = File('${tempDir.path}/image.jpg');
+            File imgFile = File('${tempDir.path}/image.jpeg');
             Navigator.pop(context);
             Navigator.of(context).push(MaterialPageRoute(
                 fullscreenDialog: true,
