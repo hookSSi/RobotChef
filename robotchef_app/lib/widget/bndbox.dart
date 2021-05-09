@@ -32,14 +32,7 @@ class BndBox extends StatelessWidget {
         _y = re["rect"]["y"].toDouble() * scaleH;
         _h = re["rect"]["h"].toDouble() * scaleH;
 
-        print("bounding");
-        print("screenW: $screenW");
-        print("screenH: $screenH");
-        print("imageW: $previewW");
-        print("imageH: $previewH");
-        print("resultW: $_w");
-        print("resultH: $_h");
-
+        /// Container 클래스를 통해 Bounding Box 그림
         return Container(child: Positioned(
           left: math.max(0, _x),
           top: math.max(0, _y + paddingTop),
