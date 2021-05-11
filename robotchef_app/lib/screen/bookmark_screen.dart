@@ -10,6 +10,7 @@ import 'package:flutter_app/class/app_constants.dart';
 import 'package:flutter_app/class/db_manager.dart';
 import 'package:flutter_app/screen/home_screen.dart';
 import 'package:flutter_app/widget/recipe_card.dart';
+import 'package:gradient_widgets/gradient_widgets.dart';
 
 class BookmarkScreen extends StatefulWidget {
   _BookmarkScreen createState() => _BookmarkScreen();
@@ -119,7 +120,12 @@ class _BookmarkScreen extends State<BookmarkScreen> {
           return Center(
             child: Icon(Icons.error),
           );
-        if (!snapshot.hasData) return LinearProgressIndicator();
+        if (!snapshot.hasData) return GradientProgressIndicator(
+          gradient: LinearGradient(colors: [
+            Theme.of(context).primaryColorLight,
+            Theme.of(context).primaryColorDark
+          ]),
+        );
         return _buildList(context, snapshot.data.hits);
       },
     );
@@ -168,7 +174,7 @@ class _BookmarkScreen extends State<BookmarkScreen> {
               AnimatedContainer(
                 height: _showAppbar ? 56.0 : 0.0,
                 duration: Duration(milliseconds: 200),
-                child: AppBar(title: Text('즐겨찾기  ', style: TextStyle(color: Colors.white)),
+                child: AppBar(title: Text('즐겨찾기  ', style: Theme.of(context).textTheme.headline6),
                     leading: IconButton(
                         icon: Icon(Icons.arrow_back),
                         onPressed: () {
@@ -178,7 +184,7 @@ class _BookmarkScreen extends State<BookmarkScreen> {
                                 return HomeScreen();
                               }));
                         }),
-                    iconTheme: IconThemeData(color: Colors.white)),),
+                    iconTheme: Theme.of(context).iconTheme),),
               Padding(
                 padding: EdgeInsets.all(12),
               ),

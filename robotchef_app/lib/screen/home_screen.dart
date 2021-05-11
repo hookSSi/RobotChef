@@ -3,6 +3,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:gradient_widgets/gradient_widgets.dart';
 import '../robotchef_theme.dart';
 import 'package:flutter_app/screen/bookmark_screen.dart';
 import 'package:flutter_app/screen/camera_screen.dart';
@@ -80,10 +81,6 @@ class _HomeScreenState extends State<HomeScreen> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text(
-              "이미지 선택",
-              style: TextStyle(color: Colors.black),
-            ),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
@@ -96,11 +93,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         children: <Widget>[
                           Icon(
                             Icons.videocam,
-                            color: Colors.white,
+                            color: Theme.of(context).iconTheme.color,
                           ),
                           Text(
                             "실시간",
-                            style: TextStyle(color: Colors.white),
+                            style: Theme.of(context).textTheme.headline6,
                           ),
                         ],
                       ),
@@ -108,7 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(color: Colors.white, width: 5.0),
-                          color: Color(0xFFABBB64)),
+                          color: Theme.of(context).buttonColor),
                       padding: EdgeInsets.all(20.0),
                     ),
                     onTap: () {
@@ -126,11 +123,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         children: <Widget>[
                           Icon(
                             Icons.photo,
-                            color: Colors.white,
+                            color: Theme.of(context).iconTheme.color
                           ),
                           Text(
                             "갤러리",
-                            style: TextStyle(color: Colors.white),
+                            style: Theme.of(context).textTheme.headline6,
                           )
                         ],
                       ),
@@ -138,7 +135,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(color: Colors.white, width: 5.0),
-                          color: Color(0xFFABBB64)),
+                          color: Theme.of(context).buttonColor),
                       padding: EdgeInsets.all(20.0),
                     ),
                     onTap: () {
@@ -156,11 +153,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         children: <Widget>[
                           Icon(
                             Icons.camera_alt_outlined,
-                            color: Colors.white,
+                            color: Theme.of(context).iconTheme.color
                           ),
                           Text(
                             "사진 촬영",
-                            style: TextStyle(color: Colors.white),
+                            style: Theme.of(context).textTheme.headline6,
                           )
                         ],
                       ),
@@ -168,7 +165,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(color: Colors.white, width: 5.0),
-                          color: Color(0xFFABBB64)),
+                          color: Theme.of(context).buttonColor),
                       padding: EdgeInsets.all(20.0),
                     ),
                     onTap: () {
@@ -189,15 +186,31 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
         resizeToAvoidBottomInset: false,
         body: Container(
-          color: Theme.of(context).indicatorColor,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: FractionalOffset.topCenter,
+              end: FractionalOffset.bottomCenter,
+              colors: [
+                Theme.of(context).primaryColorLight,
+                Theme.of(context).primaryColorDark,
+              ]
+            )
+          ),
           child: Column(children: <Widget>[
             /// RobotChef 이미지
-            Center(child: Container(
-              color: Theme.of(context).indicatorColor,
-              child: Image.asset('images/robotchef_2.png',
-                  width: MediaQuery.of(context).size.width * 0.8,
-                  height: MediaQuery.of(context).size.height * 0.5),
-            ),),
+            Expanded(child: Center(child: Container(
+              child: GradientText(
+                'RobotChef',
+                gradient: LinearGradient(
+                  colors: [
+                    const Color(0xFFfec566),
+                    const Color(0xFFfe921f),
+                    Colors.white
+                  ]
+                ),
+                style: Theme.of(context).textTheme.headline1,
+              ),
+            ),), flex: 1,),
             Expanded(child: GridView.count(
               crossAxisCount: 2,
               mainAxisSpacing: 10.0,
@@ -223,7 +236,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
-                        color: Color(0xFFABBB64)),
+                        color: Theme.of(context).buttonColor),
                     ),
                     onTap: () {
                       createChooseDialogue(context);
@@ -250,7 +263,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
-                          color: Color(0xFFABBB64)),
+                          color: Theme.of(context).buttonColor),
                     ),
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
@@ -281,7 +294,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
-                          color: Color(0xFFABBB64)),
+                          color: Theme.of(context).buttonColor),
                     ),
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
@@ -312,7 +325,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
-                          color: Color(0xFFABBB64)),
+                          color: Theme.of(context).buttonColor),
                     ),
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
@@ -324,7 +337,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ],
-            ),)
+            ), flex: 2,)
           ]),
           padding: EdgeInsets.all(10.0),
         ));
