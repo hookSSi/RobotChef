@@ -84,7 +84,7 @@ class _DetailScreenState extends State<DetailScreen> {
                   child: FadeInImage(
                     image: NetworkImage(widget.recipe.thumbnail),
                     fit: BoxFit.cover,
-                    placeholder: AssetImage('images/loading.gif'),
+                    placeholder: AssetImage('assets/images/loading.gif'),
                   ),
                 ),
               ),

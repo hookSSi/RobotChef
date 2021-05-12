@@ -65,7 +65,7 @@ class _MoreScreenState extends State<MoreScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Text('더 보기  ', style: Theme.of(context).textTheme.bodyText1,),
+          title: Text('더 보기 ', style: Theme.of(context).textTheme.bodyText1,),
           leading: IconButton(
               icon: Icon(Icons.arrow_back),
               onPressed: () {

@@ -3,8 +3,6 @@ import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
-import 'package:gradient_widgets/gradient_widgets.dart';
-import '../robotchef_theme.dart';
 import 'package:flutter_app/screen/bookmark_screen.dart';
 import 'package:flutter_app/screen/camera_screen.dart';
 import 'package:flutter_app/screen/detected_image_screen.dart';
@@ -86,7 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
               children: <Widget>[
                 Material(
                   child: InkWell(
-                    child: Container(
+                    child: FittedBox(child: Container(
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -101,13 +99,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ],
                       ),
-                      width: 125,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(color: Colors.white, width: 5.0),
                           color: Theme.of(context).buttonColor),
                       padding: EdgeInsets.all(20.0),
-                    ),
+                    )),
                     onTap: () {
                       Navigator.of(context, rootNavigator: true).pop('dialog');
                       realTimeObjectDetect();
@@ -116,14 +113,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 Material(
                   child: InkWell(
-                    child: Container(
+                    child: FittedBox(child:Container(
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           Icon(
-                            Icons.photo,
-                            color: Theme.of(context).iconTheme.color
+                              Icons.photo,
+                              color: Theme.of(context).iconTheme.color
                           ),
                           Text(
                             "갤러리",
@@ -131,13 +128,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           )
                         ],
                       ),
-                      width: 125,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(color: Colors.white, width: 5.0),
                           color: Theme.of(context).buttonColor),
                       padding: EdgeInsets.all(20.0),
-                    ),
+                    )),
                     onTap: () {
                       Navigator.of(context, rootNavigator: true).pop('dialog');
                       takeImageFromGallary();
@@ -146,14 +142,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 Material(
                   child: InkWell(
-                    child: Container(
+                    child: FittedBox(child:Container(
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           Icon(
-                            Icons.camera_alt_outlined,
-                            color: Theme.of(context).iconTheme.color
+                              Icons.camera_alt_outlined,
+                              color: Theme.of(context).iconTheme.color
                           ),
                           Text(
                             "사진 촬영",
@@ -161,13 +157,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           )
                         ],
                       ),
-                      width: 125,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(color: Colors.white, width: 5.0),
                           color: Theme.of(context).buttonColor),
                       padding: EdgeInsets.all(20.0),
-                    ),
+                    )),
                     onTap: () {
                       Navigator.of(context, rootNavigator: true).pop('dialog');
                       takeImageFromCamera();
@@ -191,6 +186,7 @@ class _HomeScreenState extends State<HomeScreen> {
               begin: FractionalOffset.topCenter,
               end: FractionalOffset.bottomCenter,
               colors: [
+                Theme.of(context).primaryColor,
                 Theme.of(context).primaryColorLight,
                 Theme.of(context).primaryColorDark,
               ]
@@ -199,17 +195,7 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(children: <Widget>[
             /// RobotChef 이미지
             Expanded(child: Center(child: Container(
-              child: GradientText(
-                'RobotChef',
-                gradient: LinearGradient(
-                  colors: [
-                    const Color(0xFFfec566),
-                    const Color(0xFFfe921f),
-                    Colors.white
-                  ]
-                ),
-                style: Theme.of(context).textTheme.headline1,
-              ),
+              child: Text("RobotChef", style: Theme.of(context).textTheme.headline1,),
             ),), flex: 1,),
             Expanded(child: GridView.count(
               crossAxisCount: 2,

@@ -297,7 +297,7 @@ class _SearchScreenState extends State<SearchScreen> {
         child: Column(
           children: <Widget>[
             AnimatedContainer(
-              height: _showAppbar ? 112.0 : 0.0,
+              height: _showAppbar ? (ingredientsDict["ingredients"].length > 0 ? 112.0 : 56.0) : 0.0,
               duration: Duration(milliseconds: 200),
               child: Column(
                 children: <Widget>[
@@ -373,7 +373,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         }),
                     iconTheme: Theme.of(context).iconTheme,
                   ),
-                  SingleChildScrollView(
+                  ingredientsDict["ingredients"].length > 0 ? SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Container(
                       child: Row(
@@ -392,7 +392,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         }),
                       ),
                     ),
-                  )
+                  ) : Container()
                 ],
               ),
             ),
