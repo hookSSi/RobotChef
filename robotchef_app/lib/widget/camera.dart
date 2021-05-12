@@ -117,7 +117,7 @@ class _CameraState extends State<Camera>
 
       final tempDir = await getTemporaryDirectory();
       final file = await new File('${tempDir.path}/image.jpeg').create();
-      file.writeAsBytesSync(img);
+      file.writeAsBytes(img);
 
       MultipartFile imgFile = MultipartFile.fromBytes(img, filename: 'uploadImage.jpeg');
       FormData formData = new FormData.fromMap({
