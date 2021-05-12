@@ -8,6 +8,7 @@ import 'package:flutter_app/widget/bndbox.dart';
 import 'package:flutter_app/class/yolo_server_constants.dart';
 import 'package:flutter_app/widget/mini_ingredient_search.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/services.dart';
 
 class DetectedImageScreen extends StatefulWidget {
   final File image;
@@ -132,6 +133,7 @@ class _DetectedImageScreenState extends State<DetectedImageScreen> {
             ],
           )));
     } else {
+      imageCache.clear();
       var imageWidget = Image.file(
         widget.image,
       );

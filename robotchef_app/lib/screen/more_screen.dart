@@ -44,7 +44,11 @@ class _MoreScreenState extends State<MoreScreen> {
     ],
     'like': false
   });
-  
+
+  void Refresh(){
+
+  }
+
   // 재료 추가 창
   createChooseDialogue(BuildContext context) {
     return showDialog(
@@ -55,7 +59,7 @@ class _MoreScreenState extends State<MoreScreen> {
               "재료 추가",
               style: Theme.of(context).textTheme.bodyText1,
             ),
-            content: MiniIngredientSearch(ingredientList: ingredientList,),
+            content: MiniIngredientSearch(ingredientList: ingredientList, refresh: Refresh,),
             backgroundColor: Theme.of(context).backgroundColor,
           );
         });
