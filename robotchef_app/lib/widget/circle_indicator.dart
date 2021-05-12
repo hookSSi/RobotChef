@@ -45,13 +45,25 @@ class _CircleIndicatorState extends State<CircleIndicator>
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Text(
-                  widget.nutrient.name,
-                  style: TextStyle(color: Colors.black),
+                Container(
+                  child: FittedBox(
+                  fit: BoxFit.fitWidth,
+                  child: Text(
+                    widget.nutrient.name,
+                    style: Theme.of(context).textTheme.bodyText1,
+                  ),
                 ),
-                Text(
-                  widget.nutrient.weight,
-                  style: TextStyle(color: Colors.black),
+                  padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+                ),
+                Container(
+                  child: FittedBox(
+                  fit: BoxFit.fitWidth,
+                  child: Text(
+                    widget.nutrient.weight,
+                    style: Theme.of(context).textTheme.bodyText1,
+                  ),
+                ),
+                  padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
                 ),
               ],
             ),

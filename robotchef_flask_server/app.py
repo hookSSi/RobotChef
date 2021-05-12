@@ -188,14 +188,21 @@ def load_files():
     app.config["FILES"] = files
     app.config["HEAD"] = 0
 
+def load_synonymDic(path):
+    with open(path, 'r', encoding='utf-8-sig') as file:
+        return json.load(file)
+
+
 labelsPath="darknet/data/obj.names"
 cfgpath="darknet/cfg/yolov4-automated.cfg"
 wpath="darknet/weight/yolov4-automated_best.weights"
+labelSynonymPath="synonym.dict"
 Lables=get_labels(labelsPath)
 CFG=get_config(cfgpath)
 Weights=get_weights(wpath)
 nets=load_model(CFG,Weights)
 Colors=get_colors(Lables)
+synonymDic=load_synonymDic(labelSynonymPath)
 
 # auto labeling using trained yolov4 model
 def auto_label(path):
@@ -225,6 +232,8 @@ def detect():
     H, W = result_image.shape[:2]
 
     # cv2.imwrite('test.jpg', result_image)
+    for obj in obj_list:
+        obj['detectedClass'] = synonymDic[obj['detectedClass']]
 
     json_data = jsonify({'data' : obj_list, 'width' : W, 'height' : H})
     print(obj_list)

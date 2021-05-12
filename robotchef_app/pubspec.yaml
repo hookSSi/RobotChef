@@ -67,6 +67,7 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
+<<<<<<< Updated upstream
   # fonts:
   #   - family: Schyler
   #     fonts:
@@ -78,6 +79,18 @@ flutter:
   #       - asset: fonts/TrajanPro.ttf
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
+=======
+  fonts:
+    - family: BRANCHE
+      fonts:
+        - asset: assets/fonts/BRANCHE_Demo.ttf
+    - family: Vegan
+      fonts:
+        - asset: assets/fonts/VeganStylePersonal.ttf
+    - family: Hanna
+      fonts:
+        - asset: assets/fonts/BMHANNAAir_ttf.ttf
+>>>>>>> Stashed changes
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

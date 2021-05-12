@@ -115,6 +115,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               realTimeObjectDetect();
                             },
                           ),
+<<<<<<< Updated upstream
                         ),
                   Material(
                           child: InkWell(
@@ -178,6 +179,82 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                 ],
               ),
+=======
+                        ],
+                      ),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: Colors.white, width: 5.0),
+                          color: Theme.of(context).buttonColor),
+                      padding: EdgeInsets.all(20.0),
+                    ),
+                    onTap: () {
+                      Navigator.of(context, rootNavigator: true).pop('dialog');
+                      realTimeObjectDetect();
+                    },
+                  ),
+                ),
+                Material(
+                  child: InkWell(
+                    child: Container(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Icon(
+                            Icons.photo,
+                            color: Theme.of(context).iconTheme.color
+                          ),
+                          Text(
+                            "갤러리",
+                            style: Theme.of(context).textTheme.headline6,
+                          )
+                        ],
+                      ),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: Colors.white, width: 5.0),
+                          color: Theme.of(context).buttonColor),
+                      padding: EdgeInsets.all(20.0),
+                    ),
+                    onTap: () {
+                      Navigator.of(context, rootNavigator: true).pop('dialog');
+                      takeImageFromGallary();
+                    },
+                  ),
+                ),
+                Material(
+                  child: InkWell(
+                    child: Container(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Icon(
+                            Icons.camera_alt_outlined,
+                            color: Theme.of(context).iconTheme.color
+                          ),
+                          Text(
+                            "사진 촬영",
+                            style: Theme.of(context).textTheme.headline6,
+                          )
+                        ],
+                      ),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: Colors.white, width: 5.0),
+                          color: Theme.of(context).buttonColor),
+                      padding: EdgeInsets.all(20.0),
+                    ),
+                    onTap: () {
+                      Navigator.of(context, rootNavigator: true).pop('dialog');
+                      takeImageFromCamera();
+                    },
+                  ),
+                ),
+              ],
+            ),
+>>>>>>> Stashed changes
             backgroundColor: Colors.white,
           );
         });
@@ -186,9 +263,37 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+<<<<<<< Updated upstream
       resizeToAvoidBottomInset: false,
         body:Container(
             child: Column(
+=======
+        resizeToAvoidBottomInset: false,
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: FractionalOffset.topCenter,
+              end: FractionalOffset.bottomCenter,
+              colors: [
+                Theme.of(context).primaryColor,
+                Theme.of(context).primaryColorLight,
+                Theme.of(context).primaryColorDark,
+              ]
+            )
+          ),
+          child: Column(children: <Widget>[
+            /// RobotChef 이미지
+            Expanded(child: Center(child: Container(
+              child: Text(
+                'RobotChef',
+                style: Theme.of(context).textTheme.headline1,
+              ),
+            ),), flex: 1,),
+            Expanded(child: GridView.count(
+              crossAxisCount: 2,
+              mainAxisSpacing: 10.0,
+              crossAxisSpacing: 10.0,
+>>>>>>> Stashed changes
               children: <Widget>[
                 Container(
                   child: Row(

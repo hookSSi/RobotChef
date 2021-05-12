@@ -291,11 +291,12 @@ class _SearchScreenState extends State<SearchScreen> {
         child: Column(
           children: <Widget>[
             AnimatedContainer(
-              height: _showAppbar ? 112.0 : 0.0,
+              height: _showAppbar ? (ingredientsDict["ingredients"].length > 0 ? 112.0 : 56.0) : 0.0,
               duration: Duration(milliseconds: 200),
               child: Column(
                 children: <Widget>[
                   AppBar(
+<<<<<<< Updated upstream
                       title: Container(
                         color: Color(0xFFABBB64),
                         padding: EdgeInsets.fromLTRB(2, 2, 2, 2),
@@ -307,6 +308,43 @@ class _SearchScreenState extends State<SearchScreen> {
                                 autofocus: _filter.text.length > 0 ? true : false,
                                 style: TextStyle(
                                   fontSize: 20,
+=======
+                    title: Container(
+                      padding: EdgeInsets.fromLTRB(2, 2, 2, 2),
+                      child: Row(
+                        children: <Widget>[
+                          Expanded(
+                            child: TextField(
+                              focusNode: focusNode,
+                              autofocus: _filter.text.length > 0 ? true : false,
+                              style: Theme.of(context).textTheme.bodyText1,
+                              controller: _filter,
+                              decoration: InputDecoration(
+                                filled: true,
+                                fillColor: Colors.white12,
+                                prefixIcon: Icon(
+                                  Icons.search,
+                                  color: Theme.of(context).iconTheme.color,
+                                  size: 20,
+                                ),
+                                suffixIcon: IconButton(
+                                  icon: Icon(Icons.cancel),
+                                  color: Theme.of(context).iconTheme.color,
+                                  onPressed: () {
+                                    setState(() {
+                                      _filter.clear();
+                                      focusNode.unfocus();
+                                    });
+                                  },
+                                ),
+                                hintText: '검색',
+                                labelStyle: Theme.of(context).textTheme.bodyText1,
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Colors.transparent),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10)),
+>>>>>>> Stashed changes
                                 ),
                                 controller: _filter,
                                 decoration: InputDecoration(
@@ -357,6 +395,7 @@ class _SearchScreenState extends State<SearchScreen> {
                           ],
                         ),
                       ),
+<<<<<<< Updated upstream
                       leading: IconButton(
                           icon: Icon(Icons.arrow_back),
                           onPressed: () {
@@ -368,6 +407,21 @@ class _SearchScreenState extends State<SearchScreen> {
                           }),
                       iconTheme: IconThemeData(color: Colors.white)),
                   SingleChildScrollView(
+=======
+                    ),
+                    leading: IconButton(
+                        icon: Icon(Icons.arrow_back),
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              fullscreenDialog: true,
+                              builder: (BuildContext context) {
+                                return HomeScreen();
+                              }));
+                        }),
+                    iconTheme: Theme.of(context).iconTheme,
+                  ),
+                  ingredientsDict["ingredients"].length > 0 ? SingleChildScrollView(
+>>>>>>> Stashed changes
                     scrollDirection: Axis.horizontal,
                     child: Container(
                       child: Row(
@@ -386,7 +440,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         }),
                       ),
                     ),
-                  )
+                  ) : Container()
                 ],
               ),
             ),

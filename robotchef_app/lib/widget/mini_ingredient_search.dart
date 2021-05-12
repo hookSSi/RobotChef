@@ -10,8 +10,9 @@ import 'package:provider/provider.dart';
 /// 재료 검색 및 추가를 위한 검색 widget
 class MiniIngredientSearch extends StatefulWidget {
   List<String> ingredientList; // 선택한 식재료 리스트
+  Function refresh;
 
-  MiniIngredientSearch({this.ingredientList});
+  MiniIngredientSearch({@required this.ingredientList, @required this.refresh});
 
   @override
   _MiniIngredientSearchState createState() => _MiniIngredientSearchState();
@@ -145,13 +146,23 @@ class _MiniIngredientSearchState extends State<MiniIngredientSearch> {
         if (snapshot.hasError)
           return Container(
               child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Icon(Icons.error),
-            ],
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Icon(Icons.error),
+                ],
           ));
+<<<<<<< Updated upstream
         if (!snapshot.hasData) return LinearProgressIndicator();
+=======
+        if (!snapshot.hasData) return GradientProgressIndicator(
+            gradient: LinearGradient(colors: [
+              Theme.of(context).primaryColorLight,
+              Theme.of(context).primaryColorDark
+            ])
+        );
+
+>>>>>>> Stashed changes
         return _buildList(context, snapshot.data.hits);
       },
     );
@@ -180,6 +191,7 @@ class _MiniIngredientSearchState extends State<MiniIngredientSearch> {
     return IngredientChip(
       label: ingredientData['name'],
       ingredientList: widget.ingredientList,
+      refresh: widget.refresh,
     );
   }
 
@@ -202,9 +214,7 @@ class _MiniIngredientSearchState extends State<MiniIngredientSearch> {
                         Expanded(
                           child: TextField(
                             focusNode: focusNode,
-                            style: TextStyle(
-                              fontSize: 20,
-                            ),
+                            style: Theme.of(context).textTheme.bodyText1,
                             controller: _filter,
                             onSubmitted: (_) {
                               FocusScope.of(context).unfocus();
@@ -228,7 +238,11 @@ class _MiniIngredientSearchState extends State<MiniIngredientSearch> {
                                 },
                               ),
                               hintText: '검색',
+<<<<<<< Updated upstream
                               labelStyle: TextStyle(color: Colors.black),
+=======
+                              labelStyle: Theme.of(context).textTheme.bodyText1,
+>>>>>>> Stashed changes
                               focusedBorder: OutlineInputBorder(
                                 borderSide:
                                     BorderSide(color: Colors.transparent),
@@ -269,8 +283,9 @@ class _MiniIngredientSearchState extends State<MiniIngredientSearch> {
 class IngredientChip extends StatefulWidget {
   String label;
   List<String> ingredientList;
+  Function refresh;
 
-  IngredientChip({this.label, this.ingredientList});
+  IngredientChip({@required this.label, @required this.ingredientList, @required this.refresh});
 
   @override
   _IngredientChipState createState() => _IngredientChipState();
@@ -297,8 +312,10 @@ class _IngredientChipState extends State<IngredientChip> {
           choosen = !choosen;
           if(choosen){
             widget.ingredientList.add(widget.label);
+            widget.refresh();
           }else{
             widget.ingredientList.remove(widget.label);
+            widget.refresh();
           }
         });
       },

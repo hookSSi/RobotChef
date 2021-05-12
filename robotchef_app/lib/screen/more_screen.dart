@@ -19,7 +19,7 @@ class _MoreScreenState extends State<MoreScreen> {
     'image':
         "https://cloudfront.haemukja.com/vh.php?url=https://d1hk7gw6lgygff.cloudfront.net/uploads/direction/image_file/3401/org_resized_0.png&convert=jpgmin&rt=600",
     'cooking_time': "60분",
-    'calorie': "461.3kcal",
+    'calorie': "4601.3kcal",
     'ingredients': [
       {"name": "홍합", "amount": "1 kg"},
       {"name": "홍합", "amount": "1 kg"},
@@ -53,7 +53,7 @@ class _MoreScreenState extends State<MoreScreen> {
           return AlertDialog(
             title: Text(
               "재료 추가",
-              style: TextStyle(color: Colors.black),
+              style: Theme.of(context).textTheme.bodyText1,
             ),
             content: MiniIngredientSearch(ingredientList: ingredientList,),
             backgroundColor: Colors.white,
@@ -65,7 +65,11 @@ class _MoreScreenState extends State<MoreScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+<<<<<<< Updated upstream
           title: Text('더 보기  ', style: TextStyle(color: Colors.white)),
+=======
+          title: Text('더 보기  ', style: Theme.of(context).textTheme.bodyText1,),
+>>>>>>> Stashed changes
           leading: IconButton(
               icon: Icon(Icons.arrow_back),
               onPressed: () {

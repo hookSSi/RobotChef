@@ -88,7 +88,7 @@ class _DetectedImageScreenState extends State<DetectedImageScreen> {
   }
 
   // 재료 추가 창
-  createChooseDialogue(BuildContext context, List<String> ingredientList) {
+  createChooseDialogue(BuildContext context, List<String> ingredientList, Function refresh) {
     return showDialog(
         context: context,
         builder: (context) {
@@ -97,10 +97,20 @@ class _DetectedImageScreenState extends State<DetectedImageScreen> {
               "재료 추가",
               style: TextStyle(color: Colors.black),
             ),
-            content: MiniIngredientSearch(ingredientList: ingredientList,),
+            content: MiniIngredientSearch(
+              ingredientList: ingredientList,
+              refresh: refresh,
+            ),
             backgroundColor: Colors.white,
           );
         });
+  }
+
+  void Refresh(){
+    setState(() {
+      _error = "refresh";
+      print(_error);
+    });
   }
 
   @override
@@ -132,7 +142,7 @@ class _DetectedImageScreenState extends State<DetectedImageScreen> {
       double paddingTop = (screen.height - screenH) / 2;
 
       return Scaffold(
-          backgroundColor: Color(0xFFEEE8AA),
+          backgroundColor: Colors.white,
           body: Stack(
             children: <Widget>[
               OverflowBox(
@@ -151,44 +161,75 @@ class _DetectedImageScreenState extends State<DetectedImageScreen> {
               ),
               Positioned.fill(
                   child: Align(
-                alignment: Alignment.bottomCenter,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    ElevatedButton(
-                      onPressed: () {
-                        RecipeSearcher searcher =
-                            Provider.of<RecipeSearcher>(context, listen: false);
-                        searcher.addIngredients(ingredients);
-                        Navigator.pop(context);
-                        Navigator.pushNamed(context, AppRoutes.search);
-                      },
-                      child: Text(
-                        "확인",
-                        style: TextStyle(color: Colors.white),
+                  alignment: Alignment.bottomCenter,
+                  child: Column(
+                    children: <Widget>[
+                      Expanded(child: Container(), flex: _imageHeight + paddingTop.toInt(),),
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Container(
+                          child: Row(
+                            children: List<Widget>.generate(ingredients.length,
+                                    (index) {
+                                  return InputChip(
+                                    label: Text(ingredients[index]),
+                                    onDeleted: () {
+                                      setState(() {
+                                        ingredients.removeAt(index);
+                                      });
+                                    },
+                                  );
+                                }),
+                          ),
+                        ),
                       ),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        createChooseDialogue(context, ingredients);
-                      },
-                      child: Text(
-                        "식재료 추가",
-                        style: TextStyle(color: Colors.white),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                primary: Theme.of(context).primaryColor),
+                            onPressed: () {
+                              RecipeSearcher searcher =
+                                  Provider.of<RecipeSearcher>(context,
+                                      listen: false);
+                              searcher.addIngredients(ingredients);
+                              Navigator.pop(context);
+                              Navigator.pushNamed(context, AppRoutes.search);
+                            },
+                            child: Text(
+                              "확인",
+                              style: Theme.of(context).textTheme.bodyText1,
+                            ),
+                          ),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                primary: Theme.of(context).primaryColor),
+                            onPressed: () {
+                              createChooseDialogue(context, ingredients, Refresh);
+                            },
+                            child: Text(
+                              "식재료 추가",
+                              style: Theme.of(context).textTheme.bodyText1,
+                            ),
+                          ),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                primary: Theme.of(context).primaryColor),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text(
+                              "돌아가기",
+                              style: Theme.of(context).textTheme.bodyText1,
+                            ),
+                          )
+                        ],
                       ),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: Text(
-                        "돌아가기",
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    )
-                  ],
-                ),
-              ))
+                      Expanded(child: Container(), flex: paddingTop.toInt(),),
+                    ],
+                  ),
+                ))
             ],
           ));
     }

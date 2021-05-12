@@ -48,16 +48,24 @@ class _DetailScreenState extends State<DetailScreen> {
           return <Widget>[
             SliverAppBar(
               leading: IconButton(
-                  icon: Icon(Icons.arrow_back),
+                  icon: Icon(
+                    Icons.arrow_back,
+                    color: Theme.of(context).iconTheme.color,
+                  ),
                   onPressed: () {
                     Navigator.pop(context);
                   }),
               actions: [
                 IconButton(
-                    color: Color(0xFFFD0016),
                     icon: like
-                        ? Icon(Icons.favorite)
-                        : Icon(Icons.favorite_border),
+                        ? Icon(
+                            Icons.favorite,
+                            color: Theme.of(context).iconTheme.color,
+                          )
+                        : Icon(
+                            Icons.favorite_border,
+                            color: Theme.of(context).iconTheme.color,
+                          ),
                     onPressed: () {
                       int recipeId = int.tryParse(widget.recipe.recipeId);
                       Future<bool> isEnd = bookmark(recipeId);
@@ -66,7 +74,7 @@ class _DetailScreenState extends State<DetailScreen> {
                           }));
                     })
               ],
-              backgroundColor: Color(0xFFABBB64),
+              backgroundColor: Theme.of(context).backgroundColor,
               expandedHeight: 200.0,
               floating: false,
               pinned: true,
@@ -84,13 +92,11 @@ class _DetailScreenState extends State<DetailScreen> {
           ];
         },
         body: Container(
-          margin: EdgeInsets.only(left: 5.0, right: 5.0),
-          color: Color(0xFFFFFFFF),
-          padding: EdgeInsets.only(top: 5.0),
+          color: Colors.white,
           child: SingleChildScrollView(
             physics: BouncingScrollPhysics(),
             child: Material(
-              color: Color(0xFFABBB64),
+              color: Theme.of(context).primaryColor,
               child: Container(
                 margin: EdgeInsets.all(8.0),
                 child: Column(
@@ -100,16 +106,13 @@ class _DetailScreenState extends State<DetailScreen> {
                         child: Wrap(children: <Widget>[
                       Text(
                         widget.recipe.title,
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 30),
+                        style: Theme.of(context).textTheme.headline4,
                         textAlign: TextAlign.center,
                       )
                     ])),
                     Divider(
                       height: 30.0,
-                      color: Colors.white,
+                      color: Theme.of(context).iconTheme.color,
                       thickness: 3.0,
                     ),
                     // 레시피 영양 정보
@@ -121,10 +124,7 @@ class _DetailScreenState extends State<DetailScreen> {
                             children: <Widget>[
                               Text(
                                 '영양',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20),
+                                style: Theme.of(context).textTheme.headline5,
                               ),
                             ],
                           ),
@@ -134,7 +134,7 @@ class _DetailScreenState extends State<DetailScreen> {
                     ),
                     Divider(
                       height: 30.0,
-                      color: Colors.white,
+                      color: Theme.of(context).iconTheme.color,
                       thickness: 3.0,
                     ),
                     // 필요한 재료들
@@ -145,10 +145,7 @@ class _DetailScreenState extends State<DetailScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
                               Text('필요한 재료들',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20)),
+                                  style: Theme.of(context).textTheme.headline5),
                             ],
                           ),
                           IngredientsWidget(
@@ -159,7 +156,7 @@ class _DetailScreenState extends State<DetailScreen> {
                     ),
                     Divider(
                       height: 30.0,
-                      color: Colors.white,
+                      color: Theme.of(context).iconTheme.color,
                       thickness: 3.0,
                     ),
                     // 레시피 순서
@@ -170,10 +167,7 @@ class _DetailScreenState extends State<DetailScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
                               Text('요리순서',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20)),
+                                  style: Theme.of(context).textTheme.headline5),
                             ],
                           ),
                           RecipeSteps(
@@ -218,11 +212,9 @@ class RecipeSteps extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       CircleAvatar(
-                        backgroundColor: Theme.of(context).accentColor,
+                        backgroundColor: Colors.white,
                         child: Text('${index + 1}',
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold)),
+                            style: Theme.of(context).textTheme.bodyText2),
                       ),
                       SizedBox(
                         height: 10,
@@ -238,10 +230,7 @@ class RecipeSteps extends StatelessWidget {
                           constraints: BoxConstraints(
                               maxWidth: MediaQuery.of(context).size.width - 34),
                           child: Text(instructions[index].desc,
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16)))
+                              style: Theme.of(context).textTheme.bodyText1))
                     ],
                   )
                 ],
@@ -278,10 +267,13 @@ class IngredientsWidget extends StatelessWidget {
         child: Wrap(
           children: [
             Align(
-              child: Text(
+              child: FittedBox(
+                child: Text(
                 ingredient.name + " " + ingredient.amount,
                 style:
-                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+              ),
+                fit: BoxFit.cover,
               ),
               alignment: Alignment.center,
             )
@@ -324,7 +316,7 @@ class CalorieWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Container(
       height: 86,
       width: 90,
       child: ListView.builder(

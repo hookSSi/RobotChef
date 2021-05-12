@@ -168,7 +168,12 @@ class _BookmarkScreen extends State<BookmarkScreen> {
               AnimatedContainer(
                 height: _showAppbar ? 56.0 : 0.0,
                 duration: Duration(milliseconds: 200),
+<<<<<<< Updated upstream
                 child: AppBar(title: Text('즐겨찾기  ', style: TextStyle(color: Colors.white)),
+=======
+                child: AppBar(
+                    title: Text('즐겨찾기', style: Theme.of(context).textTheme.bodyText1),
+>>>>>>> Stashed changes
                     leading: IconButton(
                         icon: Icon(Icons.arrow_back),
                         onPressed: () {
