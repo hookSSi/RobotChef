@@ -9,6 +9,7 @@ import 'package:elastic_client/elastic_client.dart' as elastic;
 import 'package:flutter_app/screen/detail_screen.dart';
 import 'package:flutter_app/screen/home_screen.dart';
 import 'package:flutter_app/widget/recipe_card.dart';
+import 'package:gradient_widgets/gradient_widgets.dart';
 import 'package:provider/provider.dart';
 
 // 검색 방법
@@ -227,7 +228,12 @@ class _SearchScreenState extends State<SearchScreen> {
               Icon(Icons.error),
             ],
           ));
-        if (!snapshot.hasData) return LinearProgressIndicator();
+        if (!snapshot.hasData) return GradientProgressIndicator(
+            gradient: LinearGradient(colors: [
+              Theme.of(context).primaryColorLight,
+              Theme.of(context).primaryColorDark
+            ])
+        );
         return _buildList(context, snapshot.data.hits);
       },
     );
@@ -291,24 +297,11 @@ class _SearchScreenState extends State<SearchScreen> {
         child: Column(
           children: <Widget>[
             AnimatedContainer(
-              height: _showAppbar ? (ingredientsDict["ingredients"].length > 0 ? 112.0 : 56.0) : 0.0,
+              height: _showAppbar ? 112.0 : 0.0,
               duration: Duration(milliseconds: 200),
               child: Column(
                 children: <Widget>[
                   AppBar(
-<<<<<<< Updated upstream
-                      title: Container(
-                        color: Color(0xFFABBB64),
-                        padding: EdgeInsets.fromLTRB(2, 2, 2, 2),
-                        child: Row(
-                          children: <Widget>[
-                            Expanded(
-                              child: TextField(
-                                focusNode: focusNode,
-                                autofocus: _filter.text.length > 0 ? true : false,
-                                style: TextStyle(
-                                  fontSize: 20,
-=======
                     title: Container(
                       padding: EdgeInsets.fromLTRB(2, 2, 2, 2),
                       child: Row(
@@ -317,7 +310,9 @@ class _SearchScreenState extends State<SearchScreen> {
                             child: TextField(
                               focusNode: focusNode,
                               autofocus: _filter.text.length > 0 ? true : false,
-                              style: Theme.of(context).textTheme.bodyText1,
+                              style: TextStyle(
+                                fontSize: 20,
+                              ),
                               controller: _filter,
                               decoration: InputDecoration(
                                 filled: true,
@@ -338,76 +333,34 @@ class _SearchScreenState extends State<SearchScreen> {
                                   },
                                 ),
                                 hintText: '검색',
-                                labelStyle: Theme.of(context).textTheme.bodyText1,
+                                labelStyle: TextStyle(color: Colors.black),
                                 focusedBorder: OutlineInputBorder(
                                   borderSide:
                                       BorderSide(color: Colors.transparent),
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(10)),
->>>>>>> Stashed changes
                                 ),
-                                controller: _filter,
-                                decoration: InputDecoration(
-                                  filled: true,
-                                  fillColor: Colors.white12,
-                                  prefixIcon: Icon(
-                                    Icons.search,
-                                    color: Colors.white,
-                                    size: 20,
-                                  ),
-                                  suffixIcon: IconButton(
-                                    icon: Icon(Icons.cancel),
-                                    color: Colors.white,
-                                    onPressed: () {
-                                      setState(() {
-                                        _filter.clear();
-                                        focusNode.unfocus();
-                                      });
-                                    },
-                                  ),
-                                  hintText: '검색',
-                                  labelStyle: TextStyle(color: Colors.black),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide:
-                                        BorderSide(color: Colors.transparent),
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10)),
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide:
-                                        BorderSide(color: Colors.transparent),
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10)),
-                                  ),
-                                  border: OutlineInputBorder(
-                                    borderSide:
-                                        BorderSide(color: Colors.transparent),
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10)),
-                                  ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Colors.transparent),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10)),
                                 ),
-                                onSubmitted: (_) {
-                                  AddIngredients();
-                                  FocusScope.of(context).unfocus();
-                                },
+                                border: OutlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Colors.transparent),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10)),
+                                ),
                               ),
+                              onSubmitted: (_) {
+                                AddIngredients();
+                                FocusScope.of(context).unfocus();
+                              },
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-<<<<<<< Updated upstream
-                      leading: IconButton(
-                          icon: Icon(Icons.arrow_back),
-                          onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                fullscreenDialog: true,
-                                builder: (BuildContext context) {
-                                  return HomeScreen();
-                                }));
-                          }),
-                      iconTheme: IconThemeData(color: Colors.white)),
-                  SingleChildScrollView(
-=======
                     ),
                     leading: IconButton(
                         icon: Icon(Icons.arrow_back),
@@ -420,8 +373,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         }),
                     iconTheme: Theme.of(context).iconTheme,
                   ),
-                  ingredientsDict["ingredients"].length > 0 ? SingleChildScrollView(
->>>>>>> Stashed changes
+                  SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Container(
                       child: Row(
@@ -440,7 +392,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         }),
                       ),
                     ),
-                  ) : Container()
+                  )
                 ],
               ),
             ),

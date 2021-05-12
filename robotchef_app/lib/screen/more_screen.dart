@@ -56,7 +56,7 @@ class _MoreScreenState extends State<MoreScreen> {
               style: Theme.of(context).textTheme.bodyText1,
             ),
             content: MiniIngredientSearch(ingredientList: ingredientList,),
-            backgroundColor: Colors.white,
+            backgroundColor: Theme.of(context).backgroundColor,
           );
         });
   }
@@ -65,17 +65,13 @@ class _MoreScreenState extends State<MoreScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-<<<<<<< Updated upstream
-          title: Text('더 보기  ', style: TextStyle(color: Colors.white)),
-=======
           title: Text('더 보기  ', style: Theme.of(context).textTheme.bodyText1,),
->>>>>>> Stashed changes
           leading: IconButton(
               icon: Icon(Icons.arrow_back),
               onPressed: () {
                 Navigator.pop(context);
               }),
-          iconTheme: IconThemeData(color: Colors.white)),
+          iconTheme: Theme.of(context).iconTheme),
       body: ListView(
         padding: const EdgeInsets.all(16.0),
         children: <Widget>[

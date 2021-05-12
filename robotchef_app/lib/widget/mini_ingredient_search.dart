@@ -5,6 +5,7 @@ import 'package:flutter_app/class/elastic_constants.dart';
 import 'package:flutter_app/class/recipe_search.dart';
 import 'package:elastic_client/console_http_transport.dart';
 import 'package:elastic_client/elastic_client.dart' as elastic;
+import 'package:gradient_widgets/gradient_widgets.dart';
 import 'package:provider/provider.dart';
 
 /// 재료 검색 및 추가를 위한 검색 widget
@@ -152,9 +153,6 @@ class _MiniIngredientSearchState extends State<MiniIngredientSearch> {
                   Icon(Icons.error),
                 ],
           ));
-<<<<<<< Updated upstream
-        if (!snapshot.hasData) return LinearProgressIndicator();
-=======
         if (!snapshot.hasData) return GradientProgressIndicator(
             gradient: LinearGradient(colors: [
               Theme.of(context).primaryColorLight,
@@ -162,7 +160,6 @@ class _MiniIngredientSearchState extends State<MiniIngredientSearch> {
             ])
         );
 
->>>>>>> Stashed changes
         return _buildList(context, snapshot.data.hits);
       },
     );
@@ -207,7 +204,6 @@ class _MiniIngredientSearchState extends State<MiniIngredientSearch> {
               child: AppBar(
                   automaticallyImplyLeading: false,
                   title: Container(
-                    color: Color(0xFFABBB64),
                     padding: EdgeInsets.fromLTRB(2, 2, 2, 2),
                     child: Row(
                       children: <Widget>[
@@ -224,12 +220,12 @@ class _MiniIngredientSearchState extends State<MiniIngredientSearch> {
                               fillColor: Colors.white12,
                               prefixIcon: Icon(
                                 Icons.search,
-                                color: Colors.white,
+                                color: Theme.of(context).iconTheme.color,
                                 size: 20,
                               ),
                               suffixIcon: IconButton(
                                 icon: Icon(Icons.cancel),
-                                color: Colors.white,
+                                color: Theme.of(context).iconTheme.color,
                                 onPressed: () {
                                   setState(() {
                                     _filter.clear();
@@ -238,11 +234,7 @@ class _MiniIngredientSearchState extends State<MiniIngredientSearch> {
                                 },
                               ),
                               hintText: '검색',
-<<<<<<< Updated upstream
-                              labelStyle: TextStyle(color: Colors.black),
-=======
                               labelStyle: Theme.of(context).textTheme.bodyText1,
->>>>>>> Stashed changes
                               focusedBorder: OutlineInputBorder(
                                 borderSide:
                                     BorderSide(color: Colors.transparent),
@@ -267,7 +259,7 @@ class _MiniIngredientSearchState extends State<MiniIngredientSearch> {
                       ],
                     ),
                   ),
-                  iconTheme: IconThemeData(color: Colors.white)),
+                  iconTheme: Theme.of(context).iconTheme),
             ),
             Padding(
               padding: EdgeInsets.all(12),

@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_app/core/routes.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'robotchef_theme.dart';
 
 
 Future<void> main() async {
@@ -30,11 +31,7 @@ class MyApp extends StatelessWidget {
       providers: providers,
       child: MaterialApp(
         title: 'Flutter Demo',
-        theme: ThemeData(
-          brightness: Brightness.light,
-          primaryColor: Color(0xFFABBB64),
-          accentColor: Color(0xFFFFFFFF),
-        ),
+        theme: BuildTheme(),
         onGenerateRoute: AppRoutes.onGenerateRoute,
         home: MainScreen(0),
       ),
