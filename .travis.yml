@@ -28,6 +28,7 @@ jobs:
         - linux
       script:
         - pytest -v ./robotchef_flask_server/test.py
-    notifications:
-      email:
-        - sounghoo12@gmail.com
+        
+notifications:
+  email:
+    - sounghoo12@gmail.com
