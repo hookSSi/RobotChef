@@ -213,8 +213,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           Icons.photo,
                           color: Theme.of(context).iconTheme.color,
                         ),
-                        Text(
-                          "이미지 선택",
+                        Text("이미지 선택",
                           style: Theme.of(context).textTheme.bodyText2,
                         )
                       ],
@@ -240,8 +239,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             Icons.star,
                             color: Theme.of(context).iconTheme.color,
                           ),
-                          Text(
-                            "즐겨찾기",
+                          Text("즐겨찾기",
                             style: Theme.of(context).textTheme.bodyText2,
                           )
                         ],
@@ -271,8 +269,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             Icons.search,
                             color: Theme.of(context).iconTheme.color,
                           ),
-                          Text(
-                            "검색",
+                          Text("검색",
                             style: Theme.of(context).textTheme.bodyText2,
                           )
                         ],
@@ -302,8 +299,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             Icons.list,
                             color: Theme.of(context).iconTheme.color,
                           ),
-                          Text(
-                            "더 보기",
+                          Text("더 보기",
                             style: Theme.of(context).textTheme.bodyText2,
                           )
                         ],
