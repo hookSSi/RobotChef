@@ -1,4 +1,5 @@
-[![Build Status](https://www.travis-ci.com/hookSSi/RobotChef.svg?branch=main)](https://www.travis-ci.com/hookSSi/RobotChef)
+[![FlutterApp](https://github.com/hookSSi/RobotChef/actions/workflows/flutter.yml/badge.svg)](https://github.com/hookSSi/RobotChef/actions/workflows/flutter.yml)
+[![FlaskServer](https://github.com/hookSSi/RobotChef/actions/workflows/python.yml/badge.svg)](https://github.com/hookSSi/RobotChef/actions/workflows/python.yml)
 
 RobotChef
 ==============================
