@@ -67,7 +67,7 @@ class _DetectedImageScreenState extends State<DetectedImageScreen> {
 
     try {
       var response =
-          await Dio().post(YoloServerContants.endPoint, data: formData);
+          await Dio().post(YoloServerContants.endPoint, data: formData).timeout(Duration(seconds: 5));
 
       if (response.statusCode == 200) {
         var result = response.data;
@@ -85,6 +85,7 @@ class _DetectedImageScreenState extends State<DetectedImageScreen> {
 
     setState(() {
       _isProcessing = false;
+      print("에러 출력: ${_error}");
     });
   }
 
@@ -124,116 +125,123 @@ class _DetectedImageScreenState extends State<DetectedImageScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               CircularProgressIndicator(
-                backgroundColor: Colors.black87,
+                backgroundColor: Theme.of(context).primaryColor,
+                valueColor: new AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColorDark),
               ),
               SizedBox(
                 height: 15,
               ),
-              _error == null ? Text("재료 탐지 중...") : Text("error: " + _error)
+              Text("재료 탐지 중...")
             ],
           )));
-    } else {
+    }
+    else {
       imageCache.clear();
       var imageWidget = Image.file(
         widget.image,
       );
 
-      Size screen = MediaQuery.of(context).size;
+      if(_error != null){
+        return Text("error: " + _error);
+      }
+      else{
+        Size screen = MediaQuery.of(context).size;
 
-      double screenH = _imageHeight * (screen.width / _imageWidth);
-      double paddingTop = (screen.height - screenH) / 2;
+        double screenH = _imageHeight * (screen.width / _imageWidth);
+        double paddingTop = (screen.height - screenH) / 2;
 
-      return Scaffold(
-          backgroundColor: Colors.white,
-          body: Stack(
-            children: <Widget>[
-              OverflowBox(
-                child: imageWidget,
-              ),
-              BndBox(
-                _recognitions == null ? [] : _recognitions,
-                paddingTop,
-                _imageHeight,
-                _imageWidth,
-                screenH,
-                screen.width,
-              ),
-              ListView(
-                scrollDirection: Axis.horizontal,
-              ),
-              Positioned.fill(
-                  child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Column(
-                    children: <Widget>[
-                      Expanded(child: Container(), flex: _imageHeight + paddingTop.toInt(),),
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Container(
-                          child: Row(
-                            children: List<Widget>.generate(ingredients.length,
-                                    (index) {
-                                  return InputChip(
-                                    label: Text(ingredients[index]),
-                                    onDeleted: () {
-                                      setState(() {
-                                        ingredients.removeAt(index);
-                                      });
-                                    },
-                                  );
-                                }),
-                          ),
-                        ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        return Scaffold(
+            backgroundColor: Colors.white,
+            body: Stack(
+              children: <Widget>[
+                OverflowBox(
+                  child: imageWidget,
+                ),
+                BndBox(
+                  _recognitions == null ? [] : _recognitions,
+                  paddingTop,
+                  _imageHeight,
+                  _imageWidth,
+                  screenH,
+                  screen.width,
+                ),
+                ListView(
+                  scrollDirection: Axis.horizontal,
+                ),
+                Positioned.fill(
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Column(
                         children: <Widget>[
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                primary: Theme.of(context).primaryColor),
-                            onPressed: () {
-                              RecipeSearcher searcher =
+                          Expanded(child: Container(), flex: _imageHeight + paddingTop.toInt(),),
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Container(
+                              child: Row(
+                                children: List<Widget>.generate(ingredients.length,
+                                        (index) {
+                                      return Container(child: InputChip(
+                                        label: Text(ingredients[index]),
+                                        onDeleted: () {
+                                          setState(() {
+                                            ingredients.removeAt(index);
+                                          });
+                                        },
+                                      ), margin: EdgeInsets.fromLTRB(3, 0, 3, 0),);
+                                    }),
+                              ),
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: <Widget>[
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    primary: Theme.of(context).primaryColor),
+                                onPressed: () {
+                                  RecipeSearcher searcher =
                                   Provider.of<RecipeSearcher>(context,
                                       listen: false);
-                              searcher.addIngredients(ingredients);
-                              Navigator.pop(context);
-                              Navigator.pushNamed(context, AppRoutes.search);
-                            },
-                            child: Text(
-                              "확인",
-                              style: Theme.of(context).textTheme.bodyText1,
-                            ),
+                                  searcher.addIngredients(ingredients);
+                                  Navigator.pop(context);
+                                  Navigator.pushNamed(context, AppRoutes.search);
+                                },
+                                child: Text(
+                                  "확인",
+                                  style: Theme.of(context).textTheme.bodyText1,
+                                ),
+                              ),
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    primary: Theme.of(context).primaryColor),
+                                onPressed: () {
+                                  createChooseDialogue(context, ingredients, Refresh);
+                                },
+                                child: Text(
+                                  "식재료 추가",
+                                  style: Theme.of(context).textTheme.bodyText1,
+                                ),
+                              ),
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    primary: Theme.of(context).primaryColor),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: Text(
+                                  "돌아가기",
+                                  style: Theme.of(context).textTheme.bodyText1,
+                                ),
+                              )
+                            ],
                           ),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                primary: Theme.of(context).primaryColor),
-                            onPressed: () {
-                              createChooseDialogue(context, ingredients, Refresh);
-                            },
-                            child: Text(
-                              "식재료 추가",
-                              style: Theme.of(context).textTheme.bodyText1,
-                            ),
-                          ),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                primary: Theme.of(context).primaryColor),
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            child: Text(
-                              "돌아가기",
-                              style: Theme.of(context).textTheme.bodyText1,
-                            ),
-                          )
+                          Expanded(child: Container(), flex: paddingTop.toInt(),),
                         ],
                       ),
-                      Expanded(child: Container(), flex: paddingTop.toInt(),),
-                    ],
-                  ),
-                ))
-            ],
-          ));
+                    ))
+              ],
+            ));
+      }
     }
   }
 }

@@ -70,7 +70,7 @@ class _CameraState extends State<Camera>
 
     controller = new CameraController(
       cameraDescription,
-      ResolutionPreset.high,
+      ResolutionPreset.low,
       enableAudio: false,
     );
 
@@ -146,6 +146,9 @@ class _CameraState extends State<Camera>
   }
 
   void _processCameraImage(CameraImage image) async {
+    print("이미지 포멧: ${image.format.group}");
+    print("너비:${image.width}, 높이:${image.height}, 플레인:${image.planes.length}");
+
     if (_isProcessing) return;
     _isProcessing = true;
     _savedImage = image;

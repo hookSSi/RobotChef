@@ -128,7 +128,18 @@ class _DetailScreenState extends State<DetailScreen> {
                               ),
                             ],
                           ),
-                          CalorieWidget(calorie: widget.recipe.calorie),
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Container(child: Row(
+                              children: <Widget>[
+                                CirclePercentWidget(calorie: widget.recipe.info_eng),
+                                CirclePercentWidget(calorie: widget.recipe.info_car),
+                                CirclePercentWidget(calorie: widget.recipe.info_pro),
+                                CirclePercentWidget(calorie: widget.recipe.info_fat),
+                                CirclePercentWidget(calorie: widget.recipe.info_na)
+                              ],
+                            ),),
+                          )
                         ],
                       ),
                     ),
@@ -269,10 +280,10 @@ class IngredientsWidget extends StatelessWidget {
             Align(
               child: FittedBox(
                 child: Text(
-                ingredient.name + " " + ingredient.amount,
-                style:
-                TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-              ),
+                  ingredient.name + " " + ingredient.amount,
+                  style: TextStyle(
+                      color: Colors.black, fontWeight: FontWeight.bold),
+                ),
                 fit: BoxFit.cover,
               ),
               alignment: Alignment.center,
@@ -309,28 +320,16 @@ class IngredientsWidget extends StatelessWidget {
   }
 }
 
-class CalorieWidget extends StatelessWidget {
+class CirclePercentWidget extends StatelessWidget {
   final Nutrients calorie;
 
-  CalorieWidget({this.calorie});
+  CirclePercentWidget({this.calorie});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 86,
-      width: 90,
-      child: ListView.builder(
-        itemCount: 1,
-        scrollDirection: Axis.horizontal,
-        shrinkWrap: true,
-        physics: BouncingScrollPhysics(),
-        itemBuilder: (BuildContext context, int index) {
-          return CircleIndicator(
-            percent: calorie.percent,
-            nutrient: calorie,
-          );
-        },
-      ),
+    return CircleIndicator(
+      percent: calorie.percent,
+      nutrient: calorie,
     );
   }
 }

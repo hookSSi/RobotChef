@@ -71,6 +71,7 @@ class _RecipeCardState extends State<RecipeCard> {
             Text(
               widget.recipe.title,
             ),
+            Text('해쉬태그', style: Theme.of(context).textTheme.caption,),
             // Empty space:
             SizedBox(height: 10.0),
             Row(
