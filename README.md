@@ -1,5 +1,5 @@
+[![FlaskServer](https://github.com/hookSSi/RobotChef/actions/workflows/python.yml/badge.svg?branch=main)](https://github.com/hookSSi/RobotChef/actions/workflows/python.yml)
 [![FlutterApp](https://github.com/hookSSi/RobotChef/actions/workflows/flutter.yml/badge.svg?branch=main)](https://github.com/hookSSi/RobotChef/actions/workflows/flutter.yml)
-[![FlutterApp](https://github.com/hookSSi/RobotChef/actions/workflows/python.yml/badge.svg?branch=main)](https://github.com/hookSSi/RobotChef/actions/workflows/python.yml)
 
 RobotChef
 ==============================
