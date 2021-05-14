@@ -281,8 +281,7 @@ class IngredientsWidget extends StatelessWidget {
               child: FittedBox(
                 child: Text(
                   ingredient.name + " " + ingredient.amount,
-                  style: TextStyle(
-                      color: Colors.black, fontWeight: FontWeight.bold),
+                  style: Theme.of(context).textTheme.bodyText1,
                 ),
                 fit: BoxFit.cover,
               ),
