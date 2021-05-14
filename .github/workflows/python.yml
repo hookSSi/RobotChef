@@ -27,8 +27,9 @@ jobs:
       
     - name: Install dependencies
       run: | 
+        pip install --upgrade pip
         pip install pytest
-        if [ -f ./robotchef_flask_server/requirements.txt ]; then pip install -r ./robotchef_flask_server/requirements.txt
+        pip install -r ./robotchef_flask_server/requirements.txt
 
     - name: Test with pytest
       run: pytest -v ./robotchef_flask_server/test.py
