@@ -1,20 +1,33 @@
-os:
-  - linux
-sudo: false
-addons:
-  apt:
-    # Flutter depends on /usr/lib/x86_64-linux-gnu/libstdc++.so.6 version GLIBCXX_3.4.18
-    sources:
-      - ubuntu-toolchain-r-test # if we don't specify this, the libstdc++6 we get is the wrong version
-    packages:
-      - libstdc++6
-      - fonts-droid-fallback
-before_script:
-  - cd ./robotchef_app/
-  - git clone https://github.com/flutter/flutter.git -b beta
-  - ./flutter/bin/flutter doctor
-script:
-  - ./flutter/bin/flutter test
-cache:
-  directories:
-    - $HOME/.pub-cache
+jobs:
+  include:
+    - language: dart
+      os:
+        - linux
+      sudo: false
+      addons:
+        apt:
+          # Flutter depends on /usr/lib/x86_64-linux-gnu/libstdc++.so.6 version GLIBCXX_3.4.18
+          sources:
+            - ubuntu-toolchain-r-test # if we don't specify this, the libstdc++6 we get is the wrong version
+          packages:
+            - libstdc++6
+            - fonts-droid-fallback
+      before_script:
+        - cd ./robotchef_app/
+        - git clone https://github.com/flutter/flutter.git -b beta
+        - ./flutter/bin/flutter doctor
+      script:
+        - ./flutter/bin/flutter test
+      cache:
+        directories:
+          - $HOME/.pub-cache
+    - language: python
+      python: 3.9
+      install: pip install -r ./robotchef_flask_server/requirements.txt
+      os:
+        - linux
+      script:
+        - pytest -v ./robotchef_flask_server/test.py
+    notifications:
+      email:
+        - sounghoo12@gmail.com
