@@ -1,3 +1,5 @@
+[![Build Status](https://www.travis-ci.com/hookSSi/RobotChef.svg?branch=main)](https://www.travis-ci.com/hookSSi/RobotChef)
+
 RobotChef
 ==============================
 
