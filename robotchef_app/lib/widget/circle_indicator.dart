@@ -41,7 +41,7 @@ class _CircleIndicatorState extends State<CircleIndicator>
         children: <Widget>[
           Container(
             width: 70,
-            height: 70,
+            height: 80,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[

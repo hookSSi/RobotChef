@@ -379,7 +379,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       child: Row(
                         children: List<Widget>.generate(
                             ingredientsDict["ingredients"].length, (index) {
-                          return InputChip(
+                          return Container(child: InputChip(
                             label: Text(ingredientsDict["ingredients"][index]),
                             onDeleted: () {
                               setState(() {
@@ -388,7 +388,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                 stream = newStream();
                               });
                             },
-                          );
+                          ), margin: EdgeInsets.fromLTRB(3, 0, 3, 0),);
                         }),
                       ),
                     ),
