@@ -109,8 +109,6 @@ class _DetectedImageScreenState extends State<DetectedImageScreen> {
 
   void Refresh(){
     setState(() {
-      _error = "refresh";
-      print(_error);
     });
   }
 

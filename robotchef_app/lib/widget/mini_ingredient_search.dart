@@ -73,9 +73,7 @@ class _MiniIngredientSearchState extends State<MiniIngredientSearch> {
             "match": {
               "name": {
                 "query": _searchText,
-                "analyzer": "korean_analyzer",
-                "operator": "and",
-                "fuzziness": "AUTO"
+                "analyzer": "korean_analyzer"
               }
             }
           }
@@ -165,7 +163,7 @@ class _MiniIngredientSearchState extends State<MiniIngredientSearch> {
     );
   }
 
-  // 레시피 리스트
+  // 재료 리스트
   Widget _buildList(BuildContext context, List<Doc> snapshots) {
     return ListView.separated(
       controller: _scrollController,
@@ -181,7 +179,7 @@ class _MiniIngredientSearchState extends State<MiniIngredientSearch> {
     );
   }
 
-  // 레시피 리스트 아이템을 만드는 부분
+  // 재료 리스트 아이템을 만드는 부분
   Widget _buildListItem(BuildContext context, Doc data) {
     final ingredientData = data.doc;
 
@@ -284,18 +282,17 @@ class IngredientChip extends StatefulWidget {
 }
 
 class _IngredientChipState extends State<IngredientChip> {
-  bool choosen = false;
+  bool choosen;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
-    choosen = widget.ingredientList.contains(widget.label);
   }
 
   @override
   Widget build(BuildContext context) {
+    choosen = widget.ingredientList.contains(widget.label);
     return InputChip(
       selected: choosen,
       label: Text(widget.label),

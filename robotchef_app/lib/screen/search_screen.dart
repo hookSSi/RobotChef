@@ -54,7 +54,7 @@ class _SearchScreenState extends State<SearchScreen> {
           limit: fetchRow * (_lastRow + 1),
           sort: [
             {
-              "title.sort": {"order": "asc"}
+              "title.keyword.sort": {"order": "asc"}
             }
           ]).timeout(Duration(seconds: 5));
     }
@@ -75,8 +75,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     "ingredients.name": {
                       "query": ingredientsDict["ingredients"].join(','),
                       "analyzer": "korean_analyzer",
-                      "operator": "and",
-                      "fuzziness": "AUTO"
+                      "operator": "and"
                     }
                   }
                 }
@@ -90,8 +89,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   "match": {
                     "title": {
                       "query": tagDict["title"].join(','),
-                      "analyzer": "korean_analyzer",
-                      "fuzziness": "AUTO"
+                      "analyzer": "korean_analyzer"
                     }
                   }
                 }
