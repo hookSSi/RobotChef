@@ -3,12 +3,11 @@ import 'dart:ui';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/class/recipe_search.dart';
-import 'package:flutter_app/core/routes.dart';
+import 'package:flutter_app/screen/search_screen.dart';
 import 'package:flutter_app/widget/bndbox.dart';
 import 'package:flutter_app/class/yolo_server_constants.dart';
 import 'package:flutter_app/widget/mini_ingredient_search.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter/services.dart';
 
 class DetectedImageScreen extends StatefulWidget {
   final File image;
@@ -142,7 +141,28 @@ class _DetectedImageScreenState extends State<DetectedImageScreen> {
       );
 
       if(_error != null){
-        return Text("error: " + _error);
+        // ingredients = ['감자', '계란'];
+        // return ElevatedButton(
+        //   style: ElevatedButton.styleFrom(
+        //       primary: Theme.of(context).primaryColor),
+        //   onPressed: () {
+        //     RecipeSearcher searcher =
+        //     Provider.of<RecipeSearcher>(context,
+        //         listen: false);
+        //     searcher.addIngredients(ingredients);
+        //     Navigator.pop(context);
+        //     Navigator.of(context).push(MaterialPageRoute(
+        //         fullscreenDialog: true,
+        //         builder: (BuildContext context) {
+        //           return SearchScreen();
+        //         }));
+        //   },
+        //   child: Text(
+        //     "확인",
+        //     style: Theme.of(context).textTheme.bodyText1,
+        //   ),
+        // );
+        return Text(_error);
       }
       else{
         Size screen = MediaQuery.of(context).size;
@@ -204,7 +224,11 @@ class _DetectedImageScreenState extends State<DetectedImageScreen> {
                                       listen: false);
                                   searcher.addIngredients(ingredients);
                                   Navigator.pop(context);
-                                  Navigator.pushNamed(context, AppRoutes.search);
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      fullscreenDialog: true,
+                                      builder: (BuildContext context) {
+                                        return SearchScreen();
+                                      }));
                                 },
                                 child: Text(
                                   "확인",
