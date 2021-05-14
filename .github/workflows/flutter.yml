@@ -1,0 +1,33 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: Dart
+
+on:
+  push:
+    branches: [ main, dev ]
+  pull_request:
+    branches: [ main, dev ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Test github action
+        run: | 
+          cd ./robotchef_app/
+          ls
+          echo test
+                  
+#       - name: Run flutter doctor
+#         run: flutter doctor -v
+#       # Your project will need to have tests in test/ and a dependency on
+#       # package:test for this step to succeed. Note that Flutter projects will
+#       # want to change this to 'flutter test'.
+#       - name: Run tests
+#         run: flutter test
