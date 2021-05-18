@@ -12,21 +12,30 @@ from io import BytesIO
 import io
 import json
 import glob
+import pytest
 from PIL import Image
 from uuid import uuid4
-
-confthres = 0.25
-nmsthres = 0.1
-yolo_path = './'
 
 # Initialize the Flask application
 app = Flask(__name__)
 
+confthres = 0.25
+nmsthres = 0.1
+yolo_path = './'
+labelsPath="darknet/data/obj.names"
+cfgpath="darknet/cfg/yolov4-automated.cfg"
+wpath="darknet/weight/yolov4-automated_best.weights"
+labelSynonymPath="synonym.dict"
+
 def get_labels(labels_path):
     # class labels 로드
-    lpath = os.path.sep.join([yolo_path, labels_path])
-    LABELS = open(lpath).read().strip().split("\n")
-    return LABELS
+    try:
+        lpath = os.path.sep.join([yolo_path, labels_path])
+        LABELS = open(lpath).read().strip().split("\n")
+        return LABELS
+    except:
+        print("label을 불러오는 데 실패했습니다.")
+        return None
 
 def get_colors(LABELS):
     # 각 class lables에 랜덤하게 색 할당
@@ -36,13 +45,29 @@ def get_colors(LABELS):
 
 def get_weights(weights_path):
     # yolo weight 파일 주소 반환
-    weightsPath = os.path.sep.join([yolo_path, weights_path])
-    return weightsPath
-
+    try:
+        weightsPath = os.path.sep.join([yolo_path, weights_path])
+        if os.path.isfile(weightsPath):
+            return weightsPath
+        else:
+            print("weight 파일이 존재하지 않습니다.")
+            return None
+    except:
+        print("weight를 불러오는 데 실패했습니다.")
+        return None
 def get_config(config_path):
     # 설정 파일 주소 반환
-    configPath = os.path.sep.join([yolo_path, config_path])
-    return configPath
+    try:
+        configPath = os.path.sep.join([yolo_path, config_path])
+        if os.path.isfile(configPath):
+            return weightsPath
+        else:
+            print("config 파일이 존재하지 않습니다.")
+            return None
+        return configPath
+    except:
+        print("config를 불러오는 데 실패했습니다.")
+        return None
 
 def load_model(configPath, weightsPath):
     # 훈련된 yolo 모델을 로드
@@ -192,17 +217,17 @@ def load_synonymDic(path):
     with open(path, 'r', encoding='utf-8-sig') as file:
         return json.load(file)
 
-
-labelsPath="darknet/data/obj.names"
-cfgpath="darknet/cfg/yolov4-automated.cfg"
-wpath="darknet/weight/yolov4-automated_best.weights"
-labelSynonymPath="synonym.dict"
 Lables=get_labels(labelsPath)
 CFG=get_config(cfgpath)
 Weights=get_weights(wpath)
-nets=load_model(CFG,Weights)
-Colors=get_colors(Lables)
-synonymDic=load_synonymDic(labelSynonymPath)
+
+if CFG is not None or Weights is not None or Lables is not None:
+    nets=load_model(CFG,Weights)
+    Colors=get_colors(Lables)
+    synonymDic=load_synonymDic(labelSynonymPath)
+else:
+    print("yolo 모델을 불러오는 데 실패했습니다.")
+    print("Flask 기본 기능만 실행합니다.")
 
 # auto labeling using trained yolov4 model
 def auto_label(path):
@@ -391,12 +416,19 @@ def register():
 def login():
     print("login")
 
-# setup flask app config
-if __name__ == "__main__":
+@pytest.fixture
+def init_app_test():
+    return app
+
+def init_app():
     directory = "static/images/"
     app.config["IMAGES_DIR"] = directory
     app.config["LABELS"] = []
 
     load_files()
+    return app
 
+# setup flask app config
+if __name__ == "__main__":
+    app = init_app()
     app.run(host='0.0.0.0', port=5000, threaded=True, debug=True)
