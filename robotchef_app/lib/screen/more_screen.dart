@@ -17,9 +17,12 @@ class _MoreScreenState extends State<MoreScreen> {
     'title': "Test 레시피",
     'sumry': "레시피 테스트 중",
     'image':
-        "https://cloudfront.haemukja.com/vh.php?url=https://d1hk7gw6lgygff.cloudfront.net/uploads/direction/image_file/3401/org_resized_0.png&convert=jpgmin&rt=600",
-    'cooking_time': "60분",
-    'calorie': "4601.3kcal",
+        "http://www.foodsafetykorea.go.kr/uploadimg/cook/10_00017_1.png",
+    "info_eng": "205",
+    "info_car": "35",
+    "info_pro": "3",
+    "info_fat": "6",
+    "info_na": "68",
     'ingredients': [
       {"name": "홍합", "amount": "1 kg"},
       {"name": "홍합", "amount": "1 kg"},
@@ -33,7 +36,7 @@ class _MoreScreenState extends State<MoreScreen> {
         "proc_num": 1,
         "desc": "런던의 유명음식점 중에.. 벨고라는...",
         "image":
-            "https://cloudfront.haemukja.com/vh.php?url=https://d1hk7gw6lgygff.cloudfront.net/uploads/direction/image_file/3401/org_resized_0.png&convert=jpgmin&rt=600"
+            "http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00017_1.png"
       },
       {
         "proc_num": 2,
