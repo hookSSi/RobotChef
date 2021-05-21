@@ -71,17 +71,13 @@ class _RecipeCardState extends State<RecipeCard> {
             Text(
               widget.recipe.title,
             ),
-            Text('해쉬태그', style: Theme.of(context).textTheme.caption,),
+            Text(widget.recipe.hash_tag, style: Theme.of(context).textTheme.caption,),
             // Empty space:
             SizedBox(height: 10.0),
             Row(
               children: [
                 Icon(Icons.timer, size: 20.0),
                 SizedBox(width: 5.0),
-                Text(
-                  widget.recipe.cookingTime,
-                  style: Theme.of(context).textTheme.caption,
-                ),
               ],
             ),
           ],

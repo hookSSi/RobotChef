@@ -42,10 +42,15 @@ class _SearchScreenState extends State<SearchScreen> {
     var response;
 
     if (tagDict["title"].length > 0 || ingredientsDict["ingredients"].length > 0) {
-      response = await client
-          .search('recipe-robotchef', '_doc', createQuery(),
-              source: true, offset: 0, limit: fetchRow * (_lastRow + 1))
-          .timeout(Duration(seconds: 5));
+      response = await client.search('recipe-robotchef', '_doc', createQuery(),
+          source: true,
+          offset: 0,
+          limit: fetchRow * (_lastRow + 1),
+          sort: [
+            {
+              "title.sort": {"order": "asc"}
+            }
+          ]).timeout(Duration(seconds: 5));
     } else {
       response = await client.search(
           'recipe-robotchef', '_doc', Query.matchAll(),
@@ -54,7 +59,7 @@ class _SearchScreenState extends State<SearchScreen> {
           limit: fetchRow * (_lastRow + 1),
           sort: [
             {
-              "title.keyword.sort": {"order": "asc"}
+              "title.sort": {"order": "asc"}
             }
           ]).timeout(Duration(seconds: 5));
     }

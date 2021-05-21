@@ -14,8 +14,8 @@ import argparse
 
 
 parser = argparse.ArgumentParser(description='make json to upload elastic from recipe api')
-parser.add_argument('--startIdx', type=int, help='start index')
-parser.add_argument('--endIdx', type=int, help='end index')
+parser.add_argument('--startIdx', type=int, default=1, help='start index')
+parser.add_argument('--endIdx', type=int, default=1400, help='end index')
 parser.add_argument('--update', type=bool, help='update from api? or just use json in local?')
 
 # 식품의약품안전처에서 조리식품의 레시피 DB를 가져옴
@@ -40,10 +40,10 @@ class RecipeLoader:
         self.recipe_json_save_path = self.config['PATH']['JSON_PATH']
 
     # 레시피 DB를 새로 받아서 json으로 저장
-    def update_recipe_db(self):
+    def update_recipe_db(self, startIdx, endIdx):
         print(self.img_save_path)
         
-        for idx in range(self.startIdx, self.endIdx, 10):
+        for idx in range(startIdx, endIdx, 10):
             self.recipe_url = f"http://openapi.foodsafetykorea.go.kr/api/{self.keyId}/{self.serviceId}/{self.dataType}/{idx}/{idx+9}"
             print(self.recipe_url)
             response = requests.get(self.recipe_url)
@@ -61,11 +61,21 @@ class RecipeLoader:
 
     def get_recipes(self):
         recipe_data_list = list()
-        self.fileIdx = len(os.listdir(self.recipe_json_save_path)) + 1
-        for idx in range(1, self.fileIdx):
-            print(f"\n{idx}번째 json 처리 중...")
-            recipe_data_list.extend(self.get_recipe(idx))
-        self.save_json(recipe_data_list, "./")
+        fileNum = 0
+
+        try:
+            fileNum = len(os.listdir(self.recipe_json_save_path))
+        except:
+            print("json 폴더가 없습니다. update를 하기 바랍니다.")
+            return
+
+        if fileNum > 0:
+            for idx in range(1, fileNum + 1):
+                print(f"\n{idx}번째 json 처리 중...")
+                recipe_data_list.extend(self.get_recipe(idx))
+            self.save_json(recipe_data_list, "./")
+        else:
+            print("레시피 json 파일이 없습니다. update를 하기 바랍니다.")
 
     # 저장된 레시피 DB json 객체를 사용하여
     # 필요한 정보만 가지는 json으로 변환하는 전처리 과정 
@@ -104,12 +114,13 @@ class RecipeLoader:
                 ingredients_data = ', '.join(row['RCP_PARTS_DTLS'].split('\n'))
                 ingredients_data = re.split(r"(, )(?=[가-힣])", ingredients_data)
                 ingredients_data = list(map(lambda x: x.strip(), ingredients_data))
+                ingredients_data = list(map(lambda x: x.rstrip(','), ingredients_data))
                 ingredients_data = list(filter(lambda x: x != '', ingredients_data))
                 ingredients_data = list(filter(lambda x: x != ',', ingredients_data))
 
                 for data in ingredients_data:
 
-                    p = re.compile(r"([(0-9.]+)\s*([a-zA-Z)]+)")
+                    p = re.compile(r"([(0-9.a-zA-Z)]+)\s*")
                     m = p.search(data)
 
                     ingredient = {
@@ -187,11 +198,14 @@ class RecipeLoader:
             with open(self.recipe_img_save_path + file_name.replace('/', '-'), 'wb') as photo:
                 photo.write(pic.content)
 
-    def run(self):
+    def run(self, update, startIdx = 0, endIdx = 0):
         self.create_directory('Recipe')
-        self.update_recipe_db()
+        if update:
+            self.update_recipe_db(startIdx, endIdx)
         self.get_recipes()
 
 if __name__ == '__main__':
     recipe_loader = RecipeLoader()
-    recipe_loader.run()
+
+    args = parser.parse_args()
+    recipe_loader.run(args.update, args.startIdx, args.endIdx)

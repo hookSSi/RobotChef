@@ -18,6 +18,7 @@ RobotChef
     * [이미지 전송](#이미지-전송)
 
 # Why?
+
 누구나 인터넷을 통해 검색을 할 수 있는 시대에서도 냉장고 안에 한정된 재료들로 요리할 수 있는 음식을 찾는 것은 쉬운 일이 아닙니다.
  
 냉장고의 재료들을 모두 꺼내어 재료들의 종류와 용량을 확인하여 레시피를 일일이 검색하여 재료들을 일일이 대조해봐야 하기 때문입니다.
@@ -27,6 +28,7 @@ RobotChef
 그래서 저희는 딥러닝을 이용해 이미지 속 재료를 파악하고 연관된 레시피를 쉽게 추천해줍니다.
 
 # 제공 서비스
+
 1. 레시피 검색
 2. 레시피 즐겨찾기
 3. 가장 중요한 이미지 속 **식재료 추출** 하여 검색
@@ -43,6 +45,7 @@ RobotChef
 5. Python, opencv_python-4.5.1(CUDA), Flask
 
 # 설치 및 실행
+
 1. project clone
 2. ElasticSearch 서버 설치 및 실행
 3. opencv_python-4.5.1(CUDA) 직접 빌드하여 python 라이브러리로 추가
@@ -97,7 +100,9 @@ darknet.exe detector map data/obj.data cfg/yolov4-custom.cfg backup/yolov4-custo
 ## 레시피 검색
 Docker에서 Open-Source 검색 엔진 중 하나인 [ElasticSearch](https://github.com/elastic/elasticsearch)를 설치하여 검색 서버 및 레시피 DB로 사용하고 있습니다.
 
-레시피들에 대한 정보는 [해먹남녀](https://haemukja.com/)에서 크롤링하여 사용하고 있고 갯수는 4,617개 입니다.
+원래는 해먹남녀의 레시피를 크롤링해서 활용하였으나 저작권 문제로
+
+레시피들에 대한 정보는 [식품의약품안전처](https://www.foodsafetykorea.go.kr/api/newDatasetDetail.do)에서 API를 통해 1308개의 레시피 정보를 얻었습니다.
 
 ## 레시피 즐겨찾기
 앱의 로컬 저장소에 DB를 생성하여 레시피ID를 저장하는 방식으로 즐겨찾기에 등록합니다.
