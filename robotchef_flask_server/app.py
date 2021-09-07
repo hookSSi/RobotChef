@@ -15,6 +15,7 @@ import glob
 import pytest
 from PIL import Image
 from uuid import uuid4
+from imgaug import augmenters as iaa
 
 # Initialize the Flask application
 app = Flask(__name__)
@@ -60,7 +61,7 @@ def get_config(config_path):
     try:
         configPath = os.path.sep.join([yolo_path, config_path])
         if os.path.isfile(configPath):
-            return weightsPath
+            return config_path
         else:
             print("config 파일이 존재하지 않습니다.")
             return None
@@ -88,10 +89,18 @@ def image_to_byte_array(image:Image):
     return imgByteArr
 
 def get_predection(image, net, LABELS, COLORS):
-    (H, W) = image.shape[:2]
+    input_img = image[np.newaxis, ...]
+    aug = iaa.Resize({"height" : 608, "width" : "keep-aspect-ratio"})
+    output_image = aug(images=input_img)
+    output_image = output_image.reshape(output_image.shape[1:])
+    (H, W) = output_image.shape[:2]
+    (old_H, old_W) = image.shape[:2]
+
+    print(output_image.shape)
+    print(image.shape)
 
     start = time.time()
-    classes, scores, boxes = net.detect(image, confthres, nmsthres)
+    classes, scores, boxes = net.detect(output_image, confthres, nmsthres)
     # show timing information on YOLO
     end = time.time()
     print("[INFO] YOLO 탐지 {:.6f} 초 소요되었습니다.".format(end - start))
@@ -128,10 +137,10 @@ def get_predection(image, net, LABELS, COLORS):
         # bounding box scaling and append
         (centerX, centerY, width, height) = box.astype("int")
 
-        rect['x'] = int(centerX) # left corner x
-        rect['y'] = int(centerY) # left corner y
-        rect['w'] = int(width) # width
-        rect['h'] = int(height) # height
+        rect['x'] = int(centerX) / W * old_W  # left corner x
+        rect['y'] = int(centerY) / H * old_H  # left corner y
+        rect['w'] = int(width) / W * old_W  # width
+        rect['h'] = int(height) / H * old_H  # height
 
         obj['rect'] = rect
         obj['detectedClass'] = LABELS[classid[0]]
@@ -145,9 +154,9 @@ def get_predection(image, net, LABELS, COLORS):
         detected_obj_list.append(obj)
 
         label = "%s : %f" % (LABELS[classid[0]], score)
-        cv2.rectangle(image, box, color, 2)
-        cv2.putText(image, label, (box[0], box[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
-    # cv2.imwrite("detections.png", image)
+        cv2.rectangle(output_image, box, color, 2)
+        cv2.putText(output_image, label, (box[0], box[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+    cv2.imwrite("detections.png", output_image)
     
     return image, detected_obj_list
 
